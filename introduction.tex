@@ -1,0 +1,336 @@
+\chap Introduction
+In this chapter, the problem we are trying to solve is described. For further context, there is also a description of Metrans. The company that provides us with the data and the task they want us to solve. 
+
+\sec The task ahead
+Monitoring sales representatives for errors, particularly in repeated orders, with the primary goal of preventing major issues (e.g., incorrect heating types, etc.).
+The task involves identifying incorrectly entered orders based on credit notes and changes in CMR.
+
+A CMR is a document that serves as a transport contract and receipt for goods, outlining details like the origin, destination, and description of the cargo, along with the terms of transportation. It is used to ensure legal clarity and facilitate cross-border transportation of goods in countries that are signatories to the CMR convention.
+
+\sec What is Metrans and what they do
+METRANS is a leading logistics and transportation company based in Central Europe, specializing in intermodal transport solutions that combine rail, road, and sea freight. It operates a comprehensive network of terminals and transportation routes, offering containerized logistics services that include container handling, freight forwarding, and supply chain management.
+
+As part of the ČD Cargo Group, METRANS is known for its commitment to sustainability, offering eco-friendly transport solutions that reduce environmental impact. The company provides reliable and cost-effective services for both domestic and international shipments, with a strong emphasis on efficiency and customer satisfaction. METRANS plays a crucial role in improving the flow of goods across Europe, connecting key transport hubs and facilitating the smooth movement of freight across the continent.
+
+\sec Technical stack used
+
+\secc Git \& GitLab
+In this project, Git and GitLab are used for version control, branching, and delivering code to the cloud to deploy. A short description of them is provided here, but if you are unaware of them, studying them is suggested over reading this piece.
+
+{\bf Git} is a distributed version control system that tracks code changes, supports branching, and enables collaborative development with a decentralized structure, ensuring a full version history and offline work.\urlnote{https://git-scm.com/}
+
+{\bf GitLab} is a web-based platform built on Git that integrates version control, CI / CD, and project management. It supports collaboration, code reviews, and automation, making it ideal for DevOps and team workflow.\urlnote{https://about.gitlab.com/}
+
+\secc Python
+Another expected pick is Python as our programming language of choice. Reasons for this are simple. It is widely used. Python has libraries for almost any task that we can expect to want to do.
+
+\secc Docker
+Docker was chosen due to avoid the "It works on my machine" issue.
+
+Docker is an open-source platform for developing, deploying, and managing containerized applications. It packages software and its dependencies into lightweight containers, ensuring consistent performance across different environments.
+
+By isolating applications, Docker enhances scalability, portability, and resource efficiency, making it a key tool for modern DevOps practices and cloud-native development.
+
+\secc CodeNow
+CodeNOW is a low-code or no-code platform designed to help organizations develop, deploy, and manage cloud-native applications efficiently. It provides tools for automating software development processes, integrating DevOps practices, and managing infrastructure, all while minimizing the need for extensive coding expertise.
+
+CodeNOW is often used to accelerate digital transformation, enabling teams to focus on delivering business value while abstracting the complexity of the underlying systems.
+
+\secc Rest API
+A REST API (Representational State Transfer Application Programming Interface) is a web service architecture that allows systems to communicate over HTTP using standard methods like GET, POST, PUT, and DELETE. It is stateless, relying on resource-based URLs and typically exchanging data in formats like JSON or XML.
+
+REST APIs are widely used for their simplicity, scalability, and compatibility, enabling seamless integration between diverse applications and services.
+
+\secc Fastapi
+FastAPI is a modern, high-performance web framework for building APIs with Python, leveraging standard Python type hints. It is designed for speed, developer productivity, and ease of use, supporting asynchronous programming and automatic OpenAPI documentation generation.
+
+Built on Starlette and Pydantic, FastAPI enables robust validation, serialization, and high throughput, making it ideal for scalable, production-ready applications.
+
+\secc Keycloak
+
+Keycloak is an open-source identity and access management (IAM) solution that provides authentication, authorization, and user management capabilities. It supports single sign-on (SSO), multi-factor authentication, and integration with identity providers using standards like OAuth2, OpenID Connect, and SAML.
+
+Designed for flexibility, Keycloak simplifies secure application access, enabling centralized user management and seamless integration with modern applications and services.
+
+\secc MLflow
+
+MLflow is an open-source platform for managing the machine learning lifecycle, including experimentation, reproducibility, deployment, and monitoring. It provides tools for tracking experiments, packaging models, and managing model deployments across diverse frameworks and environments.
+
+With its modular design, MLflow supports collaboration and scalability, streamlining workflows for teams working on data-driven projects.
+
+\sec Doris \& Appache Flink
+
+{\bf Doris} is an open-source, real-time analytical database that focuses on providing high-performance, low-latency data analytics for large-scale data workloads. Originally developed by Baidu, Doris is designed for OLAP (Online Analytical Processing) use cases, supporting fast querying and seamless data integration. It is known for its simplicity, scalability, and ease of use, with support for real-time data ingestion and querying, making it suitable for analytics platforms, data warehousing, and business intelligence applications.
+
+{\bf Apache Flink} is an open-source stream processing framework for real-time data analytics. It is designed to process large-scale, unbounded data streams with low latency and high throughput. Flink supports both batch and stream processing and provides advanced features like stateful computations, event time processing, and windowing. It is highly scalable, fault-tolerant, and integrates well with other data systems like Apache Kafka, Hadoop, and various data stores. Flink is commonly used in applications requiring real-time analytics, monitoring, and event-driven processing.
+
+\chap Theoretical background and approaches
+\sec Anomaly Detection
+Anomaly detection, also referred to as outlier detection, is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing.
+
+\secc Unsupervised Anomaly Detection
+Unsupervised anomaly detection is particularly relevant in cases where labeled data (i.e., explicit examples of anomalous and normal instances) is unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.
+
+This method is especially suited for scenarios where only examples of normal behavior are available. By leveraging techniques such as clustering, reconstruction errors, distance measures, or density estimation, unsupervised anomaly detection provides a robust framework for identifying unexpected patterns without relying on prior knowledge of what constitutes an anomaly.
+
+\sec Statistical Approaches to Anomaly Detection
+
+Statistical methods for anomaly detection rely on the assumption that the data follows a specific distribution or statistical model. Anomalies are identified as points that deviate significantly from this assumed distribution or exhibit rare or improbable characteristics. These methods are particularly effective when the underlying data structure is well understood and the anomalies are clearly distinguishable from normal variation.
+
+\secc Parametric Approaches
+These methods assume that the data conforms to a known probability distribution, such as Gaussian or Poisson. Key techniques include:
+
+\begitems
+* {\bf Z-Score Analysis:}\nl
+Measures how far a data point is from the mean in terms of standard deviations. Points with high absolute z-scores (e.g., >3) are flagged as anomalies.
+
+
+Effective for continuous, normally distributed data.
+
+* {\bf Probability Density Estimation (PDE):}\nl
+Anomalies are identified as points with very low likelihood under the fitted distribution (e.g., using maximum likelihood estimation).
+* {\bf Chi-Square Test:}\nl
+Compares observed and expected frequencies for categorical data. Significant deviations indicate anomalies.
+\enditems
+
+\secc Non-Parametric Approaches
+These methods do not make strong assumptions about the data distribution:
+
+\begitems
+* {\bf Kernel Density Estimation (KDE):}\nl
+Estimates the probability density function of the data. Points in regions of low density are flagged as anomalies.
+
+* {\bf Nearest Neighbor-Based Methods:}\nl
+Compute distances between data points. Anomalies are far from their nearest neighbors in the feature space.
+
+Example: {\em Local Outlier Factor} (LOF), which uses local density to detect outliers.
+\enditems
+
+\secc Multivariate Statistical Techniques
+For data with multiple variables, relationships among dimensions are considered:
+
+\begitems
+* {\bf Mahalanobis Distance:}\nl
+Measures the distance of a point from the mean while accounting for the covariance structure of the data. Points with high distances are anomalies.
+
+
+Effective for identifying anomalies in multivariate normal distributions.
+
+
+* {\bf Principal Component Analysis (PCA):}\nl
+Reduces the dimensionality of the data, capturing the most significant variance. Points with high reconstruction errors (i.e., poorly explained by principal components) are flagged as anomalies.
+\enditems
+
+\secc Time-Series-Specific Methods
+For temporal data, statistical methods often account for sequential dependencies:
+
+\begitems
+* {\bf Moving Average and Exponential Smoothing:}\nl
+Detect sudden deviations from expected values derived from past trends.
+
+* {\bf ARIMA Models:}\nl
+Use autoregressive integrated moving average models to forecast expected values and flag deviations.
+\enditems
+
+\secc Strengths and Limitations
+{\em Strengths:}
+\begitems
+ * {\bf Interpretability:} Statistical methods provide clear thresholds or probabilistic interpretations.
+* {\bf Simplicity:} Often computationally efficient and easy to implement.
+\enditems
+{\em Limitations:}
+\begitems
+* {\bf Sensitivity to Assumptions:} Performance depends on the validity of the assumed data distribution.
+* {\bf Scalability:} May struggle with large or high-dimensional datasets without preprocessing.
+* {\bf Handling Complex Relationships:} Struggle with non-linear or intricate dependencies without adaptations.
+\enditems
+
+Statistical methods are foundational in anomaly detection and are often used as benchmarks or in conjunction with more advanced machine learning techniques.
+
+
+
+\sec Clustering-Based Approaches to Anomaly Detection
+
+Clustering-based anomaly detection methods group data points into clusters based on their similarity and identify anomalies as points that do not belong to any cluster or are significantly far from cluster centroids. These methods are unsupervised, making them suitable for scenarios where no labeled data is available.
+
+\secc Core Principles
+Cluster Membership:
+\begitems
+* Normal data points form dense, well-defined clusters.
+* Anomalies are isolated points or lie in low-density regions.
+\enditems
+Distance to Clusters:
+\begitems
+* Anomalies are distant from cluster centroids or boundaries.
+\enditems
+
+
+\secc K-Means
+Methodology:
+\begitems
+* Assigns data points to k clusters by minimizing the distance to the nearest cluster centroid.
+* Anomalies are points with high distances from their assigned cluster centroid.
+\enditems
+\nl
+Strengths:
+\begitems
+* Simple and computationally efficient.
+\enditems
+\nl
+Limitations:
+\begitems
+* Requires predefining the number of clusters (k).
+* Assumes clusters are spherical and equally sized, which may not align with real-world data.
+\enditems
+\secc DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
+Methodology:
+\begitems
+* Groups points into clusters based on local density. Points in sparse regions are classified as noise (anomalies).
+\enditems
+\nl
+Strengths:
+\begitems
+* Handles arbitrary cluster shapes.
+* Does not require specifying the number of clusters.
+\enditems
+\nl
+Limitations:
+\begitems
+* Sensitive to the choice of parameters (e.g., neighborhood radius ε and minimum points).
+* Struggles with varying density levels.
+\enditems
+
+\secc Hierarchical Clustering
+Methodology:
+\begitems
+* Constructs a hierarchy of clusters via agglomerative (bottom-up) or divisive (top-down) methods.
+* Anomalies are points that remain unclustered at a specific level of the hierarchy or form singleton clusters.
+\enditems
+\nl
+Strengths:
+\begitems
+* Provides a flexible structure for identifying outliers at various levels.
+\enditems
+\nl
+Limitations:
+\begitems
+* Computationally expensive for large datasets.
+\enditems
+
+\secc Gaussian Mixture Models (GMM)
+Methodology:
+\begitems
+ * Assumes data is generated from a mixture of Gaussian distributions.
+* Anomalies are points with low probabilities under the fitted Gaussian components.
+\enditems
+\nl
+Strengths:
+\begitems
+* Probabilistic foundation provides interpretable scores.
+\enditems
+\nl
+Limitations:
+\begitems
+* Assumes Gaussian clusters, which may not suit all data.
+\enditems
+
+\secc Spectral Clustering
+Methodology:
+\begitems
+* Constructs a similarity graph and uses its eigenvalues to form clusters.
+* Points with weak connections to any cluster are flagged as anomalies.
+\enditems
+Strengths:
+\begitems
+* Effective for non-linear cluster structures.
+\enditems
+Limitations:
+\begitems
+* Computationally intensive for large datasets.
+\enditems
+
+\secc Strengths and Limitations
+{\em Strengths:}
+\begitems
+* {\bf Unsupervised:} No need for labeled data.
+* {\bf Versatile:} Handles various types of data.
+* {\bf Intuitive:} Anomalies are naturally defined by distance or density.
+\enditems
+{\em Limitations:}
+\begitems
+* {\bf Parameter Sensitivity:} Performance depends on parameters like k, ε, or minimum density.
+* {\bf High Dimensionality:} Clustering algorithms often struggle in high-dimensional spaces ("curse of dimensionality").
+* {\bf Scalability:} Methods like hierarchical or spectral clustering are computationally expensive for large datasets.
+\enditems
+
+Clustering-based methods are widely used in anomaly detection and are often combined with feature engineering or dimensionality reduction to improve performance.
+
+\sec Isolation Forest and Tree-Based Methods for Anomaly Detection
+
+Tree-based methods leverage the structure of decision trees to isolate anomalies based on their distinct characteristics. These techniques are particularly suited for unsupervised anomaly detection, as they do not rely on labeled data and work well with mixed data types.
+
+\secc Isolation Forest
+Isolation Forest ({\em iForest}) is explicitly designed for anomaly detection. It operates on the principle that anomalies are easier to isolate than normal points because they are rare and distinct.
+\nl
+{\em Description of the core algorithm}
+\begitems
+* {\bf Random Partitioning:} Randomly select a feature and split the dataset at a randomly chosen value within the feature's range.
+* {\bf Recursive Splitting:} Build a tree by recursively partitioning the data until all points are isolated or a maximum tree depth is reached.
+* {\bf Anomaly Scoring:} The depth of a point in the tree (number of splits required to isolate it) is inversely proportional to its anomaly score. Points isolated in fewer splits (shorter depth) are considered anomalous.
+\enditems
+\nl
+Strengths:
+\begitems
+* {\bf Computational Efficiency:} Works in linear time with respect to the number of data points.
+* {\bf Handles Mixed Data:} Suitable for both categorical and numerical features.
+* {\bf Scalable:} Works well with large datasets.
+\enditems
+\nl
+Limitations
+\begitems
+* Requires parameter tuning (e.g., number of trees, subsampling size).
+* May struggle with data where anomalies closely resemble the majority class.
+\enditems
+
+\secc Decision Trees for Anomaly Detection
+{\bf Supervised Context: }
+When labeled data is available, decision trees (e.g., CART, C4.5) can classify anomalies explicitly. Fit a tree to distinguish between "normal" and "anomalous" data. Less interpretable in the presence of subtle anomalies.
+
+
+{\bf Unsupervised Context: }
+Adapt decision tree logic to identify patterns in the majority class and flag outliers. Use thresholds for decision paths where certain leaf nodes represent unusual patterns. Random splits or density-based measures are employed to enhance detection.
+\nl
+Strengths
+\begitems
+* Easy to interpret, especially for small trees.
+* Handles both numerical and categorical data.
+\enditems
+Limitations
+\begitems
+* Can overfit without proper pruning or parameter tuning.
+* Less robust to high-dimensional data compared to ensemble methods like Isolation Forest.
+\enditems
+
+\secc Random Forests for Anomaly Detection
+Random forests, while typically used for classification or regression, can be adapted for anomaly detection:
+\begitems
+* Compute leaf nodes for each tree and measure how often a data point lands in rare or low-density leaves.
+* Combine these measures to produce an anomaly score.
+\enditems
+\nl
+Strengths:
+\begitems
+* Benefits from ensemble robustness.
+* Can handle diverse types of data.
+\enditems
+\nl
+Limitations
+\begitems
+* Computationally more expensive than simpler tree-based models.
+* Requires careful interpretation of output anomaly scores
+\enditems
+
+\secc Overview 
+Tree-based methods are particularly valuable when interpretability and computational efficiency are critical. Isolation Forest, in particular, is a strong baseline for anomaly detection in many scenarios.
+\nl
+\cite[aima]\cite[anomaly]

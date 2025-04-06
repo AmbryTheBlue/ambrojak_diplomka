@@ -13,69 +13,51 @@
 
 \faculty    {F3}  % Type your faculty F1, F2, F3, etc. or MUVS
             % use main language of your document here:
-\department {Katedra kybernetiky}
-\title      {NLP in order verification}
-\subtitle   {Sofware or Research project}
+\department {Department of Computer Science}
+\title      {Processing and data mining from documents for Metrans company using NLP}
+\subtitle   {Software or Research project}
+\subtitleCZ   {Softwarový nebo výzkumný projekt}
             % \subtitle is optional
 \author     {Jakub Ambroz}
 \date       {September 2024, January 2025}
-\supervisor {Martin Komínek}  % One or more supervisors
+\supervisor {Ing. Martin Komárek}  % One or more supervisors
 \studyinfo  {Open informatics, specialization Data science}  % Study programme etc.
-\workname   {Sofware or Research project} % Used only if \worktype [O/*] (Other)
+\workname   {Software or Research project} % Used only if \worktype [O/*] (Other)
             % optional more information about the document:
-\workinfo   {\url{http://petr.olsak.net/ctustyle.html}}
+\workinfo   {}
             % Title / Subtitle in minor language:
-\titleEN    {CTUstyle -- the user manual}
+\titleCZ    {Vytěžování a zpracování dokumentů pro firmu Metrans pomocí NLP}
 \subtitleEN {the \OpTeX/ template for theses at CTU}
             % If minor language is other than English
             % use \titleCZ, \subtitleCZ or \titleSK, \subtitleSK instead it.
 \pagetwo    {}  % The text printed on the page 2 at the bottom.
 
 \abstractEN {
-   This document shows and tests an usage of the plain\TeX{} officially
-   (may be) recommended design style {\ssr CTUstyle} for bachelor (Bsc.), master
-   (Ing.), or doctoral (Ph.D.) theses at the Czech Technical University in
-   Prague. The template defines all thesis mandatory structural elements and
-   typesets their content to fulfil the university formal rules.
-
-   This is version 3 of this template which is derived from previous version 2 (for
-   plain \TeX), but the version 3 supports \OpTeX/ format.
-   It implements the Technika font
-   recommended by CTU graphics identity reference since 2016.
+   
+   This document is a report for course B4MSVP (Software or research project) but it is written as a part of the following Diploma thesis.
 }
 \abstractCZ {
-   Tento dokument ukazuje a testuje použití (možná) oficiálně doporučené 
-   \OpTeX/ové šablony {\ssr CTUstyle} pro sazbu bakalářských, 
-   diplomových a disertačních prací na Českém vysokém učení technickém v~Praze. 
-   Šablona definuje všechny povinné strukturní
-   elementy zmíněných závěrečných prací a formátuje jejich obsah tak, aby
-   splňovala na škole daná formální pravidla.
 
-   Toto je verze 3 této šablony, která vychází z předchozí verze 2 pro plain\TeX, 
-   ale je určena pro zpracování formátem \OpTeX. 
-   Implementuje písmo Technika v~souladu s doporučením manuálu vizuálního
-   stylu, který zavedlo ČVUT v~roce 2016.
-}           % If your language is Slovak use \abstractSK instead \abstractCZ
+}
+   
 
 \keywordsEN {%
-   document design template; bachelor, master, Ph.D. thesis; \TeX{}.
+NLP, Anomaly detection, 
 }
 \keywordsCZ {%
-   styl dokumentu; šablona; 
-   bakalářská, diplomová, disertační závěrečná práce; \TeX{}.
+NLP,
 }
 \thanks {           % Use main language here
-   Chtěl bych poděkovat své manželce Ludmile za podporu nejen finanční.
-   Díky tomu mohu na svém pracovišti dělat, co mě baví, a nejsem stresován 
-   výplatní páskou.
+   I would like to thank Stratox. Especially Ing. Martin Komínek for his support with all technical issues I encountered. And Metrans for providing the necessary real world data.
 }
 \declaration {      % Use main language here
+% TODO: CHANGE TO ENLGISH
    Prohlašuji, že jsem předloženou práci vypracoval
    samostatně a že jsem uvedl veškeré použité informační zdroje v~souladu
    s~Metodickým pokynem o~dodržování etických principů při přípravě
    vysokoškolských závěrečných prací.
 
-   V Praze dne 13. 13. 2013 % !!! Attention, you have to change this item.
+   V Praze dne 19.01.2025 % !!! Attention, you have to change this item.
    \signature % makes dots
 }
 
@@ -92,8 +74,12 @@
 
 \makefront  % Mandatory command. Makes title page, acknowledgment, contents etc.
 
-\input uvod    % Files where the source of the document is prepared.
-\input popis   % Full name is: uvod.tex, popis.tex, the suffix can be omitted.
-\input prilohy
+\input introduction
+
+% \input uvod    % Files where the source of the document is prepared.
+% \input popis   % Full name is: uvod.tex, popis.tex, the suffix can be omitted.
+% \input prilohy
+
+\bibchap
 
 \bye
