@@ -1,6 +1,7 @@
 % !TEX program = optex
 % !TEX root = ambrojak-diploma-thesis.tex
 \chap Introduction
+\rfc{After finsihsing the thesis chagnge this introduction to more reflect the structure}
 In this chapter, the problem we are trying to solve is described. For further context, there is also a description of Metrans. The company that provides us with the data and the task they want us to solve. 
 
 \sec The task ahead
@@ -15,6 +16,7 @@ METRANS is a leading logistics and transportation company based in Central Europ
 As part of the ČD Cargo Group, METRANS is known for its commitment to sustainability, offering eco-friendly transport solutions that reduce environmental impact. The company provides reliable and cost-effective services for both domestic and international shipments, with a strong emphasis on efficiency and customer satisfaction. METRANS plays a crucial role in improving the flow of goods across Europe, connecting key transport hubs and facilitating the smooth movement of freight across the continent.
 
 \sec Technical stack used
+\rfc{At least add some links to official website/documentation}
 
 \secc Git \& GitLab
 In this project, Git and GitLab are used for version control, branching, and delivering code to the cloud to deploy. A short description of them is provided here, but if you are unaware of them, studying them is suggested over reading this piece.
@@ -67,6 +69,7 @@ With its modular design, MLflow supports collaboration and scalability, streamli
 {\bf Apache Flink} is an open-source stream processing framework for real-time data analytics. It is designed to process large-scale, unbounded data streams with low latency and high throughput. Flink supports both batch and stream processing and provides advanced features like stateful computations, event time processing, and windowing. It is highly scalable, fault-tolerant, and integrates well with other data systems like Apache Kafka, Hadoop, and various data stores. Flink is commonly used in applications requiring real-time analytics, monitoring, and event-driven processing.
 
 \chap Theoretical background and approaches
+\rfc{This chapter (Theorethical background and approaches) should probably be revised. Maybe moved after anomaly and stated which models to use based on our data or keep it here and more thereical/general? But I do not like the writing style very much.}
 \sec Anomaly Detection
 Anomaly detection, also referred to as outlier detection, is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing.
 
@@ -333,7 +336,6 @@ Limitations
 \enditems
 
 \secc Overview 
-Tree-based methods are particularly valuable when interpretability and computational efficiency are critical. Isolation Forest, in particular, is a strong baseline for anomaly detection in many scenarios.
 Tree-based methods are particularly valuable when interpretability and computational efficiency are critical. Isolation Forest, in particular, is a strong baseline for anomaly detection in many scenarios.
 \nl
 \cite[aima]\cite[anomaly]
