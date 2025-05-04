@@ -10,33 +10,32 @@
 
 \input ctustyle3  % The template (in version 3, for OpTeX) is included here.
 
-\worktype [O/EN] % Type: B = bachelor, M = master, D = Ph.D., O = other
+\worktype [D/EN] % Type: B = bachelor, M = master, D = Ph.D., O = other
                  % / the language: CZ = Czech, SK = Slovak, EN = English
 
 \faculty    {F3}  % Type your faculty F1, F2, F3, etc. or MUVS
             % use main language of your document here:
 \department {Department of Computer Science}
-\title      {Processing and data mining from documents for Metrans company using NLP}
-\subtitle   {Software or Research project}
-\subtitleCZ   {Softwarový nebo výzkumný projekt}
+\title      {Anomaly Detection in Metrans Transport Orders}
+% \subtitle   {Software or Research project}
+% \subtitleCZ   {Softwarový nebo výzkumný projekt}
             % \subtitle is optional
-\author     {Jakub Ambroz}
+\author     {Bc. Jakub Ambroz}
 \date       {September 2024, January 2025}
 \supervisor {Ing. Martin Komárek}  % One or more supervisors
 \studyinfo  {Open informatics, specialization Data science}  % Study programme etc.
-\workname   {Software or Research project} % Used only if \worktype [O/*] (Other)
+% \workname   {Software or Research project} % Used only if \worktype [O/*] (Other)
             % optional more information about the document:
 \workinfo   {}
             % Title / Subtitle in minor language:
-\titleCZ    {Vytěžování a zpracování dokumentů pro firmu Metrans pomocí NLP}
-\subtitleEN {the \OpTeX/ template for theses at CTU}
+\titleCZ    {Detekce anomálií v transportních objednávkách firmy Metrans}
+\subtitleCZ {}
             % If minor language is other than English
             % use \titleCZ, \subtitleCZ or \titleSK, \subtitleSK instead it.
 \pagetwo    {}  % The text printed on the page 2 at the bottom.
 
 \abstractEN {
    
-   This document is a report for course B4MSVP (Software or research project) but it is written as a part of the following Diploma thesis.
 }
 \abstractCZ {
 
@@ -44,16 +43,17 @@
    
 
 \keywordsEN {%
-NLP, Anomaly detection, 
+Anomaly detection, 
 }
 \keywordsCZ {%
-NLP,
+Detekce anomámlií,
 }
 \thanks {           % Use main language here
-   I would like to thank Stratox. Especially Ing. Martin Komínek for his support with all technical issues I encountered. And Metrans for providing the necessary real world data.
+   I would like to thank Stratox. Especially Ing. Martin Komínek for his support with all technical issues I encountered. And to Metrans for providing the necessary real world data.
 }
 \declaration {      % Use main language here
 % TODO: CHANGE TO ENLGISH
+\rfc{Změnit declaration na anglický}
    Prohlašuji, že jsem předloženou práci vypracoval
    samostatně a že jsem uvedl veškeré použité informační zdroje v~souladu
    s~Metodickým pokynem o~dodržování etických principů při přípravě
@@ -65,7 +65,7 @@ NLP,
 
 %%%%% <--   % The place for your own macros is here.
 
-%\draft     % Uncomment this if the version of your document is working only.
+\draft     % Uncomment this if the version of your document is working only.
 %\linespacing=1.7  % uncomment this if you need more spaces between lines
                    % Warning: this works only when \draft is activated!
 %\savetoner        % Turns off the lightBlue backround of tables and
@@ -74,14 +74,22 @@ NLP,
 %\onesideprinting  % Use this if you really don't use duplex printing. 
 %\totf             % More compact list of tables and figures.
 
+\input glosdata
+
 \makefront  % Mandatory command. Makes title page, acknowledgment, contents etc.
 
 \input introduction
+\input anomalies
+\input approaches
+\input my_models
 
 % \input uvod    % Files where the source of the document is prepared.
 % \input popis   % Full name is: uvod.tex, popis.tex, the suffix can be omitted.
 % \input prilohy
 
 \bibchap
+
+\app Glossary
+\makeglos
 
 \bye
