@@ -1,5 +1,5 @@
 % !TEX program = optex
-% !TEX root = ambrojak-diploma-thesis.tex
+% !TEX root = ambrojak-thesis-masters.tex
 % The documentation of the usage of CTUstyle -- the template for
 % typessetting thesis by plain\TeX at CTU in Prague
 % ---------------------------------------------------------------------
@@ -43,7 +43,7 @@
    
 
 \keywordsEN {%
-Anomaly detection, 
+Anomaly detection in tabular data, Misclassification Detection, Frequency-Based Outlier Detection, Confidence-Based Anomaly Detection
 }
 \keywordsCZ {%
 Detekce anomálií,
@@ -51,7 +51,7 @@ Detekce anomálií,
 \thanks {           % Use main language here
    I would like to thank Stratox, especially Martin Komínek, for his invaluable support in resolving the technical challenges I encountered.
    
-   I am also grateful to Metrans for providing real-world data essential to this project, and to their employees Martin Pacourek, Josef Horák and others for their guidance in contextualizing the data and linking it to operational meaning.
+   I am also grateful to Metrans for providing real-world data essential to this project and to their employees for their guidance in contextualizing the data and linking it to operational meaning.
 }
 \declaration {      % Use main language here
     I declare that I have prepared the final thesis independently and have listed all information sources used in accordance with the Methodological Guidelines on the observance of ethical principles in the preparation of university final theses and the Framework Rules for the use of artificial intelligence at CTU for study and pedagogical purposes in Bc and NM studies.
@@ -61,21 +61,21 @@ Detekce anomálií,
    \nl
    (CZECH VERSION)
    
-   Prohlašuji, že jsem diplomovou práci vypracoval samostatně a uvedl veškeré použité informační zdroje v souladu s Metodickým pokynem o dodržování
-    etických principů při přípravě vysokoškolských závěrečných prací a Rámocovými pravidly používání umělé
-    inteligence na ČVUT pro studijní a pedagogické účely v Bc a NM studiu.
+   Prohlašuji, že jsem diplomovou práci vypracoval samostatně a uvedl veškeré použité informační zdroje v souladu s Metodickým pokynem o dodržování etických principů při přípravě vysokoškolských závěrečných prací a Rámocovými pravidly používání umělé inteligence na ČVUT pro studijní a pedagogické účely v Bc a NM studiu.
     
-    Prohlašuji, že jsem v průběhu příprav a psaní závěrečné práce použil nástroje umělé inteligence. Vygenerovaný
-    obsah jsem ověřil. Stvrzuji, že jsem si vědom, že za obsah závěrečné práce plně zodpovídám. 
+    Prohlašuji, že jsem v průběhu příprav a psaní závěrečné práce použil nástroje umělé inteligence. Vygenerovaný obsah jsem ověřil. Stvrzuji, že jsem si vědom, že za obsah závěrečné práce plně zodpovídám. 
 
+    \nl\nl\nl
     
-    \signature
+    
+    Bc.~Jakub Ambroz
+    
+    ........................................
 
     In~Prague 23.05.2025
     
-    (V~Praze dne 23.05.2025),
+    (V~Praze dne 23.05.2025)
 
-    Bc.~Jakub Ambroz
 }
 
 %%%%% <--   % The place for your own macros is here.
@@ -89,20 +89,32 @@ Detekce anomálií,
 %\onesideprinting  % Use this if you really don't use duplex printing. 
 %\totf             % More compact list of tables and figures.
 
-\input glosdata
+\input ambrojak-glosdata
+
+\specification {
+\vbox to0pt{\vskip-25mm\centerline{\inspic assignments/assignment-page1.pdf }\vss}
+\vfil\break
+\vbox to0pt{\vskip-25mm\centerline{\inspic assignments/assignment-page2.pdf }\vss}
+\vfil\break
+\vbox to0pt{\vskip-25mm\centerline{\inspic assignments/declaration.pdf }\vss}
+}
 
 \makefront  % Mandatory command. Makes title page, acknowledgment, contents etc.
 
-\input introduction
-\input anomalies
-\input approaches
-\input my_models
+\input tex/introduction
+\input tex/methods
+\input tex/anomalies
+\input tex/approaches
+\input tex/technical-description
+\input tex/my-models
+\input tex/results
+\input tex/component
+\input tex/final
 
-% \input uvod    % Files where the source of the document is prepared.
-% \input popis   % Full name is: uvod.tex, popis.tex, the suffix can be omitted.
-% \input prilohy
 
 \bibchap
+\usebib/c (simple) ambrojak-bib
+
 
 \app Glossary
 \makeglos

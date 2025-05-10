@@ -1,0 +1,46 @@
+% !TEX program = optex
+% !TEX root = ambrojak-thesis-masters.tex
+
+\chap Results and discussion
+\rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}
+\rfc{Pro ostatní anomálie aspoň nějaké overview}
+\rfc{Porovnání heating type a heating type se zbožím, popřípadě jiné anomálie, kde využíváme informace navíc.}
+\sec Heating Type
+First of lets look at the distribution.
+
+\medskip
+\clabel[distribution]{Distribution of anomaly scores}
+\picw=15cm \cinspic imgs/distribution.png
+\caption/f Distribution of heating types in training data
+\medskip
+
+
+Second lets look at several our FBOD. To test their accuracy I have made artificial anomalies with wrong heating type.
+\medskip
+\clabel[matrix]{Confusion Matrix}
+\picw=15cm \cinspic imgs/Confusion-matrix.png
+\caption/f Confusion matrix for several models
+\medskip
+
+\medskip
+\clabel[F1]{Precision, Recall, F1}
+\picw=15cm \cinspic imgs/metrics.png
+\caption/f Typical metrics used for anomaly detection
+\medskip
+
+\secc Individual model can be further analysed
+For models that are using anomaly scoring a more advanced plots can be done. Here are examples on Random Forest classifier.
+
+\medskip
+\picw=15cm \cinspic imgs/rf-anomaly-scores.png
+\caption/f Distrbution of anomaly scores
+\medskip
+
+
+\medskip
+\picw=10cm \cinspic imgs/rf-precision-recall.png
+\medskip
+
+\medskip
+\picw=10cm \cinspic imgs/rf-roc.png
+\medskip
