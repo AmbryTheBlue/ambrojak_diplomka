@@ -1,5 +1,6 @@
 *.pdf
 !*logo*.pdf
+!assignments/*.pdf
 *.log
 *.ref
 .vscode

@@ -21,12 +21,15 @@
 % \subtitleCZ   {Softwarový nebo výzkumný projekt}
             % \subtitle is optional
 \author     {Bc. Jakub Ambroz}
-\date       {September 2024, May 2025}
-\supervisor {Ing. Martin Komárek}  % One or more supervisors
-\studyinfo  {Open informatics, specialization Data science}  % Study programme etc.
+\authorinfo {ambrojak@fel.cvut.cz}
+\date       {September 2024, May 2025} % Not sure if to add or not
+\supervisor {Ing. Martin Komárek
+\nl Supervisor-specialist: Ing. Martin Komínek
+}  % One or more supervisors
+\studyinfo  {Open Informatics, specialization Data Science}  % Study programme etc.
 % \workname   {Software or Research project} % Used only if \worktype [O/*] (Other)
             % optional more information about the document:
-\workinfo   {}
+\workinfo   {\url{TODO GitHub Link}\rfc{Copy gitlab repo to public GitHub}}
             % Title / Subtitle in minor language:
 \titleCZ    {Detekce anomálií v transportních objednávkách firmy Metrans}
 \subtitleCZ {}
@@ -35,21 +38,31 @@
 \pagetwo    {}  % The text printed on the page 2 at the bottom.
 
 \abstractEN {
+This thesis addresses the problem of detecting anomalies in transport orders processed by Metrans, a major logistics provider in Central Europe. By analyzing historical order data, we develop machine learning models capable of identifying irregularities such as incorrect heating types, missing customs identifiers, or atypical chassis assignments.
+
+Three distinct detection approaches are proposed and evaluated: approach based on classification, out-of-distribution detection, and confidence-based anomaly scoring. The final solution is built as a modular microservice-oriented application deployed via CodeNOW and integrates tools like MLflow and Docker for reproducibility and scalability.
+\rfc{Před odevzdáním ještě upravit abstract, aby byl v tipťop stavu}
    
 }
 \abstractCZ {
+Tato diplomová práce se zabývá detekcí anomálií v přepravních objednávkách zpracovávaných společností Metrans, významným poskytovatelem logistických služeb ve střední Evropě. Na základě analýzy historických dat o objednávkách jsou vyvinuty modely strojového učení schopné identifikovat nepravidelnosti, jako jsou nesprávné typy ohřevu, chybějící celní identifikátory nebo neobvyklé typy podvozků.
 
+Jsou navrženy a vyhodnoceny tři odlišné přístupy k detekci anomálií — klasifikační modely, detekce anomálií na základě četnosti a detekce na základě míry jistoty modelu. Výsledné řešení je implementováno jako modulární aplikace postavená na mikroservisní architektuře a nasazeno prostřednictvím platformy CodeNOW s využitím nástrojů jako MLflow a Docker pro zajištění reprodukovatelnosti a škálovatelnosti.
+\rfc{Před odevzdáním ještě upravit abstrakt, aby byl v tipťop stavu}
+   
 }
    
 
 \keywordsEN {%
 Anomaly detection in tabular data, Misclassification Detection, Frequency-Based Outlier Detection, Confidence-Based Anomaly Detection
+\rfc{Zkontrolovat keywords, doplnit kdyžtak něco}
 }
 \keywordsCZ {%
-Detekce anomálií,
+Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce anomálií na základě četností, Detekce anomálií na základě míry jistoty
+\rfc{Zkontrolovat, že překlad klíčových slov dává smysl}
 }
 \thanks {           % Use main language here
-   I would like to thank Stratox, especially Martin Komínek, for his invaluable support in resolving the technical challenges I encountered.
+   I would like to thank Stratox, and especially Martin Komínek, for their invaluable support in resolving the technical challenges I encountered.
    
    I am also grateful to Metrans for providing real-world data essential to this project and to their employees for their guidance in contextualizing the data and linking it to operational meaning.
 }

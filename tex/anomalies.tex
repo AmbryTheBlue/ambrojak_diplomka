@@ -1,6 +1,6 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
-\chap Data Analysis
+\chap Data Analysis and Introduction to Anomaly Types
 This chapter presents a structured exposition of the anomaly categories that are most consequential for Metrans’ operations. For each anomaly, the discussion begins with a business-oriented rationale, detailing the operational disruptions and financial liabilities that arise when the anomaly goes undetected.
 
 This is followed by a concise technical synopsis that specifies the essential feature set, drawn mainly from textual attributes describing the client, sender, and recipient, supplemented where relevant by numerical indicators, and defines the target variable used in the detection models. The anomalies examined include misspecification of heating parameters (type, presence, and temperature), omission of required port or customs identifiers (BHT, ZAPP, and TCC), absence or superfluous inclusion of an additional billing reference, and selection of an inappropriate chassis type. \urlnote{https://metrans.eu/wp-content/uploads/2025/01/General25v2.pdf}
@@ -44,64 +44,6 @@ To mitigate these risks, the anomaly detection model evaluates whether the selec
 \enditems
 Most features are textual or at least can be treated as text (e.g. HS Code). Therefore, some vectorization is necessary before using most standard ML methods (e.g. label encoding, Bag of Words, TF-IDF, or embeddings). The target variable is a 3-class categorical feature corresponding to the heating type.
 
-\secc Presence of Heating Request
-This anomaly addresses whether transport orders appropriately include or omit a heating request. It complements, yet remains distinct from, the "Heating Type" anomaly described previously. While the "Heating Type" anomaly focuses on selecting the correct heating method when a request is made, this anomaly specifically targets cases where heating is mistakenly excluded from or incorrectly included in an order.
-
-The distinction is crucial for two primary reasons:
-\begitems
-* {\bf Operationally Distinct Scenarios:}
-Forgetting a heating request entirely differs fundamentally from selecting an inappropriate heating type. The former suggests oversight in recognizing temperature-sensitive goods, whereas the latter indicates confusion or misclassification of appropriate heating requirements.
-
-* {\bf Improved Model Evaluation:}
-By separating the detection of heating presence from heating type correctness, models can be individually assessed for each task. Combining these anomalies into a single model might bias predictions toward simply determining the necessity of heating, overshadowing subtler distinctions about heating type accuracy.
-\enditems
-
-In practical terms, the business implications are significant. Similarly to Heating Type anomaly, an overlooked heating request can render sensitive goods unusable, leading to financial losses, operational disruptions, and decreased customer satisfaction. Conversely, unnecessary heating requests generate avoidable costs. Although they seems highly unlikely.
-
-The technical formulation of this anomaly detection task also closely resembles the Heating Type anomaly. We utilize identical input features, specifically client, sender, and recipient information, all of which are textual and require vectorization (e.g., label encoding or text embeddings). The target variable is binary, with categories defined as follows. 1 - Heating request present, 0 - No heating request present
-
-\sec Presence of the BHT / ZAPP / TCC number
-In the context of international freight forwarding, specific customs and port clearance identifiers are essential to ensure the seamless movement of goods through various European ports. Among these, BHT (Bremer Hafentelematik), ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port), and TCC (Terminal Customs Code) play pivotal roles in the export processes of ports like Bremerhaven, Hamburg, and Koper/Trieste, respectively.
-
-The absence of these critical identifiers in transport orders can lead to significant operational disruptions. Without the appropriate BHT, ZAPP, or TCC numbers, shipments may be held at ports, incurring storage fees, delaying delivery schedules, and potentially breaching contractual obligations with clients. Such delays can result in financial penalties, increased operational costs, and damage to the company's reputation. In some cases, the financial impact of these delays can amount to approximately €4,000 per incident.
-
-\begitems
-* BHT (Bremer Hafentelematik): This system facilitates electronic export declarations for shipments departing from the ports of Bremen and Bremerhaven. It ensures that all necessary customs information is accurately communicated to the relevant authorities, streamlining the export process. 
-
-* ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port): Implemented in the Port of Hamburg, ZAPP is an electronic platform that manages export customs clearance. It allows for the digital submission and monitoring of export declarations, ensuring compliance with customs regulations and expediting the release of goods. 
-
-* TCC (Terminal Customs Code): Utilized in ports such as Koper and Trieste, the TCC is a unique identifier required for customs clearance processes. It ensures that shipments are properly documented and authorized for export, preventing potential delays or rejections at the terminal. 
-\enditems
-
-The anomaly detection task specifically involves identifying transport orders that require, but lack, the appropriate BHT, ZAPP, or TCC identifiers. Detecting the inverse scenario—where an order unnecessarily includes a BHT, ZAPP, or TCC number—was not prioritized by Metrans. This decision reflects the practical reality that the risk of overlooking a required customs identifier is significantly higher than mistakenly completing the additional paperwork and procedures associated with obtaining these identifiers for transport orders not bound for ports or customs clearance.
-
-The features utilized in this model include:
-\begitems \style o
-
-* Client information: Details about the ordering party, which may influence the necessity of specific customs identifiers.
-
-* Sender and Recipient Details: Information about the origin and destination of the shipment, which can determine the applicable port and, consequently, the required identifier.
-\enditems
-
-All features are primarily textual and are processed using techniques such as label encoding or text vectorization to make them suitable for machine learning models. The target variable is binary. 1 - The transport order includes a BHT/ZAPP/TCC number. 0 - The transport does not have a BHT/ZAPP/TCC number.
-
-\sec Presence of Additional Billing Reference
-Some transport orders at Metrans require an additional billing reference provided by clients, typically used for internal accounting, project cost tracking, or expense allocation. Detecting anomalies related to the inclusion or omission of this reference helps prevent:
-\begitems
-* Administrative Delays: Additional manual effort to rectify or clarify billing information.
-
-* Accounting Disruptions: Errors or delays in invoicing and financial reconciliation processes.
-\enditems
-
-The technical definition is similar to BHT/ZAPP/TCC number. Both unnecessary inclusion and erroneous omission are relevant and need detection. But detecting omission is more critical. The anomaly detection task involves predicting the correct presence or absence of this billing reference using textual features, specifically client information and sender/recipient details. The target variable is binary. 1 - Billing reference is provided. 0 - Billing reference is not provided.
-
-\sec Chassis Type Anomaly
-The Chassis Type anomaly involves detecting inconsistencies in the selection of chassis types used for transporting containers. Similar to the Heating Type anomaly, this task focuses on identifying unusually chosen chassis type given specific transport order. The primary distinction lies in the significantly larger number of chassis classes, increasing both complexity and the potential for misclassification.
-
-From a business perspective, selecting an incorrect chassis can lead to similar issues as selecting incorrect heating type. But the costs may not be as severe. If the container is big enough for cargo and can be transported to final destination without issues.
-
-The anomaly detection setup mirrors previous types, employing textual input features including client details and sender/recipient information. Due to the high number of chassis types, the target variable is multi-class categorical, with each class representing a distinct chassis type.
-
 \sec Heating Temperature Anomaly
 The Heating Temperature anomaly relates closely to the previously described Heating Type anomaly but involves detecting irregularities or inconsistencies specifically in the numerical heating temperature fields of transport orders. Unlike heating type selection, heating temperature is inherently numerical or interval-based, though it can be approximated as categorical at the expense of valuable granularity.
 
@@ -126,3 +68,63 @@ Another specificity of this anomaly type is that instead of one target variable 
 From a business perspective, anomalies in heating temperature carry risks similar to those associated with incorrect heating type selection. Both can lead to product damage or spoilage due to improper thermal conditions. However, temperature-related issues are often harder to detect during loading or transport and may only become apparent upon unloading, increasing the likelihood of undelivered or unusable cargo and resulting in financial losses or customer penalties.
 
 Temperature can be modeled as a categorical variable, but doing so discards its inherent ordinality, treating a difference between 100~°C and 30~°C as equivalent to one between 65~°C and 60~°C. Alternatively, it can be treated as a continuous numerical variable, preserving the magnitude of differences but requiring careful handling of missing values and outliers.
+
+\sec Presence of Heating Request
+This anomaly addresses whether transport orders appropriately include or omit a heating request. It complements, yet remains distinct from, the "Heating Type" anomaly described previously. While the "Heating Type" anomaly focuses on selecting the correct heating method when a request is made, this anomaly specifically targets cases where heating is mistakenly excluded from or incorrectly included in an order.
+
+The distinction is crucial for two primary reasons:
+\begitems
+* {\bf Operationally Distinct Scenarios:}
+Forgetting a heating request entirely differs fundamentally from selecting an inappropriate heating type. The former suggests oversight in recognizing temperature-sensitive goods, whereas the latter indicates confusion or misclassification of appropriate heating requirements.
+
+* {\bf Improved Model Evaluation:}
+By separating the detection of heating presence from heating type correctness, models can be individually assessed for each task. Combining these anomalies into a single model might bias predictions toward simply determining the necessity of heating, overshadowing subtler distinctions about heating type accuracy.
+\enditems
+
+In practical terms, the business implications are significant. Similarly to Heating Type anomaly, an overlooked heating request can render sensitive goods unusable, leading to financial losses, operational disruptions, and decreased customer satisfaction. Conversely, unnecessary heating requests generate avoidable costs. Although this issue seems highly unlikely as that would require accidentally filing additional forms.
+
+The technical formulation of this anomaly detection task also closely resembles the Heating Type anomaly. We utilize identical input features, specifically client, sender, and recipient information but optionaly also goods' description and HS code or even container type. All of which are textual (code/type is probably closer to categorical but it can be treated as text without issues) and require vectorization (e.g., label encoding or text embeddings). The target variable is binary, with categories defined as follows. 1 - Heating request present, 0 - No heating request present
+
+\sec Presence of the BHT / ZAPP / TCC number
+In the context of international freight forwarding, specific customs and port clearance identifiers are essential to ensure the seamless movement of goods through various European ports. Among these, BHT (Bremer Hafentelematik), ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port), and TCC (Terminal Customs Code) play pivotal roles in the export processes of ports like Bremerhaven, Hamburg, and Koper/Trieste, respectively.
+
+The absence of these critical identifiers in transport orders can lead to significant operational disruptions. Without the appropriate BHT, ZAPP, or TCC numbers, shipments may be held at ports, incurring storage fees, delaying delivery schedules, and potentially breaching contractual obligations with clients. Such delays can result in financial penalties, increased operational costs, and damage to the company's reputation. In some cases, the financial impact of these delays can amount to approximately €4,000 per incident.
+
+\begitems
+* BHT (Bremer Hafentelematik): This system facilitates electronic export declarations for shipments departing from the ports of Bremen and Bremerhaven. It ensures that all necessary customs information is accurately communicated to the relevant authorities, streamlining the export process. 
+
+* ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port): Implemented in the Port of Hamburg, ZAPP is an electronic platform that manages export customs clearance. It allows for the digital submission and monitoring of export declarations, ensuring compliance with customs regulations and expediting the release of goods. 
+
+* TCC (Terminal Customs Code): Utilized in ports such as Koper and Trieste, the TCC is a unique identifier required for customs clearance processes. It ensures that shipments are properly documented and authorized for export, preventing potential delays or rejections at the terminal. 
+\enditems
+
+The anomaly detection task specifically involves identifying transport orders that require, but lack, the appropriate BHT, ZAPP, or TCC identifiers. Detecting the inverse scenario, where an order unnecessarily includes a BHT, ZAPP, or TCC number, was not prioritized by Metrans. This decision reflects the practical reality that the risk of overlooking a required customs identifier is significantly higher than mistakenly completing the additional paperwork and procedures associated with obtaining these identifiers for transport orders not bound for ports or customs clearance.
+
+The features utilized in this model include:
+\begitems \style o
+
+* Client information: Details about the ordering party, which may influence the necessity of specific customs identifiers.
+
+* Sender and Recipient Details: Information about the origin and destination of the shipment.
+
+* Port information: Name of the port, which usually implies the type of number or, if it is necessary at all. The model with and without this additional information will be tried. As it seems likely that one would miss both port and creating a port-related identifier number.
+\enditems
+
+All features are primarily textual and are processed using techniques such as label encoding or text vectorization to make them suitable for machine learning models. The target variable is binary. 1 - The transport order includes a BHT/ZAPP/TCC number. 0 - The transport does not have a BHT/ZAPP/TCC number.
+
+\sec Presence of Additional Billing Reference
+Some transport orders at Metrans require an additional billing reference provided by clients, typically used for internal accounting, project cost tracking, or expense allocation. Detecting anomalies related to the inclusion or omission of this reference helps prevent:
+\begitems
+* Administrative Delays: Additional manual effort to rectify or clarify billing information.
+
+* Accounting Disruptions: Errors or delays in invoicing and financial reconciliation processes.
+\enditems
+
+The technical definition is similar to BHT/ZAPP/TCC number. Both unnecessary inclusion and erroneous omission are relevant and need detection. But detecting omission is more critical. The anomaly detection task involves predicting the correct presence or absence of this billing reference using textual features, specifically client information and sender/recipient details. The target variable is binary. 1 - Billing reference is provided. 0 - Billing reference is not provided.
+
+\sec Chassis Type Anomaly
+The Chassis Type anomaly involves detecting inconsistencies in the selection of chassis types used for transporting containers. Similar to the Heating Type anomaly, this task focuses on identifying unusually chosen chassis type given specific transport order. The primary distinction lies in the significantly larger number of chassis classes, increasing both complexity and the potential for misclassification.
+
+From a business perspective, selecting an incorrect chassis can lead to similar issues as selecting incorrect heating type. But the costs may not be as severe. If the container is big enough for cargo and can be transported to final destination without issues.
+
+The anomaly detection setup mirrors previous types, employing textual input features including client details and sender/recipient information. Due to the high number of chassis types, the target variable is multi-class categorical, with each class representing a distinct chassis type.

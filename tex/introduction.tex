@@ -1,20 +1,16 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
 \chap Introduction
-\rfc{After finsihsing the thesis chagnge this introduction to more reflect the structure}
-In this chapter, the problem we are trying to solve is described. For further context, there is also a description of Metrans. The company that provides us with the data and the task they want us to solve. 
+\rfc{After finsishing the thesis change this introduction to more reflect the structure}
+\rfc{Přidat odkazy na kapitoly}
+Metrans is a Central European intermodal logistics company specializing in rail and containerized freight transport. Operating across a dense network of terminals, it processes thousands of transport orders every day. Each order encodes operational constraints—cargo type, route, required chassis, heating needs—and must conform to strict business logic. Mistakes in order creation, even when seemingly minor, can lead to costly downstream failures: wrong capacity containers, customs delays, or temperature-damaged cargo. As the system scales, manual oversight is no longer sufficient. This creates a natural demand for automated anomaly detection that can identify irregular orders before execution.
 
-\sec The task ahead
-Monitoring sales representatives for errors, particularly in repeated orders, with the primary goal of preventing major issues (e.g., incorrect heating types, etc.).
-The task involves identifying incorrectly entered orders based on credit notes and changes in CMR.
-TOHLE CELÉ PŘEDĚLAT, CMR SICE JE RELEVANTNÍ PRO METRANS. ALE NE PRO TENHLE PROBLÉM
-\rfc{TOHLE CELÉ PŘEDĚLAT, CMR SICE JE RELEVANTNÍ PRO METRANS. ALE NE PRO TENHLE PROBLÉM}
-A CMR is a document that serves as a transport contract and receipt for goods, outlining details like the origin, destination, and description of the cargo, along with the terms of transportation. It is used to ensure legal clarity and facilitate cross-border transportation of goods in countries that are signatories to the CMR convention.
+The objective of this thesis is to develop such a detection framework for Metrans. We propose a combination of statistical and machine learning methods, with emphasis on interpretable results and real-time applicability. The final output is not just an analysis, but a deployable software component that integrates into Metrans’ order pipeline through CodeNOW.
 
-\sec What is Metrans and what they do
-METRANS is a leading logistics and transportation company based in Central Europe, specializing in intermodal transport solutions that combine rail, road, and sea freight. It operates a comprehensive network of terminals and transportation routes, offering containerized logistics services that include container handling, freight forwarding, and supply chain management.
+Chapter 2 reviews existing approaches to anomaly detection, covering statistical models, clustering algorithms, and tree-based methods such as Isolation Forests. This chapter provides the theoretical foundation for subsequent chapters. Chapter 3 focuses on the problem in the operational context of Metrans. It presents exploratory data analysis, defines six concrete anomaly types (such as incorrect heating configuration or chassis misclassification), and formalizes the features and labels used in later modeling.
 
+Chapter 4 synthesizes the previous two. It selects two ensemble strategies (Confidence-Based Anomaly Detection and Misclassification Detection) and also proposes a novel statistical method: Frequency-Based Outlier Detection with Back-Off Smoothing. This hybrid structure balances general-purpose detection with domain-specific priors. Chapter 5 shifts focus to implementation. It describes the technical stack (scikit-learn, MLflow, FastAPI) and details the construction of processing pipelines and synthetic data generators used to simulate rare anomalies.
 
-TOHLE CELÉ PŘEDĚLAT, TOHLE JSOU BLBOSTI - MINIMÁLNĚ PRVNÍ VĚTA
-\rfc{TOHLE CELÉ PŘEDĚLAT, TOHLE JSOU BLBOSTI - MINIMÁLNĚ PRVNÍ VĚTA}
-As part of the ČD Cargo Group, METRANS is known for its commitment to sustainability, offering eco-friendly transport solutions that reduce environmental impact. The company provides reliable and cost-effective services for both domestic and international shipments, with a strong emphasis on efficiency and customer satisfaction. METRANS plays a crucial role in improving the flow of goods across Europe, connecting key transport hubs and facilitating the smooth movement of freight across the continent.
+Chapter 6 evaluates model performance using metrics such as precision, recall, F1 score, and ROC-AUC. The results are stratified by type of anomaly, revealing the strengths and trade-offs of each method. Chapter 7 describes the deployment of a live anomaly detection service. It outlines how the system loads the best performing models, processes live order data from message queues, and issues alerts for human review. Finally, Chapter 8 concludes with a discussion of the results, limitations, and suggestions for future work.
+
+This structure reflects the dual aim of the thesis: to apply (or even advance) methodological understanding of anomaly detection in structured logistics data and to deliver a functioning system ready for real-world deployment.
