@@ -3,17 +3,17 @@
 \chap Methods for Anomaly Detection
 \rfc{This chapter (Theorethical background and approaches) should probably be revised. Maybe moved after anomaly and stated which models to use based on our data or keep it here and more thereical/general? But I do not like the writing style very much.}
 \sec Anomaly Detection
-Anomaly detection, also referred to as outlier detection, is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing.
+Anomaly detection, also referred to as outlier detection, is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing. \cite[chandola2009]
 
 
 \secc Unsupervised Anomaly Detection
-Unsupervised anomaly detection is particularly relevant in cases where labeled data (i.e., explicit examples of anomalous and normal instances) is unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.
+Unsupervised anomaly detection is particularly relevant in cases where labeled data (that is, explicit examples of anomalous and normal instances) are unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.
 
 This method is especially suited for scenarios where only examples of normal behavior are available. By leveraging techniques such as clustering, reconstruction errors, distance measures, or density estimation, unsupervised anomaly detection provides a robust framework for identifying unexpected patterns without relying on prior knowledge of what constitutes an anomaly.
 
 \sec Statistical Approaches to Anomaly Detection
 
-Statistical methods for anomaly detection rely on the assumption that the data follows a specific distribution or statistical model. Anomalies are identified as points that deviate significantly from this assumed distribution or exhibit rare or improbable characteristics. These methods are particularly effective when the underlying data structure is well understood and the anomalies are clearly distinguishable from normal variation.
+Statistical methods for anomaly detection are based on the assumption that the data follow a specific distribution or statistical model. Anomalies are identified as points that deviate significantly from this assumed distribution or exhibit rare or improbable characteristics. These methods are particularly effective when the underlying data structure is well understood and the anomalies are clearly distinguishable from normal variation.
 
 \secc Parametric Approaches
 These methods assume that the data conforms to a known probability distribution, such as Gaussian or Poisson. Key techniques include:
@@ -23,7 +23,7 @@ These methods assume that the data conforms to a known probability distribution,
 Measures how far a data point is from the mean in terms of standard deviations. Points with high absolute z-scores (e.g., >3) are flagged as anomalies.
 
 
-Effective for continuous, normally distributed data.
+Effective for continuous, normally distributed data. \cite[outlierSurvey]
 
 * {\bf Probability Density Estimation (PDE):}\nl
 Anomalies are identified as points with very low likelihood under the fitted distribution (e.g., using maximum likelihood estimation).
@@ -89,7 +89,7 @@ Statistical methods are foundational in anomaly detection and are often used as 
 
 \sec Clustering-Based Approaches to Anomaly Detection
 
-Clustering-based anomaly detection methods group data points into clusters based on their similarity and identify anomalies as points that do not belong to any cluster or are significantly far from cluster centroids. These methods are unsupervised, making them suitable for scenarios where no labeled data is available.
+Clustering-based anomaly detection methods group data points into clusters based on their similarity and identify anomalies as points that do not belong to any cluster or are significantly far from cluster centroids. These methods are unsupervised, making them suitable for scenarios where no labeled data is available. \cite[dataClustering]
 
 \secc Core Principles
 Cluster Membership:
@@ -208,7 +208,7 @@ Clustering-based methods are widely used in anomaly detection and are often comb
 Tree-based methods leverage the structure of decision trees to isolate anomalies based on their distinct characteristics. These techniques are particularly suited for unsupervised anomaly detection, as they do not rely on labeled data and work well with mixed data types.
 
 \secc Isolation Forest
-Isolation Forest ({\em iForest}) is explicitly designed for anomaly detection. It operates on the principle that anomalies are easier to isolate than normal points because they are rare and distinct.
+Isolation Forest ({\em iForest}) is explicitly designed for anomaly detection. It operates on the principle that anomalies are easier to isolate than normal points because they are rare and distinct. \cite[isoForest]
 \nl
 {\em Description of the core algorithm}
 \begitems
@@ -268,7 +268,16 @@ Limitations
 * Requires careful interpretation of output anomaly scores
 \enditems
 
-\secc Overview 
+\sec Deep-learning-based methods
+Deep learning (DL) has rapidly enriched the anomaly-detection toolbox by replacing hand-crafted representations with features learned automatically from raw data, often yielding large accuracy gains on images, audio and high-dimensional sensor streams. Unlike classic statistical or tree-based methods that work directly in the original space, modern DL detectors embed inputs into a non-linear manifold where “normality” is easier to model and deviations stand out. \cite[deeplearninganomalydetection]
+
+Deep learning methods offer several advantages for anomaly detection. They excel at capturing complex, non-linear relationships through learned representations, often outperforming traditional models on high-dimensional or unstructured data such as images, time series, or system logs. These models reduce the need for manual feature engineering and scale well with increasing data volume. Furthermore, they are well-suited for multimodal inputs, enabling integration of textual, visual, and numerical data into unified detectors. \cite[huang2025deeplearningadvancementsanomaly]
+
+However, their limitations are significant. Deep models require large, clean datasets and are sensitive to contamination. Training and inference are computationally demanding, and their latency is typically higher than classical methods. Moreover, interpretability remains limited despite recent efforts using explainability tools, which poses challenges in regulated or operationally critical settings. On small to medium-sized tabular data, traditional methods like Isolation Forest or HBOS frequently outperform deep models in both accuracy and efficiency.  \cite[DL-worth-it]  Hyperparameter tuning and overfitting also remain practical concerns. \cite[huang2025deeplearningadvancementsanomaly]
+
+Deep learning is most appropriate for image-based tasks, high-frequency multivariate time series, unstructured logs, and graph-structured data. In contrast, for structured, tabular datasets, such as those used in this thesis, classical models remain more suitable due to their lower complexity, higher interpretability, and comparable or superior performance.
+
+\sec Overview 
 Tree-based methods are particularly valuable when interpretability and computational efficiency are critical. Isolation Forest, in particular, is a strong baseline for anomaly detection in many scenarios.
 \nl
-\cite[aima]\cite[anomaly]
+\cite[aima, outlierSurvey]

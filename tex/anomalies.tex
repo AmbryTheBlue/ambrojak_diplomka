@@ -1,7 +1,27 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
-\chap Data Analysis and Introduction to Anomaly Types
-This chapter presents a structured exposition of the anomaly categories that are most consequential for Metrans’ operations. For each anomaly, the discussion begins with a business-oriented rationale, detailing the operational disruptions and financial liabilities that arise when the anomaly goes undetected.
+\chap Data Analysis and Real life interpretation
+
+\sec Concept and Role of Intermodal Transport
+Intermodal freight transport is the seamless door-to-door movement of a laden unit load (ISO container, swap-body, trailer) that is transferred between at least two modes of carriage without handling the cargo itself.\cite[intermodalTransport]
+
+By exploiting the long-haul energy efficiency of rail or barge and the first/last-mile elasticity of road, intermodalism lowers unit-costs, mitigates road congestion and reduces carbon emissions relative to unimodal trucking.\cite[intermodalTransportOverview]
+
+Critical to its performance are purpose-built terminals that minimise transhipment time and information systems that guarantee unit traceability across modes. These attributes align with European policy goals to shift freight from road to rail for distances above 300 km while maintaining just-in-time reliability. \cite[intermodalTransport, intermodalTransportOverview]
+
+\nl
+Within this paradigm, Metrans functions as an integrated intermodal operator: it controls the rail leg, owns/leases the terminals, arranges last-mile trucking, and issues a single through bill of lading. Such vertical integration reduces coordination failures often observed in segmented supply chains and enables real-time optimisation of wagon cycles, train paths, and terminal slots. \cite[hhlaIntermodalLogistics]
+
+\sec Corporate and Network Context of Metrans
+Metrans is a wholly-owned rail-intermodal subsidiary of HHLA, the Hamburg-based logistics group that also runs seaport terminals in Hamburg, Tallinn, Trieste and Odessa.\cite[hhlaPowerNetworks]
+Established in 1991 and fully integrated into HHLA in 1999, the company now operates 20 inland rail terminals—seven designated hub facilities and thirteen satellite depots—distributed across the Czech Republic, Slovakia, Hungary, Austria, Germany, Poland, Romania and Serbia.\cite[metransTerminal]
+
+From these nodes Metrans dispatches approximately 650 block-train services each week, linking the North-Sea gateways of Hamburg, Bremerhaven, and Rotterdam with the Adriatic ports of Koper, Rijeka and Trieste, as well as Baltic and Black-Sea outlets.\cite[metransIntermodal]
+The service is powered by an in-house traction fleet of ≈ 140 multi-system locomotives and ≈ 4 000 container wagons, enabling high-frequency, cross-border operations under a single safety and quality regime.\cite[metransTerminal]
+Terminal handling capacity exceeds 2 million m² and is equipped with rail-mounted gantry cranes, reach-stackers and automated gate systems to ensure quick truck turn-rounds at peak. \cite[hhlaIntermodalLogistics, hhlaIntermodalTransport, metransTerminal]
+ 
+\sec Anomaly Types
+This section presents a structured exposition of the anomaly categories that were determined to be the most consequential for Metrans’ operations. For each anomaly, the discussion begins with a business-oriented rationale, detailing the operational disruptions and financial liabilities that arise when the anomaly goes undetected.
 
 This is followed by a concise technical synopsis that specifies the essential feature set, drawn mainly from textual attributes describing the client, sender, and recipient, supplemented where relevant by numerical indicators, and defines the target variable used in the detection models. The anomalies examined include misspecification of heating parameters (type, presence, and temperature), omission of required port or customs identifiers (BHT, ZAPP, and TCC), absence or superfluous inclusion of an additional billing reference, and selection of an inappropriate chassis type. \urlnote{https://metrans.eu/wp-content/uploads/2025/01/General25v2.pdf}
 
@@ -9,7 +29,7 @@ Collectively, these six anomaly classes encompass the majority of costly order-e
 
 \rfc{Možná by to chtělo přidat grafy distribucí už sem. Ale plánuji je dát do sekce results?}
  
-\sec Heating Type Anomaly
+\secc Heating Type Anomaly
 Metrans offers three primary heating methods for temperature-sensitive freight:
 \begitems \style X
  * Type 1 – Hot Water/Glycol Heating
@@ -39,12 +59,12 @@ To mitigate these risks, the anomaly detection model evaluates whether the selec
 \begitems
 * Client identity
 * Sender and recipient information
-* Goods code (HS code\fnote{HS code stands for Harmonized System code - a standardized numerical method of classifying traded products, developed and maintained by the World Customs Organization (WCO).}
+* Goods code (HS code)\fnote{HS code stands for Harmonized System code - a standardized numerical method of classifying traded products, developed and maintained by the World Customs Organization (WCO).})
 * Multilingual goods descriptions (CZ/DE/EN)
 \enditems
 Most features are textual or at least can be treated as text (e.g. HS Code). Therefore, some vectorization is necessary before using most standard ML methods (e.g. label encoding, Bag of Words, TF-IDF, or embeddings). The target variable is a 3-class categorical feature corresponding to the heating type.
 
-\sec Heating Temperature Anomaly
+\secc Heating Temperature Anomaly
 The Heating Temperature anomaly relates closely to the previously described Heating Type anomaly but involves detecting irregularities or inconsistencies specifically in the numerical heating temperature fields of transport orders. Unlike heating type selection, heating temperature is inherently numerical or interval-based, though it can be approximated as categorical at the expense of valuable granularity.
 
 A significant complexity arises from numerous missing ("None") values. These omissions can occur due to several reasons:
@@ -69,7 +89,7 @@ From a business perspective, anomalies in heating temperature carry risks simila
 
 Temperature can be modeled as a categorical variable, but doing so discards its inherent ordinality, treating a difference between 100~°C and 30~°C as equivalent to one between 65~°C and 60~°C. Alternatively, it can be treated as a continuous numerical variable, preserving the magnitude of differences but requiring careful handling of missing values and outliers.
 
-\sec Presence of Heating Request
+\secc Presence of Heating Request
 This anomaly addresses whether transport orders appropriately include or omit a heating request. It complements, yet remains distinct from, the "Heating Type" anomaly described previously. While the "Heating Type" anomaly focuses on selecting the correct heating method when a request is made, this anomaly specifically targets cases where heating is mistakenly excluded from or incorrectly included in an order.
 
 The distinction is crucial for two primary reasons:
@@ -85,7 +105,7 @@ In practical terms, the business implications are significant. Similarly to Heat
 
 The technical formulation of this anomaly detection task also closely resembles the Heating Type anomaly. We utilize identical input features, specifically client, sender, and recipient information but optionaly also goods' description and HS code or even container type. All of which are textual (code/type is probably closer to categorical but it can be treated as text without issues) and require vectorization (e.g., label encoding or text embeddings). The target variable is binary, with categories defined as follows. 1 - Heating request present, 0 - No heating request present
 
-\sec Presence of the BHT / ZAPP / TCC number
+\secc Presence of the BHT/ZAPP/TCC number
 In the context of international freight forwarding, specific customs and port clearance identifiers are essential to ensure the seamless movement of goods through various European ports. Among these, BHT (Bremer Hafentelematik), ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port), and TCC (Terminal Customs Code) play pivotal roles in the export processes of ports like Bremerhaven, Hamburg, and Koper/Trieste, respectively.
 
 The absence of these critical identifiers in transport orders can lead to significant operational disruptions. Without the appropriate BHT, ZAPP, or TCC numbers, shipments may be held at ports, incurring storage fees, delaying delivery schedules, and potentially breaching contractual obligations with clients. Such delays can result in financial penalties, increased operational costs, and damage to the company's reputation. In some cases, the financial impact of these delays can amount to approximately €4,000 per incident.
@@ -112,7 +132,7 @@ The features utilized in this model include:
 
 All features are primarily textual and are processed using techniques such as label encoding or text vectorization to make them suitable for machine learning models. The target variable is binary. 1 - The transport order includes a BHT/ZAPP/TCC number. 0 - The transport does not have a BHT/ZAPP/TCC number.
 
-\sec Presence of Additional Billing Reference
+\secc Presence of Additional Billing Reference
 Some transport orders at Metrans require an additional billing reference provided by clients, typically used for internal accounting, project cost tracking, or expense allocation. Detecting anomalies related to the inclusion or omission of this reference helps prevent:
 \begitems
 * Administrative Delays: Additional manual effort to rectify or clarify billing information.

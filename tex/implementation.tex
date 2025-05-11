@@ -1,0 +1,41 @@
+% !TEX program = optex
+% !TEX root = ambrojak-thesis-masters.tex
+\chap Implementation and System Architecture
+\sec Technical stack used
+\rfc{At least add some links to official website/documentation}
+
+\secc Python, Jupyter, scikit-learn, Keras
+Unexpectadly Python was selected as our programming language of choice. The reasons for this are quick development, flexibility, and that it has many ready-to-use machine learning libraries. For example scikit-learn is an ``open source, commercially usable machine learning library built on NumPy, SciPy, and matplotlib.\urlnote{https://scikit-learn.org/stable/index.html}
+
+Another library we have used is Keras that is very useful for Neural Networks.\urlnote{https://keras.io/} And for quick testing Jupyter Notebooks have been used. They were especailly usefull in combination with JupyerHub that allowed me to work on the servers with access to data and I did not have to download them manually. \urlnote{https://jupyter.org/hub}
+
+\secc MLflow
+MLflow is an open-source platform for managing the machine learning lifecycle, including experimentation, reproducibility, deployment, and monitoring. It provides tools for tracking experiments, packaging models, and managing model deployments across diverse frameworks and environments.
+
+With its modular design, MLflow supports collaboration and scalability, streamlining workflows for teams working on data-driven projects.
+
+\secc Git \& GitLab
+In this project, Git and GitLab are used for version control, branching, and  saving code to ``cloud'' and synchronization. A short description of them is provided here. \fnote{but if you are unaware of them, studying them is suggested over reading this piece.}
+
+{\bf Git} is a distributed version control system that tracks code changes, supports branching, and enables collaborative development with a decentralized structure, ensuring a full version history and offline work.\urlnote{https://git-scm.com/}
+
+{\bf GitLab} is a web-based platform built on Git that integrates version control, CI / CD, and project management. It supports collaboration, code reviews, and automation, making it ideal for DevOps and team workflow.\urlnote{https://about.gitlab.com/}
+
+\secc Docker
+\rfc{Přesun do komponenty, pokud ho nevyužívám v ML pipeline}
+Docker was chosen to avoid the ``It works on my machine'' issue.
+
+Docker is an open-source platform for developing, deploying, and managing containerized applications. Docker packages software and its dependencies into lightweight containers, ensuring consistent performance across different environments. The speed and size of containers is much better (faster, smaller) than complete Virtual Machines.
+
+By isolating applications, Docker enhances scalability, portability, and resource efficiency, making it a key tool for modern DevOps practices and cloud-native development.
+
+\sec My models and pipelines
+V téhle sekci bych chtěl přidat ukázky kódu, pipeline popřípadě nějaký diagram? Dává Smysl?
+Určitě bych taky někde měl zmínit preprocessing, vektorizaci textu (proč bag of words a nikoliv tf-idf)
+\rfc{V téhle sekci bych chtěl přidat ukázky kódu, pipeline popřípadě nějaký diagram? Dává Smysl?}
+
+\secc Synthetic anomaly generators
+
+\secc Preprocessing
+
+\secc Pipeline

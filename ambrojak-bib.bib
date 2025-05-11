@@ -1,15 +1,4 @@
-@BOOK{aima,
-  title     = "Artificial intelligence",
-  author    = "Russell, Stuart and Norvig, Peter",
-  publisher = "Pearson",
-  edition   =  4,
-  month     =  nov,
-  year      =  2020,
-  address   = "Upper Saddle River, NJ",
-  language  = "en"
-}
-
-@article{anomaly,
+@article{chandola2009,
 author = {Chandola, Varun and Banerjee, Arindam and Kumar, Vipin},
 title = {Anomaly detection: A survey},
 year = {2009},
@@ -21,7 +10,6 @@ number = {3},
 issn = {0360-0300},
 url = {https://doi.org/10.1145/1541880.1541882},
 doi = {10.1145/1541880.1541882},
-abstract = {Anomaly detection is an important problem that has been researched within diverse research areas and application domains. Many anomaly detection techniques have been specifically developed for certain application domains, while others are more generic. This survey tries to provide a structured and comprehensive overview of the research on anomaly detection. We have grouped existing techniques into different categories based on the underlying approach adopted by each technique. For each category we have identified key assumptions, which are used by the techniques to differentiate between normal and anomalous behavior. When applying a given technique to a particular domain, these assumptions can be used as guidelines to assess the effectiveness of the technique in that domain. For each category, we provide a basic anomaly detection technique, and then show how the different existing techniques in that category are variants of the basic technique. This template provides an easier and more succinct understanding of the techniques belonging to each category. Further, for each category, we identify the advantages and disadvantages of the techniques in that category. We also provide a discussion on the computational complexity of the techniques since it is an important issue in real application domains. We hope that this survey will provide a better understanding of the different directions in which research has been done on this topic, and how techniques developed in one area can be applied in domains for which they were not intended to begin with.},
 journal = {ACM Comput. Surv.},
 month = jul,
 articleno = {15},
@@ -29,18 +17,240 @@ numpages = {58},
 keywords = {Anomaly detection, outlier detection}
 }
 
+@article{outlierSurvey,
+author = {Domingues, Rmi and Filippone, Maurizio and Michiardi, Pietro and Zouaoui, Jihane},
+title = {A comparative evaluation of outlier detection algorithms},
+year = {2018},
+issue_date = {February 2018},
+publisher = {Elsevier Science Inc.},
+address = {USA},
+volume = {74},
+number = {C},
+issn = {0031-3203},
+url = {https://doi.org/10.1016/j.patcog.2017.09.037},
+doi = {10.1016/j.patcog.2017.09.037},
+abstract = {Experimental comparison and analysis of unsupervised outlier detection techniques.Based on ROC, precision-recall, computation time, memory usage and robustness.Extend a nonparametric Bayesian method to model numerical and categorical features.Experiments make use of novel industrial datasets and assess generalization abilities. We survey unsupervised machine learning algorithms in the context of outlier detection. This task challenges state-of-the-art methods from a variety of research fields to applications including fraud detection, intrusion detection, medical diagnoses and data cleaning. The selected methods are benchmarked on publicly available datasets and novel industrial datasets. Each method is then submitted to extensive scalability, memory consumption and robustness tests in order to build a full overview of the algorithms characteristics.},
+journal = {Pattern Recogn.},
+month = feb,
+pages = {406–421},
+numpages = {16},
+keywords = {Variational inference, Outlier detection, Novelty detection, Isolation forest, Fraud detection}
+}
+@INPROCEEDINGS{isoForest,
+  author={Liu, Fei Tony and Ting, Kai Ming and Zhou, Zhi-Hua},
+  booktitle={2008 Eighth IEEE International Conference on Data Mining}, 
+  title={Isolation Forest}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={413-422},
+  keywords={Application software;Credit cards;Detectors;Constraint optimization;Data mining;Information technology;Laboratories;Isolation technology;Performance evaluation;Astronomy;anomaly detection;outlier detection;novelty detection;isolation forest;binary trees;model based},
+  doi={10.1109/ICDM.2008.17}}
+
+@misc{deeplearninganomalydetection,
+      title={Deep Learning for Anomaly Detection: A Survey}, 
+      author={Raghavendra Chalapathy and Sanjay Chawla},
+      year={2019},
+      eprint={1901.03407},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1901.03407}, 
+}
+
+@book{dataClustering,
+author = {Gan, Guojun and Ma, Chaoqun and Wu, Jianhong},
+title = {Data Clustering: Theory, Algorithms, and Applications},
+publisher = {Society for Industrial and Applied Mathematics},
+year = {2007},
+doi = {10.1137/1.9780898718348},
+address = {},
+edition   = {},
+URL = {https://epubs.siam.org/doi/abs/10.1137/1.9780898718348},
+eprint = {https://epubs.siam.org/doi/pdf/10.1137/1.9780898718348}
+}
+
+@ARTICLE{katzBackoff,
+  author={Katz, S.},
+  journal={IEEE Transactions on Acoustics, Speech, and Signal Processing}, 
+  title={Estimation of probabilities from sparse data for the language model component of a speech recognizer}, 
+  year={1987},
+  volume={35},
+  number={3},
+  pages={400-401},
+  abstract={The description of a novel type of m-gram language model is given. The model offers, via a nonlinear recursive procedure, a computation and space efficient solution to the problem of estimating probabilities from sparse data. This solution compares favorably to other proposed methods. While the method has been developed for and successfully implemented in the IBM Real Time Speech Recognizers, its generality makes it applicable in other areas where the problem of estimating probabilities from sparse data arises.},
+  keywords={Natural languages;Speech recognition;Recursive estimation;Maximum likelihood estimation;Probability;Statistics;Speech processing;Acoustic signal processing},
+  doi={10.1109/TASSP.1987.1165125},
+  ISSN={0096-3518},
+  month={March},}
+
+@inproceedings{chen-goodman-1996-empirical,
+    title = "An Empirical Study of Smoothing Techniques for Language Modeling",
+    author = "Chen, Stanley F.  and
+      Goodman, Joshua",
+    booktitle = "34th Annual Meeting of the Association for Computational Linguistics",
+    month = jun,
+    year = "1996",
+    address = "Santa Cruz, California, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P96-1041/",
+    doi = "10.3115/981863.981904",
+    pages = "310--318"
+}
+
+@misc{huang2025deeplearningadvancementsanomaly,
+      title={Deep Learning Advancements in Anomaly Detection: A Comprehensive Survey}, 
+      author={Haoqi Huang and Ping Wang and Jianhua Pei and Jiacheng Wang and Shahen Alexanian and Dusit Niyato},
+      year={2025},
+      eprint={2503.13195},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2503.13195}, 
+}
+
+@Article{DL-worth-it,
+AUTHOR = {Rewicki, Ferdinand and Denzler, Joachim and Niebling, Julia},
+TITLE = {Is It Worth It? Comparing Six Deep and Classical Methods for Unsupervised Anomaly Detection in Time Series},
+JOURNAL = {Applied Sciences},
+VOLUME = {13},
+YEAR = {2023},
+NUMBER = {3},
+ARTICLE-NUMBER = {1778},
+URL = {https://www.mdpi.com/2076-3417/13/3/1778},
+ISSN = {2076-3417},
+ABSTRACT = {Detecting anomalies in time series data is important in a variety of fields, including system monitoring, healthcare and cybersecurity. While the abundance of available methods makes it difficult to choose the most appropriate method for a given application, each method has its strengths in detecting certain types of anomalies. In this study, we compare six unsupervised anomaly detection methods of varying complexity to determine whether more complex methods generally perform better and if certain methods are better suited to certain types of anomalies. We evaluated the methods using the UCR anomaly archive, a recent benchmark dataset for anomaly detection. We analyzed the results on a dataset and anomaly-type level after adjusting the necessary hyperparameters for each method. Additionally, we assessed the ability of each method to incorporate prior knowledge about anomalies and examined the differences between point-wise and sequence-wise features. Our experiments show that classical machine learning methods generally outperform deep learning methods across a range of anomaly types.},
+DOI = {10.3390/app13031778}
+}
+
+@misc{hendrycks2018baseline,
+      title={A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks}, 
+      author={Dan Hendrycks and Kevin Gimpel},
+      year={2018},
+      eprint={1610.02136},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE},
+      url={https://arxiv.org/abs/1610.02136}, 
+}
+
+@inproceedings{HBOS,
+author = {Goldstein, Markus and Dengel, Andreas},
+year = {2012},
+month = {09},
+pages = {},
+title = {Histogram-based Outlier Score (HBOS): A fast Unsupervised Anomaly Detection Algorithm}
+}
+
+@BOOK{aima,
+    title = {Artificial intelligence},
+    author    = {Russell, Stuart and Norvig, Peter},
+ publisher  =  {Pearson},
+  edition   =  {4},
+  month     =  {nov},
+  year      =  {2020},
+  address   = {Upper Saddle River, NJ},
+  language  = {en}
+}
+
 @misc{hhlaIntermodalTransport,
-	author = {},
+	author = {HHLA},
 	title = {{I}ntermodal {T}ransport - {H}{H}{L}{A} --- hhla.de},
-	howpublished = {\url{https://hhla.de/en/company/subsidiaries/intermodal-transport}},
+	URL = {https://hhla.de/en/company/subsidiaries/intermodal-transport},
+	year = {},
+	note = {[Accessed 10-05-2025]},
+}
+@misc{hhlaIntermodalLogistics,
+	author = {HHLA},
+	title = {{I}ntermodal {L}ogistics - {H}{H}{L}{A} --- hhla.de},
+	URL = {https://hhla.de/en/the-power-of-networks/intermodal-logistics},
 	year = {},
 	note = {[Accessed 10-05-2025]},
 }
 
-@misc{hhlaIntermodalLogistics,
-	author = {},
-	title = {{I}ntermodal {L}ogistics - {H}{H}{L}{A} --- hhla.de},
-	howpublished = {\url{https://hhla.de/en/the-power-of-networks/intermodal-logistics}},
+@misc{hhlaPowerNetworks,
+	author = {HHLA},
+	title = {{T}he {P}ower of {N}etworks - {H}{H}{L}{A} --- hhla.de},
+	URL = {https://hhla.de/en/the-power-of-networks},
 	year = {},
-	note = {[Accessed 10-05-2025]},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{metransTerminal,
+	author = {METRANS},
+	title = {{M}{E}{T}{R}{A}{N}{S} {T}erminal \& {D}epot {S}olutions; {M}{E}{T}{R}{A}{N}{S} --- metrans.eu},
+	URL = {https://metrans.eu/solutions/metrans-terminal-deport-solutions/},
+	year = {2013},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{metransIntermodal,
+	author = {METRANS},
+	title = {{M}{E}{T}{R}{A}{N}{S} {I}ntermodal {S}olutions; {M}{E}{T}{R}{A}{N}{S} --- metrans.eu},
+	URL = {https://metrans.eu/solutions/metrans-intermodal-solutions/},
+	year = {2013},
+	note = {[Accessed 11-05-2025]},
+}
+@article{intermodalTransportOverview,
+author = {Bektas, Tolga and Crainic, Teodor Gabriel},
+year = {2007},
+month = {02},
+pages = {28-1},
+title = {Brief Overview of Intermodal Transportation},
+isbn = {9780849330537},
+doi = {10.1201/9780849330537.ch28},
+journal={Logistics Engineering Handbook}
+}
+@article{intermodalTransport,
+author = {Crainic, Teodor Gabriel and Kim, K.H.},
+year = {2006},
+month = {01},
+pages = {467-537},
+title = {Intermodal Transportation},
+volume = {14},
+journal = {Transportation}
+}
+@misc{codenowReleaseNotes,
+	author = {CodeNOW Blog},
+	title = {{R}elease {N}otes {C}ode{N}{O}{W} 6.14 – {S}eptember 2022 --- codenow.org},
+	URL = {https://www.codenow.org/blog/release-notes-codenow-6-14-september-2022},
+	year = {},
+	note = {[Accessed 11-05-2025]},
+}
+@misc{WhyCodeNOW,
+	author = {CodeNOW Docs},
+	title = {{W}hy {C}ode{N}{O}{W} | {C}ode{N}{O}{W} {D}ocumentation --- docs.codenow.com},
+	URL = {https://docs.codenow.com/why-codenow},
+	year = {},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{WhatCodeNOW,
+	author = {CodeNOW Docs},
+	title = {{W}hat is {C}ode{N}{O}{W} | {C}ode{N}{O}{W} {D}ocumentation --- docs.codenow.com},
+	URL = {https://docs.codenow.com/what-is-codenow},
+	year = {},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{MessageQueue,
+	author = {Keerthi Rangan},
+	title = {{W}hat {I}s a {M}essage {Q}ueue? {H}ow to {U}se {I}t in {D}istributed {S}ystems},
+	URL = {https://www.g2.com/articles/message-queue-mq},
+	year = {2024},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{RabbitMQ,
+	author = {RabbitMQ},
+	title = {{R}abbit{M}{Q}: {O}ne broker to queue them all | {R}abbit{M}{Q} --- rabbitmq.com},
+	URL = {https://www.rabbitmq.com/},
+	year = {},
+	note = {[Accessed 11-05-2025]},
+}
+
+@misc{mediumConfusionMatrix,
+	author = {Fabiola Uwashema},
+	title = {{C}onfusion matrix, {P}recision, {R}ecall, and {F}1 {S}core {P}erformance {M}etrics for log anomaly detection --- medium.com},
+	howpublished = {\url{https://medium.com/ibm-watson-aiops/confusion-matrix-precision-recall-and-f1-score-performance-metrics-for-log-anomaly-detection-1a187a17fca9}},
+	year = {2022},
+month = {Jan},
+	note = {[Accessed 11-05-2025]},
 }

@@ -1,10 +1,63 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
 
-\chap Results
+\chap Evaluation of Detection Models
+
+\sec Evaluation methods
+Modern anomaly detection systems borrow their performance metrics from binary classification theory: they compare the predictions of the model (or anomaly scores) with ground-truth labels and visualize the trade-offs that arise when a score threshold is moved. Below is a concise overview of the core tabular metrics—confusion matrix, precision, recall and F1—and the threshold-sweeping visualisations.
+
+\secc Confusion Matrix
+The confusion matrix is a 2×2 contingency table that enumerates these four outcomes and forms the basis for almost every downstream metric.\cite[mediumConfusionMatrix]
+
+\midinsert \clabel[confusionMatrixTable]{Confusion Matrix}
+\ctable{l|cc}{\hfil
+Actual/Prediction  & Predicted Positive & Predictive Negative \crli \tskip4pt
+Actual Positive & True Positive (TP) & False Negative (FN) \cr
+Actual Negative & False Positive (FP) & True Negative (TN) \cr
+}
+\caption/t Table explaining Confusion Matrix
+\endinsert
+
+\secc Precision
+Precision (Positive Predictive Value) quantifies the purity of the detected anomalies \cite[mediumConfusionMatrix]. It answers the question ``When detector predicts that the datum is positive (anomalous), how often is it right''
+
+$$\rm
+{Precision} = {TP \over TP + FP} \eqmark[precision]
+$$
+
+% $$
+% {Precision} = {TP \over TP + FP}
+% $$
+% $$\it
+% {Precision} = {TP \over TP + FP}
+% $$
+% $$\cal
+% {PRECISIONrecision} = {TP \over TP + FP}
+% $$
+% $$\mit
+% {Precision} = {TP \over TP + FP}
+% $$
+% $$\bf
+% {Precision} = {TP \over TP + FP}
+% $$
+
+\secc Recall
+Recall (Sensitivity, True-Positive Rate) measures completeness\cite[mediumConfusionMatrix]. It answers ``How many real anomalies did we catch?''
+$$\rm
+{Recall} = {TP \over TP + FN} \eqmark[recall]
+$$
+
+\secc F1 Score
+F1 score is the harmonic mean Precision \ref[precision] and Recall \ref[recall]. It gives a single number that penalises detectors that are skewed toward either high precision or toward high recall \cite[mediumConfusionMatrix].
+
+$$\rm
+{F1} = 2 \times { Precision \times Recall \over Precision + Recall} \eqmark
+$$
+
 \rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}
 \rfc{Pro ostatní anomálie aspoň nějaké overview}
 \rfc{Porovnání heating type a heating type se zbožím, popřípadě jiné anomálie, kde využíváme informace navíc.}
+
 \sec Heating Type
 First of lets look at the distribution.
 
@@ -15,7 +68,7 @@ First of lets look at the distribution.
 \medskip
 
 
-Second lets look at several our FBOD. To test their accuracy I have made artificial anomalies with wrong heating type.
+Second, let us look at several our FBOD. To test their accuracy I have made artificial anomalies with the wrong heating type.
 \medskip
 \clabel[matrix]{Confusion Matrix}
 \picw=15cm \cinspic imgs/Confusion-matrix.png
@@ -28,8 +81,8 @@ Second lets look at several our FBOD. To test their accuracy I have made artific
 \caption/f Typical metrics used for anomaly detection
 \medskip
 
-\secc Individual model can be further analysed
-For models that are using anomaly scoring a more advanced plots can be done. Here are examples on Random Forest classifier.
+\secc Individual model can be further analyzed.
+For models that are using anomaly scoring, a more advanced plot can be done. Here are examples on Random Forest classifier.
 
 \medskip
 \picw=15cm \cinspic imgs/rf-anomaly-scores.png

@@ -1,22 +1,39 @@
+% \glos {CTU} {Czech Technical University in Prague}
+% \glos {ČVUT} {České vysoké učení technické v Praze}
+% \glos {FEL} {Faculty of Electrical Engineering, CTU}
+% \glos {FEE} {Alternate abbreviation for Faculty of Electrical Engineering, CTU}
+
 \glos {BHT} {Bremer Hafentelematik — an electronic system used for managing export declarations and port clearance in the ports of Bremen and Bremerhaven}
 \glos {ZAPP} {Zoll-Ausfuhrüberwachung im Paperless Port — a customs export monitoring platform used in the Port of Hamburg for digital handling of export processes}
 \glos {TCC} {Terminal Customs Code — a unique code required for customs clearance at certain ports (e.g., Koper, Trieste), used to authorize container handling}
 \glos {HS Code} {Harmonized System code — an internationally standardized system of names and numbers used to classify traded products for customs and statistical purposes}
 \glos {HS} {See HS Code}
-\glos {CMR} {``Convention relative au contrat de transport international de marchandises par route'' — the official French title of the 1956 United Nations treaty governing international road freight transport. In English, it is known as the Convention on the Contract for the International Carriage of Goods by Road. he CMR waybill, issued under this convention, serves as a legally binding transport document outlining the rights and obligations of the sender, carrier, and recipient. It is widely used across Europe and other signatory countries to ensure uniformity and legal clarity in international road logistics}
-\glos {TEU}{TEU stands for twenty-foot equivalent unit, a general unit of cargo capacity for container ships and ports.}
+\glos {CMR} {``Convention relative au contrat de transport international de marchandises par route'' — the official French title of the 1956 United Nations treaty governing international road freight transport. In English, it is known as the Convention on the Contract for the International Carriage of Goods by Road. The CMR waybill, issued under this convention, serves as a legally binding transport document that outlines the rights and obligations of the sender, carrier, and recipient. It is widely used across Europe and other signatory countries to ensure uniformity and legal clarity in international road logistics}
+\glos {TEU}{Twenty-foot Equivalent Unit, a general unit of cargo capacity for container ships and ports.}
 
 \glos{MD}{Misclassification Detection – An anomaly detection approach that flags an observation as anomalous if the predicted class label differs from the observed one. Trained only on verified, non-anomalous data, it assumes label consistency across similar inputs.}
 
 \glos{FBOD}{Frequency-Based Outlier Detection – A method based on measuring how often a given categorical feature combination has appeared in historical data. Rare combinations are considered likely anomalies. Often enhanced using back-off smoothing to address data sparsity.}
 
-\glos{CBAD}{Confidence-Based Anomaly Detection – An anomaly is predicted if the classifier assigns low probability to the label present in the data. Typically uses softmax outputs and compares them against a threshold.}
+\glos{CBAD}{Confidence-Based Anomaly Detection – An anomaly is predicted if the classifier assigns a low probability to the label present in the data. Typically uses softmax outputs and compares them against a threshold.}
 
-\glos{MSP}{Maximum Softmax Probability – A baseline method for detecting out-of-distribution samples using the highest softmax confidence score. Low confidence suggests the input is atypical or erroneous.}
+\glos{MSP}{Maximum Softmax Probability – A baseline method for detecting out-of-distribution samples using the highest softmax confidence score. Low confidence suggests that the input is atypical or erroneous.}
 
 \glos{HBOS}{Histogram-Based Outlier Score – A fast, unsupervised anomaly detection algorithm that assumes feature independence and scores data points based on deviations in histogram-based density estimates.}
 
 \glos{OOD}{Out of distribution}
+
+\glos {NM} {Navazující magisterské studium — Follow-up Master's degree program}
+\glos {DBSCAN} {Density-Based Spatial Clustering of Applications with Noise — a clustering algorithm used for anomaly detection in spatial data}
+\glos {ML} {Machine Learning — a field of artificial intelligence focused on building systems that learn from data}
+\glos {TF-IDF} {Term Frequency-Inverse Document Frequency — a numerical statistic used to evaluate the importance of a word in a collection of texts}
+\glos {BOW} {Bag of Words — a simple vectorization technique for text, representing documents by word occurrence counts}
+\glos {GMM} {Gaussian Mixture Model — a probabilistic model that represents data as a mixture of multiple Gaussian distributions}
+\glos {API} {Application Programming Interface — a set of protocols for building and interacting with software applications}
+\glos {REST API} {Representational State Transfer API — a type of API that uses HTTP requests to access and manipulate web resources}
+\glos {WCO} {World Customs Organization — an intergovernmental organization that develops international standards for customs procedures, including the HS code system}
+
+\glos {MQ} {Message Queue, see \ref[mq]}
 
 % \glos{Back-off smoothing}{A generalisation technique that falls back from high-order feature combinations to lower-order ones when estimating frequency or probability. Originally developed for sparse data in language models. Used in this thesis to reduce sparsity in FBOD.}
 

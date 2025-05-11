@@ -1,6 +1,55 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
-\chap Component deployment
+\chap Real-Time Deployment and Integration
+
+\sec Technical stack used
+\secc CodeNow
+CodeNOW is a cloud-native DevOps platform designed to simplify and accelerate the development and deployment of containerized applications. Its primary goal is to streamline the creation and operation of microservice-based systems by integrating a broad set of open-source tools into a unified development environment. Among its core technologies are Docker for containerization and Kubernetes for orchestration, which together enable reproducible, scalable, and isolated application deployments. CodeNOW also incorporates GitLab for source code management and continuous integration/continuous deployment (CI/CD), facilitating automated testing and versioned delivery of software components. \cite[codenowReleaseNotes]
+
+One of the platform’s distinguishing features is its support for modular, component-based development. Applications are composed of independently deployable services, each of which can expose public or private API endpoints. These endpoints are automatically routed and networked via an internal service mesh or gateway system, abstracting the need for manual configuration. Developers interact with the platform primarily through a web interface or API layer that orchestrates building, testing, and deploying services. This encapsulation of infrastructure concerns allows teams to focus on business logic and data modeling rather than container lifecycle or ingress configuration.\cite[WhatCodeNOW]
+
+From a business perspective, CodeNOW positions itself as a productivity and governance accelerator. It supports the full software development lifecycle by enabling rapid iteration, consistent environment replication, and automated deployment. Through integrated monitoring, logging, and alerting systems, it allows teams to maintain operational visibility and respond to incidents in real-time. Its design emphasizes scalability, not only in handling load but also in managing team growth—by providing standardized workflows, centralized control over deployments, and reduced dependency on specialized DevOps roles. This makes it suitable for organizations seeking to modernize legacy systems or transition toward agile, cloud-native delivery models.\cite[WhyCodeNOW]
+
+\secc Rest API
+A REST API (Representational State Transfer Application Programming Interface) is a web service architecture that allows systems to communicate over HTTP using standard methods like GET, POST, PUT, and DELETE. It is stateless, relying on resource-based URLs and typically exchanging data in formats like JSON or XML.
+
+REST APIs are widely used for their simplicity, scalability, and compatibility, enabling seamless integration between diverse applications and services.
+
+\secc Fastapi
+FastAPI is a modern, high-performance web framework for building APIs with Python, leveraging standard Python type hints. It is designed for speed, developer productivity, and ease of use, supporting asynchronous programming and automatic OpenAPI documentation generation.
+
+Built on Starlette and Pydantic, FastAPI enables robust validation, serialization, and high throughput, making it ideal for scalable, production-ready applications.
+
+\label[mq]
+\secc Message Queue
+Message Queue (MQ) is a fundamental concept in computer science and software engineering. A message queue is a communication method used in distributed systems to enable asynchronous message passing between different components or applications. In this model, messages are sent by producers to a queue and are then retrieved by consumers when they are ready to process them. This decouples the sender and receiver, allowing for more flexible and resilient system architectures.\cite[MessageQueue]
+
+Message queues are integral to the design of scalable and fault-tolerant systems, particularly in microservices architectures and event-driven applications. They facilitate load balancing, ensure message delivery even in the event of component failures, and enable the implementation of complex workflows. Prominent implementations of message queuing systems include not only RabbitMQ but also Apache Kafka, and IBM MQ, each offering various features and protocols to suit different use cases. \cite[MessageQueue]
+
+\secc RabbitMQ
+RabbitMQ (Rabbit Message Queue]) is an open-source message broker that facilitates asynchronous communication between distributed systems. It implements the Advanced Message Queuing Protocol (AMQP) 0-9-1, enabling reliable message delivery and decoupling of application components. The server is written in Erlang and built on the Open Telecom Platform (OTP), which provides features such as clustering and fault tolerance. \cite[RabbitMQ]
+
+In RabbitMQ, producers send messages to exchanges, which route them to queues based on binding rules. Consumers then retrieve messages from these queues for processing. This architecture supports various exchange types, including direct, topic, fanout, and headers, allowing for flexible routing strategies. \cite[RabbitMQ]
+
+RabbitMQ supports multiple messaging protocols beyond AMQP, such as STOMP and MQTT, through a plugin architecture. This extensibility enables integration with a wide range of applications and services. The broker also offers features like message durability, acknowledgments, and dead-letter exchanges, contributing to reliable message delivery and fault tolerance. \cite[RabbitMQ]
+
+RabbitMQ is widely used in microservices architectures, real-time data processing, and other scenarios requiring reliable inter-service communication. Its ability to handle high-throughput messaging with low latency makes it suitable for various applications, from simple task queues to complex event-driven systems. \cite[RabbitMQ]
+
+This makes it perfect for intermodal transportation companies like Metrans that need an asynchronous exchange of data between different parts of their operations.
+
+\secc Keycloak
+\rfc{Keycloak možná taky nakonec moc nepoužívám, tak nevím, jestli ho tu nechat.}
+Keycloak is an open-source identity and access management (IAM) solution that provides authentication, authorization, and user management capabilities. It supports single sign-on (SSO), multi-factor authentication, and integration with identity providers using standards like OAuth2, OpenID Connect, and SAML.
+
+Designed for flexibility, Keycloak simplifies secure application access, enabling centralized user management and seamless integration with modern applications and services.
+
+\secc Doris \& Apache Flink
+\rfc{Doris a Apache Flink na nic nepoužívám, možná by to chtělo odstranit tuto kapitolu}
+{\bf Doris} is an open-source, real-time analytical database that focuses on providing high-performance, low-latency data analytics for large-scale data workloads. Originally developed by Baidu, Doris is designed for OLAP (Online Analytical Processing) use cases, supporting fast querying and seamless data integration. It is known for its simplicity, scalability, and ease of use, with support for real-time data ingestion and querying, making it suitable for analytics platforms, data warehousing, and business intelligence applications.
+
+{\bf Apache Flink} is an open-source stream processing framework for real-time data analytics. It is designed to process large-scale, unbounded data streams with low latency and high throughput. Flink supports both batch and stream processing and provides advanced features like stateful computations, event time processing, and windowing. It is highly scalable, fault-tolerant, and integrates well with other data systems like Apache Kafka, Hadoop, and various data stores. Flink is commonly used in applications requiring real-time analytics, monitoring, and event-driven processing.
+
+\sec Component model
 TODO more text
 \begitems
 * A component was developed that loaded the best model for each anomaly was developed.
