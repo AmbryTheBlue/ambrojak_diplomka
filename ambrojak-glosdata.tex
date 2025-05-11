@@ -33,9 +33,19 @@
 \glos {REST API} {Representational State Transfer API — a type of API that uses HTTP requests to access and manipulate web resources}
 \glos {WCO} {World Customs Organization — an intergovernmental organization that develops international standards for customs procedures, including the HS code system}
 
-\glos {MQ} {Message Queue, see \ref[mq]}
-
 % \glos{Back-off smoothing}{A generalisation technique that falls back from high-order feature combinations to lower-order ones when estimating frequency or probability. Originally developed for sparse data in language models. Used in this thesis to reduce sparsity in FBOD.}
 
 % \glos{Calibration}{A post-processing step to adjust model output probabilities so that they reflect true confidence levels. Common methods include Platt scaling, isotonic regression, and temperature scaling. Crucial for CBAD effectiveness.}
+
+\glos {MQ} {Message Queue, see \ref[mq]}
+
+\glos {TP} {True Positive — a case where the model correctly predicts an anomaly that is actually anomalous}
+\glos {TN} {True Negative — a case where the model correctly predicts a non-anomaly that is truly not anomalous}
+\glos {FP} {False Positive — a case where the model incorrectly predicts an anomaly for a normal instance}
+\glos {FN} {False Negative — a case where the model fails to detect an actual anomaly}
+\glos {PPV} {Positive Predictive Value — also known as precision; the proportion of predicted anomalies that are truly anomalous, see \ref[precision]}
+\glos {NPV} {Negative Predictive Value — the proportion of predicted non-anomalies that are truly non-anomalous, see \ref[npv]}
+\glos {TPR} {True Positive Rate — also known as recall or sensitivity; the proportion of actual anomalies that are correctly identified, see \ref[recall]}
+\glos {TNR} {True Negative Rate — also known as specificity; the proportion of actual non-anomalies that are correctly identified, see \ref[specificity]}
+
 

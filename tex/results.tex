@@ -17,12 +17,25 @@ Actual Negative & False Positive (FP) & True Negative (TN) \cr
 }
 \caption/t Table explaining Confusion Matrix
 \endinsert
+{\bf In this thesis we always view the anomalous class as positive.} The negative is therefore referring to normal (nonanomalous) data. In other words, we are asking the question ``Is this datum anomalous?''
 
-\secc Precision
-Precision (Positive Predictive Value) quantifies the purity of the detected anomalies \cite[mediumConfusionMatrix]. It answers the question ``When detector predicts that the datum is positive (anomalous), how often is it right''
+Also there is a need to mention Type I and Type II errors. Type I error is an alternative name for FP (False Positive). And Type II error is a synonym for FN (False Negative). They are, in my opinion, unnecessarily confusing names. And there is no need to mention them anywhere else in this thesis, as the terms FP and FN are sufficient, and furthermore, their names already hint at their meaning.
+
+\secc Accuracy
+The simplest way to measure the performance of the model is to measure the frequency with which the prediction of the model matches the actual class. This measure may hide crucial information when one class is very rare \cite[Chadha2020DistilledEvaluationMetrics].
+
+This is the case with anomalous data that were provided by Metrans. Although this can be mitigated by synthetic anomaly generation that can even out the distribution of the classes and make this measure once again somewhat useful.
 
 $$\rm
-{Precision} = {TP \over TP + FP} \eqmark[precision]
+{Accuracy} = {TP + TN \over TP + TN + FP + FN} \eqmark[accuracy]
+$$
+
+\label[precision]
+\secc Precision
+Precision (Positive Predictive Value, PPV) quantifies the purity of the detected anomalies \cite[mediumConfusionMatrix]. It answers the question ``When detector predicts that the datum is positive (anomalous), how often is it right?''
+
+$$\rm
+{Precision} = {TP \over TP + FP} \eqmark[eq-precision]
 $$
 
 % $$
@@ -41,17 +54,38 @@ $$
 % {Precision} = {TP \over TP + FP}
 % $$
 
+\label[recall]
 \secc Recall
-Recall (Sensitivity, True-Positive Rate) measures completeness\cite[mediumConfusionMatrix]. It answers ``How many real anomalies did we catch?''
+Recall (Sensitivity, True Positive Rate, TPR) measures completeness\cite[mediumConfusionMatrix]. It answers ``How many real anomalies did we catch?''
 $$\rm
-{Recall} = {TP \over TP + FN} \eqmark[recall]
+{Recall} = {TP \over TP + FN} \eqmark[eq-recall]
+$$
+
+\label[specificity]
+\secc Specificity
+Specificity (True Negative Rate, TNR) measures the proportion of actual negatives correctly identified \cite[Chadha2020DistilledEvaluationMetrics]. It answers the question ``How good are we at detecting OK data?''.
+
+This metric is not very useful for our case. We care about detecting anomalies, as not detecting them is costly. Detecting nonanomalous data is not crucial. This metric is usefull for minimizing false alarms. But in our case these are not very costly.
+$$\rm
+{Specificity} = {TN \over  TN + FP} \eqmark[eq-specificity]
+$$
+
+\label[npv]
+\secc Negative Predictive Value (NPV):
+Negative Predictive Value (NPV) represents the probability that instances predicted as normal are truly normal \cite[Chadha2020DistilledEvaluationMetrics]. It answers the question ``If we predict that datum is OK, how likely is it actually OK?''.
+
+This metric is again not very useful for our case. A high NPV suggests confidence in the model's negative predictions, ensuring that normal instances are not misclassified as anomalies. And this once again is not that costly of a mistake in our case.
+$$\rm
+{NPV} = {TN \over TN + FN} \eqmark[npv]
 $$
 
 \secc F1 Score
-F1 score is the harmonic mean Precision \ref[precision] and Recall \ref[recall]. It gives a single number that penalises detectors that are skewed toward either high precision or toward high recall \cite[mediumConfusionMatrix].
+F1 score is the harmonic mean Precision \ref[precision] and Recall \ref[recall]. It gives a single number that penalizes detectors that are skewed toward either high precision or toward high recall \cite[mediumConfusionMatrix].
+
+This metric is very usefull in our case as it focuses on detecting anomalies. But it also gives a singular number that allows us to evaluate our models and rank them from best to worst.
 
 $$\rm
-{F1} = 2 \times { Precision \times Recall \over Precision + Recall} \eqmark
+{F1} = 2 \times { Precision \times Recall \over Precision + Recall} \eqmark[eq-f1]
 $$
 
 \rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}
