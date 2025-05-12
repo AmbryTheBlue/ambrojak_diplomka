@@ -18,7 +18,7 @@ keywords = {Anomaly detection, outlier detection}
 }
 
 @article{outlierSurvey,
-author = {Domingues, Rmi and Filippone, Maurizio and Michiardi, Pietro and Zouaoui, Jihane},
+author = {Domingues, Rémi and Filippone, Maurizio and Michiardi, Pietro and Zouaoui, Jihane},
 title = {A comparative evaluation of outlier detection algorithms},
 year = {2018},
 issue_date = {February 2018},
@@ -45,7 +45,47 @@ keywords = {Variational inference, Outlier detection, Novelty detection, Isolati
   number={},
   pages={413-422},
   keywords={Application software;Credit cards;Detectors;Constraint optimization;Data mining;Information technology;Laboratories;Isolation technology;Performance evaluation;Astronomy;anomaly detection;outlier detection;novelty detection;isolation forest;binary trees;model based},
-  doi={10.1109/ICDM.2008.17}}
+  doi={10.1109/ICDM.2008.17}
+}
+@article{10.1145/335191.335388,
+author = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, J\"{o}rg},
+title = {LOF: identifying density-based local outliers},
+year = {2000},
+issue_date = {June 2000},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {29},
+number = {2},
+issn = {0163-5808},
+url = {https://doi.org/10.1145/335191.335388},
+doi = {10.1145/335191.335388},
+abstract = {For many KDD applications, such as detecting criminal activities in E-commerce, finding the rare instances or the outliers, can be more interesting than finding the common patterns. Existing work in outlier detection regards being an outlier as a binary property. In this paper, we contend that for many scenarios, it is more meaningful to assign to each object a degree of being an outlier. This degree is called the local outlier factor (LOF) of an object. It is local in that the degree depends on how isolated the object is with respect to the surrounding neighborhood. We give a detailed formal analysis showing that LOF enjoys many desirable properties. Using real-world datasets, we demonstrate that LOF can be used to find outliers which appear to be meaningful, but can otherwise not be identified with existing approaches. Finally, a careful performance evaluation of our algorithm confirms we show that our approach of finding local outliers can be practical.},
+journal = {SIGMOD Rec.},
+month = may,
+pages = {93–104},
+numpages = {12},
+keywords = {outlier detection, database mining}
+}
+
+@inproceedings{lof,
+author = {Breunig, Markus M. and Kriegel, Hans-Peter and Ng, Raymond T. and Sander, J\"{o}rg},
+title = {LOF: identifying density-based local outliers},
+year = {2000},
+isbn = {1581132174},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/342009.335388},
+doi = {10.1145/342009.335388},
+abstract = {For many KDD applications, such as detecting criminal activities in E-commerce, finding the rare instances or the outliers, can be more interesting than finding the common patterns. Existing work in outlier detection regards being an outlier as a binary property. In this paper, we contend that for many scenarios, it is more meaningful to assign to each object a degree of being an outlier. This degree is called the local outlier factor (LOF) of an object. It is local in that the degree depends on how isolated the object is with respect to the surrounding neighborhood. We give a detailed formal analysis showing that LOF enjoys many desirable properties. Using real-world datasets, we demonstrate that LOF can be used to find outliers which appear to be meaningful, but can otherwise not be identified with existing approaches. Finally, a careful performance evaluation of our algorithm confirms we show that our approach of finding local outliers can be practical.},
+booktitle = {Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data},
+pages = {93–104},
+numpages = {12},
+keywords = {outlier detection, database mining},
+location = {Dallas, Texas, USA},
+series = {SIGMOD '00}
+}
+
+
 
 @misc{deeplearninganomalydetection,
       title={Deep Learning for Anomaly Detection: A Survey}, 
@@ -55,6 +95,29 @@ keywords = {Variational inference, Outlier detection, Novelty detection, Isolati
       archivePrefix={arXiv},
       primaryClass={cs.LG},
       url={https://arxiv.org/abs/1901.03407}, 
+}
+
+@misc{ibmAnomalyDetection,
+	author = {Camilo Quiroz-Vázquez},
+	title = {{A}nomaly {D}etection in {M}achine {L}earning: {E}xamples, {A}pplications \& {U}se {C}ases | {I}{B}{M} --- ibm.com},
+	URL = {https://www.ibm.com/think/topics/machine-learning-for-anomaly-detection},
+	year = {},
+	note = {[Accessed 12-05-2025]},
+}
+
+@article{unsupervisedAnomalyDetection,
+    doi = {10.1371/journal.pone.0152173},
+    author = {Goldstein, Markus AND Uchida, Seiichi},
+    journal = {PLOS ONE},
+    publisher = {Public Library of Science},
+    title = {A Comparative Evaluation of Unsupervised Anomaly Detection Algorithms for Multivariate Data},
+    year = {2016},
+    month = {04},
+    volume = {11},
+    url = {https://doi.org/10.1371/journal.pone.0152173},
+    pages = {1-31},
+    abstract = {Anomaly detection is the process of identifying unexpected items or events in datasets, which differ from the norm. In contrast to standard classification tasks, anomaly detection is often applied on unlabeled data, taking only the internal structure of the dataset into account. This challenge is known as unsupervised anomaly detection and is addressed in many practical applications, for example in network intrusion detection, fraud detection as well as in the life science and medical domain. Dozens of algorithms have been proposed in this area, but unfortunately the research community still lacks a comparative universal evaluation as well as common publicly available datasets. These shortcomings are addressed in this study, where 19 different unsupervised anomaly detection algorithms are evaluated on 10 different datasets from multiple application domains. By publishing the source code and the datasets, this paper aims to be a new well-funded basis for unsupervised anomaly detection research. Additionally, this evaluation reveals the strengths and weaknesses of the different approaches for the first time. Besides the anomaly detection performance, computational effort, the impact of parameter settings as well as the global/local anomaly detection behavior is outlined. As a conclusion, we give an advise on algorithm selection for typical real-world tasks.},
+    number = {4},
 }
 
 @book{dataClustering,
@@ -119,6 +182,23 @@ URL = {https://www.mdpi.com/2076-3417/13/3/1778},
 ISSN = {2076-3417},
 ABSTRACT = {Detecting anomalies in time series data is important in a variety of fields, including system monitoring, healthcare and cybersecurity. While the abundance of available methods makes it difficult to choose the most appropriate method for a given application, each method has its strengths in detecting certain types of anomalies. In this study, we compare six unsupervised anomaly detection methods of varying complexity to determine whether more complex methods generally perform better and if certain methods are better suited to certain types of anomalies. We evaluated the methods using the UCR anomaly archive, a recent benchmark dataset for anomaly detection. We analyzed the results on a dataset and anomaly-type level after adjusting the necessary hyperparameters for each method. Additionally, we assessed the ability of each method to incorporate prior knowledge about anomalies and examined the differences between point-wise and sequence-wise features. Our experiments show that classical machine learning methods generally outperform deep learning methods across a range of anomaly types.},
 DOI = {10.3390/app13031778}
+}
+
+@article{chi-square,
+title = "An anomaly detection technique based on a chi-square statistic for detecting intrusions into information systems",
+abstract = "An intrusion into an information system compromises its security (e.g. availability, integrity and confidentiality) through a series of events in the information system. Intrusive events often show departures (anomalies) from normal events in an information system. This paper presents an anomaly detection technique based on a chi-square statistic. This technique builds a profile of normal events in an information system-a norm profile computes the departure of events in the recent past from the norm profile and detects a large departure as an anomaly-a likely intrusion. This technique was tested for its performance in distinguishing normal events from intrusive events in an information system. The test results demonstrated the promising performance of this technique for intrusion detection in terms of a low false alarm rate and a high detection rate. Intrusive events were detected at a very early stage.",
+keywords = "Chi-square statistic, Computer security, Intrusion detection, Multivariate analysis",
+author = "Nong Ye and Qiang Chen",
+year = "2001",
+month = mar,
+doi = "10.1002/qre.392",
+language = "English (US)",
+volume = "17",
+pages = "105--112",
+journal = "Quality and Reliability Engineering International",
+issn = "0748-8017",
+publisher = "John Wiley and Sons Ltd",
+number = "2",
 }
 
 @misc{hendrycks2018baseline,

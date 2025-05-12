@@ -2,89 +2,69 @@
 % !TEX root = ambrojak-thesis-masters.tex
 \chap Methods for Anomaly Detection
 \rfc{This chapter (Theorethical background and approaches) should probably be revised. Maybe moved after anomaly and stated which models to use based on our data or keep it here and more thereical/general? But I do not like the writing style very much.}
-\sec Anomaly Detection
-Anomaly detection, also referred to as outlier detection, is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing. \cite[chandola2009]
+
+
+\sec Introduction to Anomaly Detection
+Anomaly detection (sometimes shortened as \glref{AD}), also referred to as outlier detection (sometimes abbreviated as \glref{OD}), is the task of identifying instances in a dataset that deviate significantly from the majority of the data. These deviations, termed anomalies, often represent rare or unusual events, errors, or significant phenomena of interest. Applications of anomaly detection span diverse fields, including fraud detection, system monitoring, medical diagnostics, and natural language processing. \cite[chandola2009]
+
+\secc Supervised Anomaly Detection
+In supervised anomaly detection, models are trained on fully labeled datasets that contain examples of normal and anomalous. A classifier learns to distinguish between the two classes and flags deviations accordingly.
+Although this approach can achieve high accuracy for known anomaly types, it requires extensive labeled data, which is often impractical, because anomalies are, by definition, rare and expensive to label. \cite[ibmAnomalyDetection]
+
+\secc Semi-Supervised Anomaly Detection
+Semi-supervised methods leverage a small quantity of labeled data (typically only normal instances) alongside a large pool of unlabeled data to build a model of normal behavior and detect deviations.
+These techniques are particularly useful when anomalous labels are scarce but normal examples are abundant. By modeling only the “normal” class, they flag instances that do not fit this pattern as anomalies.\cite[ibmAnomalyDetection]
 
 
 \secc Unsupervised Anomaly Detection
-Unsupervised anomaly detection is particularly relevant in cases where labeled data (that is, explicit examples of anomalous and normal instances) are unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.
+Unsupervised anomaly detection is particularly relevant in cases where labeled data (that is, explicit examples of anomalous and normal instances) are unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.\cite[unsupervisedAnomalyDetection]
 
-This method is especially suited for scenarios where only examples of normal behavior are available. By leveraging techniques such as clustering, reconstruction errors, distance measures, or density estimation, unsupervised anomaly detection provides a robust framework for identifying unexpected patterns without relying on prior knowledge of what constitutes an anomaly.
+This type of problem describes scenarios where only examples of normal behavior are available. It is necessary to use techniques such as clustering, reconstruction errors, distance measures, or density estimation; unsupervised anomaly detection provides a robust framework for identifying unexpected patterns without relying on prior knowledge of what constitutes an anomaly.\cite[unsupervisedAnomalyDetection]
+
+\secc Summary
+In summary, the choice among supervised, semi-supervised, and unsupervised anomaly detection depends primarily on the availability of labeled examples of anomalous behavior and the expected complexity of normal data distributions.
+
+In the next section, we will survey specific algorithmic families suited to different data characteristics, before selecting those most appropriate for the Metrans transport order dataset.
 
 \sec Statistical Approaches to Anomaly Detection
 
-Statistical methods for anomaly detection are based on the assumption that the data follow a specific distribution or statistical model. Anomalies are identified as points that deviate significantly from this assumed distribution or exhibit rare or improbable characteristics. These methods are particularly effective when the underlying data structure is well understood and the anomalies are clearly distinguishable from normal variation.
+Statistical methods for anomaly detection are based on the assumption that the data follow a specific distribution or statistical model. Anomalies are identified as points that deviate significantly from this assumed distribution or exhibit rare or improbable characteristics. These methods are particularly effective when the underlying data structure is well understood and the anomalies are clearly distinguishable from normal variation.\cite[chandola2009]
 
 \secc Parametric Approaches
-These methods assume that the data conforms to a known probability distribution, such as Gaussian or Poisson. Key techniques include:
+Parametric anomaly-detection techniques posit that normal data are drawn from a member of a known distributional family (most commonly Gaussian, Poisson, or exponential) and then quantify how improbable each observation is under maximum-likelihood parameter estimates. A prototypical example is the {\bf Z-score test}, which flags points whose standardized distance from the sample mean exceeds a user-defined threshold (e.g., |z| > 3) when normality holds. Formal single-point hypothesis tests such as the {\bf Grubbs test} or the generalized extreme studentized deviation extend this idea to small samples and heavy-tailed distributions by comparing each candidate point to critical values of the assumed model. Although these methods are computationally simple and interpretable, large benchmark studies demonstrate that their accuracy drops sharply when the true data-generating process is multimodal or skewed, highlighting their sensitivity to model misspecification \cite[outlierSurvey, chandola2009]
 
-\begitems
-* {\bf Z-Score Analysis:}\nl
-Measures how far a data point is from the mean in terms of standard deviations. Points with high absolute z-scores (e.g., >3) are flagged as anomalies.
+Anomaly detection based on {\bf PDE} ({\bf Probability Density Estimation})first fits a parametric distribution to the 'normal' data, most commonly by maximum likelihood estimation of a Gaussian, Poisson, or (in low-dimensional mixtures) a finite-mixture model. Each observation $x_i$ is then evaluated under the fitted density $p_θ(x)$; points whose log-likelihood falls below a significance threshold (or equivalently whose tail probability is smaller than $\alpha$ are flagged as anomalies. Because the entire decision rule is derived from the assumed form of $p_θ$. PDE yields interpretable probabilistic scores and tight control over the false-alarm rate when the model specification is valid. Its chief weakness is model misspecification: multimodal, skewed, or heavy-tailed real-world data can cause likelihoods to be badly calibrated, leading to false positives and false negatives, a phenomenon extensively documented in comparative surveys of outlier detection algorithms. \cite[chandola2009]
 
 
-Effective for continuous, normally distributed data. \cite[outlierSurvey]
+The {\bf Chi-Square test} is a non-parametric statistical method used to determine whether there is a significant association between two categorical variables. It compares the observed frequencies in each category of a contingency table with the frequencies expected under the assumption of independence. The test statistic is calculated as:
+$$
+\chi^2 = \sum {(O-E)^2 \over E}
+$$
+where $O$ represents the observed frequency and $E$ denotes the expected frequency under the null hypothesis of independence. A large Chi-Square statistic indicates a significant difference between observed and expected frequencies, suggesting a potential association between the variables.\cite[chi-square]
 
-* {\bf Probability Density Estimation (PDE):}\nl
-Anomalies are identified as points with very low likelihood under the fitted distribution (e.g., using maximum likelihood estimation).
-* {\bf Chi-Square Test:}\nl
-Compares observed and expected frequencies for categorical data. Significant deviations indicate anomalies.
-\enditems
+In the context of anomaly detection, the Chi-Square test can be applied to identify unusual patterns in categorical data. For instance, it can detect deviations in user behavior on a website by comparing current page visit frequencies to historical norms. Significant differences may indicate anomalies such as fraudulent activities or system malfunctions.\cite[chi-square]
+
+However, the Chi-Square test has limitations. It requires a sufficient sample size to ensure the validity of the approximation to the Chi-Square distribution. Specifically, expected frequencies in each cell of the contingency table should generally be at least 5. When this condition is not met, the test's reliability diminishes, and alternative methods, such as Fisher's Exact Test, may be more appropriate.\cite[chi-square]
+
 
 \secc Non-Parametric Approaches
-These methods do not make strong assumptions about the data distribution:
+Non-parametric detectors forego explicit distributional assumptions and instead derive an empirical notion of “normality” from the data itself, typically via density estimation or neighbourhood comparison. {\bf Kernel Density Estimation (KDE)} constructs a smooth probability surface over the feature space; observations that fall in low-density regions of this surface are deemed anomalous.\cite[outlierSurvey]
 
-\begitems
-* {\bf Kernel Density Estimation (KDE):}\nl
-Estimates the probability density function of the data. Points in regions of low density are flagged as anomalies.
+Distance-based alternatives such as {\bf Local Outlier Factor (LOF)} contrast the local reachability density of each point with that of its neighbours, enabling the discovery of small clusters of contextual outliers that would be missed by global statistics.\cite[outlierSurvey]
 
-* {\bf Nearest Neighbor-Based Methods:}\nl
-Compute distances between data points. Anomalies are far from their nearest neighbors in the feature space.
-
-Example: {\em Local Outlier Factor} (LOF), which uses local density to detect outliers.
-\enditems
+Extensive empirical comparisons across dozens of benchmark datasets show that KDE, LOF and related graph-based methods achieve competitive accuracy and robustness to distributional misspecification, albeit at higher computational cost in high-dimensional settings. \cite[outlierSurvey]
 
 \secc Multivariate Statistical Techniques
-For data with multiple variables, relationships among dimensions are considered:
+Multivariate techniques exploit the covariance structure among variables to measure joint extremeness and thus capture interactions that are invisible in any single dimension. The {\bf Mahalanobis distance} computes the squared distance from each observation to the multivariate mean, scaled by the inverse covariance matrix; under multivariate normality this statistic follows a $χ²$ distribution, allowing probabilistic outlier thresholds and robust extensions for contaminated data. \cite[outlierSurvey]
 
-\begitems
-* {\bf Mahalanobis Distance:}\nl
-Measures the distance of a point from the mean while accounting for the covariance structure of the data. Points with high distances are anomalies.
+Dimensionality reduction methods such as {\bf Principal Component Analysis (PCA)} model the dominant low-rank subspace of the data and treat observations with large residual (reconstruction) error in the orthogonal complement as anomalies, a strategy that has proven effective for moderate-dimensional numeric datasets. \cite[outlierSurvey]
 
+Comparative evaluations confirm that covariance- and subspace-based detectors remain competitive on structured numerical data but may struggle with heterogeneous categorical attributes, motivating hybrid or ensemble approaches in practical application. \cite[outlierSurvey]
 
-Effective for identifying anomalies in multivariate normal distributions.
+\secc Overview
+Statistical approaches treat normality as a probabilistic hypothesis and declare observations anomalous when they fall in the tails of the distribution. Parametric tests, for example, probability density estimation under a fitted Gaussian or Poisson model, work best for low-dimensional continuous variables whose shape is well captured by a single distribution; they offer simple likelihood thresholds but fail when the true data are multimodal or skewed. For purely categorical or discretised counts, the Pearson Chi-square test compares observed cell frequencies to expected ones and flags categories whose contribution to the $χ²$ statistic exceeds the critical value, making it a natural choice when expected counts are reliable and independence across cells is plausible.
 
-
-* {\bf Principal Component Analysis (PCA):}\nl
-Reduces the dimensionality of the data, capturing the most significant variance. Points with high reconstruction errors (i.e., poorly explained by principal components) are flagged as anomalies.
-\enditems
-
-\secc Time-Series-Specific Methods
-For temporal data, statistical methods often account for sequential dependencies:
-
-\begitems
-* {\bf Moving Average and Exponential Smoothing:}\nl
-Detect sudden deviations from expected values derived from past trends.
-
-* {\bf ARIMA Models:}\nl
-Use autoregressive integrated moving average models to forecast expected values and flag deviations.
-\enditems
-
-\secc Strengths and Limitations
-{\em Strengths:}
-\begitems
- * {\bf Interpretability:} Statistical methods provide clear thresholds or probabilistic interpretations.
-* {\bf Simplicity:} Often computationally efficient and easy to implement.
-\enditems
-{\em Limitations:}
-\begitems
-* {\bf Sensitivity to Assumptions:} Performance depends on the validity of the assumed data distribution.
-* {\bf Scalability:} May struggle with large or high-dimensional datasets without preprocessing.
-* {\bf Handling Complex Relationships:} Struggle with non-linear or intricate dependencies without adaptations.
-\enditems
-
-Statistical methods are foundational in anomaly detection and are often used as benchmarks or in conjunction with more advanced machine learning techniques.
-
+Metrans transportation order data are tabular, text-heavy and possibly multimodal data. Parametric models will obvisously struggle as there is no underlying distribution. Non parametric models will not be able to handle the high-dimensional, sparse spaces produced by bag-of-words or TF-IDF encodings. And we do not have continuous linear dependent variables we would like in for multivariate statisticla models. Overall these techniques do not seem appropriate for our data.
 
 
 \sec Clustering-Based Approaches to Anomaly Detection

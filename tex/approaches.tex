@@ -27,10 +27,12 @@ In the context of anomalies defined in previous chapter, misclassification detec
 \sec Confidence-Based Anomaly Detection (CBAD)
 Confidence-Based Anomaly Detection (CBAD) is a method that assesses the reliability of a model’s prediction in relation to the actual observed label. It is based on the premise that a well-calibrated classifier should assign a high probability to the correct class, assuming the input lies within the distribution observed during training. When this confidence is low, the model effectively signals that it is uncertain about the correctness of the given label. Such cases are treated as potential anomalies.
 
-This approach is closely related to the Maximum Softmax Probability (MSP) technique introduced by Hendrycks and Gimpel (2017)\cite[https://arxiv.org/abs/1610.02136], which was originally developed for detecting out-of-distribution inputs in image classification models. However, the general principle is directly applicable to categorical decision problems, including the transport order domain investigated in this thesis.
+This approach is closely related to the Maximum Softmax Probability (MSP) technique \cite[hendrycks2018baseline], which was originally developed for detecting out-of-distribution inputs in image classification models. However, the general principle is directly applicable to categorical decision problems, including the transport order domain investigated in this thesis.
 
 \secc Model Requirements and Relation to Misclassification Detection
-This method can be applied using the same classification models used for Misclassification Detection (see Section 4.1), provided the models expose class probabilities via a "predict_proba" interface or an equivalent mechanism. If the underlying classifier does not produce well-calibrated probabilities, such as decision trees, support vector machines, or gradient boosting models, probability calibration techniques can be applied. The most common options include Platt scaling and isotonic regression, both available in scikit-learn via the CalibratedClassifierCV wrapper \urlnote{https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html}
+This method can be applied using the same classification models used for Misclassification Detection, see Section \ref[MD].
+
+Provided that the models expose class probabilities via a predic_proba interface or an equivalent mechanism. If the underlying classifier does not produce well-calibrated probabilities, such as decision trees, support vector machines, or gradient boosting models, probability calibration techniques can be applied. The most common options include Platt scaling and isotonic regression, both available in scikit-learn via the CalibratedClassifierCV wrapper \urlnote{https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html}
 
 
 \secc Selection of the Threshold Parameter τ
@@ -82,6 +84,6 @@ Specifically, the system attempts to evaluate the anomaly score using the full f
 $$
 (f_1, f_2, f_3), (f_1, f_2), (f_1, f_3), (f_2, f_3), (f_1), (f_2), (f_3)
 $$
-The first successful match determines the anomaly score. If no match is found at any level, the order is treated as normal. The reason being that if no sender and reciever matches this new order then it is likely a new client where we lack any sort of data. In general application it would have been treated as maximally anomalous.
+The first successful match determines the anomaly score. If no match is found at any level, the order is treated as normal. The reason being that if no sender and reciever matches this new order then it is likely a new client where we lack any sort of data. In general application, it would have been treated as maximally anomalous.
 
 \rfc{Přidat specifické přístupy pro teplotu}
