@@ -1,6 +1,6 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
-
+\label[results]
 \chap Evaluation of Detection Models
 
 \sec Evaluation methods
@@ -18,6 +18,14 @@ Actual Negative & False Positive (FP) & True Negative (TN) \cr
 \caption/t Table explaining Confusion Matrix
 \endinsert
 {\bf In this thesis we always view the anomalous class as positive.} The negative is therefore referring to normal (nonanomalous) data. In other words, we are asking the question ``Is this datum anomalous?''
+
+The table \ref[confusionMatrixTable] is explaining TP, FP, FN and TN. And an example of how to use them to compare several models can be seen in Figure \ref[confusionMatrixFigure]
+
+\medskip
+\clabel[confusionMatrixFigure]{Confusion Matrix for several models}
+\picw=15cm \cinspic imgs/Confusion-matrix.png
+\caption/f Confusion matrix for several models (on Heating Type Anomaly)
+\medskip
 
 Also there is a need to mention Type I and Type II errors. Type I error is an alternative name for FP (False Positive). And Type II error is a synonym for FN (False Negative) \cite[Chadha2020DistilledEvaluationMetrics]. They are, in my opinion, unnecessarily confusing names. And there is no need to mention them anywhere else in this thesis, as the terms FP and FN are sufficient, and furthermore, their names already hint at their meaning.
 
@@ -82,54 +90,71 @@ $$
 \secc F1 Score
 F1 score is the harmonic mean Precision \ref[precision] and Recall \ref[recall]. It gives a single number that penalizes detectors that are skewed toward either high precision or toward high recall \cite[mediumConfusionMatrix].
 
-This metric is very usefull in our case as it focuses on detecting anomalies. But it also gives a singular number that allows us to evaluate our models and rank them from best to worst.
+This metric is very usefull in our case as it focuses on detecting anomalies. But it also gives a singular number that allows us to evaluate our models and rank them from best to worst. For an example graph for comparison of several models using F1 (and Precision and Recall), see Figure \ref[FigureF1].
 
 $$\rm
 {F1} = 2 \times { Precision \times Recall \over Precision + Recall} \eqmark[eq-f1]
 $$
 
-\rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}
-\rfc{Pro ostatní anomálie aspoň nějaké overview}
-\rfc{Porovnání heating type a heating type se zbožím, popřípadě jiné anomálie, kde využíváme informace navíc.}
-
-\sec Heating Type
-First of lets look at the distribution.
-
 \medskip
-\clabel[distribution]{Distribution of anomaly scores}
-\picw=15cm \cinspic imgs/distribution.png
-\caption/f Distribution of heating types in training data
-\medskip
-
-
-Second, let us look at several our FBOD. To test their accuracy I have made artificial anomalies with the wrong heating type.
-\medskip
-\clabel[matrix]{Confusion Matrix}
-\picw=15cm \cinspic imgs/Confusion-matrix.png
-\caption/f Confusion matrix for several models
-\medskip
-
-\medskip
-\clabel[F1]{Precision, Recall, F1}
+\clabel[FigureF1]{Precision, Recall, F1}
 \picw=15cm \cinspic imgs/metrics.png
 \caption/f Typical metrics used for anomaly detection
 \medskip
 
-\secc Individual model can be further analyzed.
-For models that are using anomaly scoring, a more advanced plot can be done. Here are examples on Random Forest classifier.
+\sec Visualization Techniques
+We have also tried several visualization techniques to provide better insight into the results. These techniques use Anomaly scores, that is (for most models) a probability score of the datum being an anomaly.
+
+\secc Anomaly Score Distribution
+
+An anomaly‐score distribution graph displays how the computed scores for each data point—whether normal or anomalous—are spread across the range of possible values. Typically, you’ll see two overlapping curves or histograms: one representing the bulk of “normal” orders clustered at lower scores, and a sparser tail or separate peak at higher scores corresponding to the few truly anomalous entries. By visualizing these distributions side by side, you can choose a threshold score that best separates the two populations, minimizing the chance of misclassifying a normal order as anomalous while still catching the majority of true anomalies. The degree of overlap between the curves indicates how difficult the detection problem is: the less overlap, the more confidently you can distinguish outliers from routine orders.
 
 \medskip
+\clabel[AnomalyScore]{Anomaly Score Distribtion}
 \picw=15cm \cinspic imgs/rf-anomaly-scores.png
 \caption/f Distrbution of anomaly scores
 \medskip
 
+\label[ROC]
+\secc Reciever Operating Chracteristic
+A {\bf Receiver Operating Characteristic (ROC)} curve traces how a classifier’s true positive rate changes as its false positive rate increases when you slide the decision threshold from strict to permissive. At each threshold, the true positive rate (also called sensitivity) measures the proportion of actual positives correctly identified, while the false positive rate measures the proportion of actual negatives that are incorrectly labeled as positives. Plotting the false positive rate on the x-axis against the true positive rate on the y-axis yields a curve that starts at the origin (no positives predicted) and ends at the point (1, 1) (all instances predicted positive). A ROC curve that bows sharply toward the top-left corner indicates that the model achieves high sensitivity while keeping the false alarm rate low across a broad range of thresholds; by contrast, a curve that clings close to the diagonal line reflects a model whose predictions are barely better than random guessing
 
 \medskip
-\picw=10cm \cinspic imgs/rf-precision-recall.png
-\medskip
-
-\medskip
+\clabel[ROCCurve]{ROC Curve}
 \picw=10cm \cinspic imgs/rf-roc.png
+\caption/f Example of Reciever Operating Characteristic Curve on Random Forest (Heating Type Anomaly)
 \medskip
+
+The {\bf Area Under the ROC curve} (often abbreviated as {\bf AUC-ROC}) provides a single-number summary of classification performance by quantifying the probability that the model will rank a randomly chosen positive instance higher than a randomly chosen negative one. An AUC of 1.0 represents a perfect classifier that assigns higher scores to all positives than to all negatives, while an AUC of 0.5 corresponds to performance no better than chance. Because the ROC AUC considers both types of errors equally, it remains largely insensitive to changes in class balance; however, in scenarios where false positives carry a heavier cost than false negatives (or vice versa), one may still need to select an operating threshold that reflects the desired trade-off, using the ROC curve to identify the point where the increase in true positive rate no longer justifies the rise in false positives.
+
+\label[PRC]
+\secc Precision Recall Curve
+A precision-recall (PR Curve, PRC) curve visualizes the trade-off between precision (section \ref[precision]) and recall (section \ref[recall]) for different decision thresholds of a probabilistic classifier. An example can be seen in figure \ref[PRCurve]. And the process of constructing in is outlined below
+\begitems
+* Compute scores. The classifier assigns each instance a score or probability of being positive (e.g., anomaly score, probability of ``anomalous'' class).
+
+* Vary the threshold. For each threshold $t$ in $[0,1]$. Label as “positive” all instances with score $≥t$, others as “negative.”
+
+* Compute the precision and recall
+
+* Plot On the x-axis: recall; on the y-axis: precision. Connecting the points as the threshold moves from high (very strict) to low (very lenient) yields the PR curve.
+\enditems
+
+\medskip
+\clabel[PRCurve]{Precision Recall Curve}
+\picw=10cm \cinspic imgs/rf-precision-recall.png
+\caption/f Example of precision recall curve on Random Forest (Heating Type Anomaly)
+\medskip
+
+When examining a precision–recall curve, the ideal situation is represented by a point at the top-right corner, where both precision and recall equal 1, meaning every positive instance is found and there are no false positives. If the curve sits toward the upper-left region, it indicates that the classifier is highly precise but has low recall—it only labels as positive those instances it is extremely confident about, and consequently misses many true positives. Conversely, when the curve bulges toward the lower-right region, it reflects high recall but low precision, implying that although most actual positives are flagged, a large number of negative instances are incorrectly classified as positive. The overall shape of the curve matters: a curve that hugs the top-right corner demonstrates strong performance, whereas a sharp drop in precision for only a slight gain in recall suggests that lowering the threshold adds mostly false positives without substantially improving detection of true positives.
+
+The {\bf Area Under the Precision–Recall Curve (AUPRC)} provides a single-number summary of this trade-off across all thresholds. Because it focuses exclusively on the behavior of the classifier with respect to the positive class, AUPRC is especially informative when positive examples are rare. In contrast to the ROC AUC, which averages performance in both classes and can appear deceptively high if the negative class dominates, the AUPRC more accurately reflects a model’s ability to find positive cases while avoiding false alarms in imbalanced settings.
+
+
+
+\rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}
+\rfc{Pro ostatní anomálie aspoň nějaké overview}
+\rfc{Porovnání heating type a heating type se zbožím, popřípadě jiné anomálie, kde využíváme informace navíc.}
+
 
 \sec Discussion

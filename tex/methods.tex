@@ -1,5 +1,6 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
+\label[methods]
 \chap Methods for Anomaly Detection
 \rfc{This chapter (Theorethical background and approaches) should probably be revised. Maybe moved after anomaly and stated which models to use based on our data or keep it here and more thereical/general? But I do not like the writing style very much.}
 
@@ -17,7 +18,7 @@ These techniques are particularly useful when anomalous labels are scarce but no
 
 
 \secc Unsupervised Anomaly Detection
-Unsupervised anomaly detection is particularly relevant in cases where labeled data (that is, explicit examples of anomalous and normal instances) are unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the "normal" data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.\cite[unsupervisedAnomalyDetection]
+Unsupervised anomaly detection is particularly relevant in cases where labeled data (that is, explicit examples of anomalous and normal instances) are unavailable. In this paradigm, the algorithm assumes that anomalies are rare and distinct from the ``normal'' data. The approach involves modeling the patterns, distributions, or structure of normal data and identifying data points that deviate significantly from these learned patterns.\cite[unsupervisedAnomalyDetection]
 
 This type of problem describes scenarios where only examples of normal behavior are available. It is necessary to use techniques such as clustering, reconstruction errors, distance measures, or density estimation; unsupervised anomaly detection provides a robust framework for identifying unexpected patterns without relying on prior knowledge of what constitutes an anomaly.\cite[unsupervisedAnomalyDetection]
 
@@ -249,7 +250,7 @@ Limitations
 \enditems
 
 \sec Deep-learning-based methods
-Deep learning (DL) has rapidly enriched the anomaly-detection toolbox by replacing hand-crafted representations with features learned automatically from raw data, often yielding large accuracy gains on images, audio and high-dimensional sensor streams. Unlike classic statistical or tree-based methods that work directly in the original space, modern DL detectors embed inputs into a non-linear manifold where “normality” is easier to model and deviations stand out. \cite[deeplearninganomalydetection]
+Deep learning (DL) has rapidly enriched the anomaly detection toolbox by replacing handcrafted representations with features learned automatically from raw data, often yielding large accuracy gains in images, audio and high-dimensional sensor streams. Unlike classic statistical or tree-based methods that work directly in the original space, modern DL detectors embed inputs into a non-linear manifold where ``normality'' is easier to model and deviations stand out. \cite[deeplearninganomalydetection]
 
 Deep learning methods offer several advantages for anomaly detection. They excel at capturing complex, non-linear relationships through learned representations, often outperforming traditional models on high-dimensional or unstructured data such as images, time series, or system logs. These models reduce the need for manual feature engineering and scale well with increasing data volume. Furthermore, they are well-suited for multimodal inputs, enabling integration of textual, visual, and numerical data into unified detectors. \cite[huang2025deeplearningadvancementsanomaly]
 

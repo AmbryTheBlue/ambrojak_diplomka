@@ -17,8 +17,8 @@
             % use main language of your document here:
 \department {Department of Computer Science}
 \title      {Anomaly Detection in Metrans Transport Orders}
-% \subtitle   {Software or Research project}
-% \subtitleCZ   {Softwarový nebo výzkumný projekt}
+\subtitle   {Misclassification Detection, Confidence-Based Anomaly Detection and Frequency-Based Outlier Detection with Back-off Smoothing in Textual Tabular Data}
+\subtitleCZ   {Detekce špatné klasifikace, detekce anomálií na základě míry jistoty a detekce anomálií na základě četností v textových tabulkových datech}
             % \subtitle is optional
 \author     {Bc. Jakub Ambroz}
 \authorinfo {ambrojak@fel.cvut.cz}
@@ -115,14 +115,13 @@ Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce 
 \makefront  % Mandatory command. Makes title page, acknowledgment, contents etc.
 
 \input tex/introduction
-\input tex/methods
 \input tex/anomalies
+\input tex/methods
 \input tex/approaches
 \input tex/implementation
 \input tex/results
 \input tex/component
 \input tex/final
-
 
 \bibchap
 \usebib/c (iso690) ambrojak-bib
@@ -130,5 +129,7 @@ Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce 
 
 \app Glossary
 \makeglos
+
+\input tex/appendices
 
 \bye

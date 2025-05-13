@@ -1,6 +1,8 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
-\chap Data Analysis and Real life interpretation
+\label[anomalies]
+\chap Data Analysis and Specification of the Problem Area
+In this chapter, we first define what is intermodal transport. Seond we look more specifically at Metrans and where do we get our data from. And finally we specify ``common'' anomalies (as far as rare anomalies can be common) in Metrans transportation orders that cause significant financial losses. 
 
 \sec Concept and Role of Intermodal Transport
 Intermodal freight transport is the seamless door-to-door movement of a laden unit load (ISO container, swap-body, trailer) that is transferred between at least two modes of carriage without handling the cargo itself.\cite[intermodalTransport]
@@ -13,19 +15,24 @@ Critical to its performance are purpose-built terminals that minimise transhipme
 Within this paradigm, Metrans functions as an integrated intermodal operator: it controls the rail leg, owns/leases the terminals, arranges last-mile trucking, and issues a single through bill of lading. Such vertical integration reduces coordination failures often observed in segmented supply chains and enables real-time optimisation of wagon cycles, train paths, and terminal slots. \cite[hhlaIntermodalLogistics]
 
 \sec Corporate and Network Context of Metrans
-Metrans is a wholly-owned rail-intermodal subsidiary of HHLA, the Hamburg-based logistics group that also runs seaport terminals in Hamburg, Tallinn, Trieste and Odessa.\cite[hhlaPowerNetworks]
-Established in 1991 and fully integrated into HHLA in 1999, the company now operates 20 inland rail terminals—seven designated hub facilities and thirteen satellite depots—distributed across the Czech Republic, Slovakia, Hungary, Austria, Germany, Poland, Romania and Serbia.\cite[metransTerminal]
+Metrans is a wholly-owned rail-intermodal subsidiary of HHLA, the Hamburg-based logistics group that also runs seaport terminals in Hamburg, Tallinn, Trieste and Odessa \cite[hhlaPowerNetworks].
+Established in 1991 and fully integrated into HHLA in 1999, the company now operates 20 inland rail terminals—seven designated hub facilities and thirteen satellite depots—distributed across the Czech Republic, Slovakia, Hungary, Austria, Germany, Poland, Romania and Serbia \cite[metransTerminal].
 
 From these nodes Metrans dispatches approximately 650 block-train services each week, linking the North-Sea gateways of Hamburg, Bremerhaven, and Rotterdam with the Adriatic ports of Koper, Rijeka and Trieste, as well as Baltic and Black-Sea outlets.\cite[metransIntermodal]
 The service is powered by an in-house traction fleet of ≈ 140 multi-system locomotives and ≈ 4 000 container wagons, enabling high-frequency, cross-border operations under a single safety and quality regime.\cite[metransTerminal]
 Terminal handling capacity exceeds 2 million m² and is equipped with rail-mounted gantry cranes, reach-stackers and automated gate systems to ensure quick truck turn-rounds at peak. \cite[hhlaIntermodalLogistics, hhlaIntermodalTransport, metransTerminal]
+
+\sec Data structure
+Metrans operates with two versions of its internal METRANS Information System (\glref{MIS}) \cite[praktickalogistikaMIS]. There are 2 version (\glref{MIS}2 and \glref{MIS}3) that are backed by separate databases, with MIS2 also used for accessing archived historical data, particularly older or legacy transport orders. All data analysis and model training in this thesis are based on exports from MIS2, as it remains the most comprehensive source of past records.
+
+In addition to these core databases, the broader system architecture includes integrations with external platforms, most notably the CodeNOW development and deployment environment, and various event-driven components such as message queues. These elements are crucial for real-time anomaly detection and will be discussed in detail in chapter \ref [component].
  
 \sec Anomaly Types
-This section presents a structured exposition of the anomaly categories that were determined to be the most consequential for Metrans’ operations. For each anomaly, the discussion begins with a business-oriented rationale, detailing the operational disruptions and financial liabilities that arise when the anomaly goes undetected.
+This section presents a structured exposition of the anomaly categories that were determined to be the most consequential for Metrans’ operations. For each anomaly, the discussion begins with a business-oriented rationale, detailing the operational disruptions and financial liabilities that arise when the anomaly goes undetected. We also include a plot of distribution of different categories (encoded by LabelEncoder) to give us an insight into how uneven is the distribution and how many classes are there.
 
-This is followed by a concise technical synopsis that specifies the essential feature set, drawn mainly from textual attributes describing the client, sender, and recipient, supplemented where relevant by numerical indicators, and defines the target variable used in the detection models. The anomalies examined include misspecification of heating parameters (type, presence, and temperature), omission of required port or customs identifiers (BHT, ZAPP, and TCC), absence or superfluous inclusion of an additional billing reference, and selection of an inappropriate chassis type. \urlnote{https://metrans.eu/wp-content/uploads/2025/01/General25v2.pdf}
+This is followed by a concise technical synopsis that specifies the essential feature set, drawn mainly from textual attributes describing the client, sender, and recipient, supplemented where relevant by numerical indicators, and defines the target variable used in the detection models. The anomalies examined include misspecification of heating parameters (type, presence, and temperature), omission of required port or customs identifiers (BHT, ZAPP, and TCC), absence or superfluous inclusion of an additional billing reference, and selection of an inappropriate chassis type.  %\urlnote{https://metrans.eu/wp-content/uploads/2025/01/General25v2.pdf}
 
-Collectively, these six anomaly classes encompass the majority of costly order-entry errors and provide the empirical foundation for the modelling work discussed in subsequent sections.
+Collectively, these six anomaly classes encompass a significatn part of costly order-entry errors and provide the empirical foundation for the modelling work discussed in subsequent sections.
 
 \rfc{Možná by to chtělo přidat grafy distribucí už sem. Ale plánuji je dát do sekce results?}
  
@@ -42,7 +49,13 @@ Delivers rapid high-temperature heating, typically used for viscous or solidifie
 Maintains a stable internal temperature throughout transport. Often used for products requiring constant thermal conditions without external infrastructure.
 \enditems
 
-Only a small subset of transport orders include heating, and their distribution across these types is highly imbalanced. This unevenness may indicate operational anomalies or data entry errors.
+\medskip
+\clabel[distributionHeatingType]{Distribution of Heating Types}
+\picw=15cm \cinspic imgs/Distribution-Heating-Type.pdf
+\caption/f Distribution of heating types in training data
+\medskip
+
+Only a small subset of transport orders include heating (see Table \ref[distributionHasHeating]), and their distribution across these types is highly imbalanced; see Table \ref [distributionHeatingType]. This unevenness may indicate operational anomalies or data entry errors.
 
 From a business perspective, incorrect heating type selection can lead to:
 \begitems
@@ -59,7 +72,7 @@ To mitigate these risks, the anomaly detection model evaluates whether the selec
 \begitems
 * Client identity
 * Sender and recipient information
-* Goods code (HS code)\fnote{HS code stands for Harmonized System code - a standardized numerical method of classifying traded products, developed and maintained by the World Customs Organization (WCO).})
+* Goods code (HS code\fnote{HS code stands for Harmonized System code - a standardized numerical method of classifying traded products, developed and maintained by the World Customs Organization (WCO).})
 * Multilingual goods descriptions (CZ/DE/EN)
 \enditems
 Most features are textual or at least can be treated as text (e.g. HS Code). Therefore, some vectorization is necessary before using most standard ML methods (e.g. label encoding, Bag of Words, TF-IDF, or embeddings). The target variable is a 3-class categorical feature corresponding to the heating type.
@@ -67,16 +80,17 @@ Most features are textual or at least can be treated as text (e.g. HS Code). The
 \secc Heating Temperature Anomaly
 The Heating Temperature anomaly relates closely to the previously described Heating Type anomaly but involves detecting irregularities or inconsistencies specifically in the numerical heating temperature fields of transport orders. Unlike heating type selection, heating temperature is inherently numerical or interval-based, though it can be approximated as categorical at the expense of valuable granularity.
 
-A significant complexity arises from numerous missing ("None") values. These omissions can occur due to several reasons:
-\begitems
-* The temperature requirement may be implicitly defined by the selected heating type.
+\medskip
+\clabel[distributionTemperatures]{Distribution of Temperatures}
+\picw=15cm \cinspic imgs/Distribution-TEMPERATURE.pdf
+\caption/f Distribution of Temperatures, note this are not °C but label created by LabelEncoder to give us an insight into number of different classes
+\medskip
 
-* Precise temperature information may reside in auxiliary textual fields (e.g., heating notes).
+A significant complexity arises from numerous missing ("NULL" or "None" or {\it Whitespace string}) values, see Table \ref[missingTemperatures] These omissions occurred due to a lack of standardization in historical data. Some Metrans employees in the past did not fill in those data. In present time, however, all temperature fields are required to be filled and if they are not, then we should treat them as anomalous.
+We will resolve this issue by only retrieving rows with "NOT NULL" values from the database. And therefore our training data will not contain anything that should now be treated as anomaly despite being quite normal in the past.
 
-* Information might be absent due to administrative oversights or unknown reasons.
-\enditems
-
-Another specificity of this anomaly type is that instead of one target variable there are several:
+\nl
+Another specificity of this anomaly type is that instead of one target variable there are several \cite[metransWiki]:
 \begitems
 * Heating Medium Temperature: The intended temperature of the heating medium itself.
 
@@ -85,12 +99,26 @@ Another specificity of this anomaly type is that instead of one target variable 
 * Product Temperature To: Upper boundary of the acceptable temperature range for transported goods.
 \enditems
 
+\midinsert \clabel[missingTemperatures]{Missing values in temperature data}
+\ctable{l|ccccc}{\hfil
+column  & Heating Medium & FROM & TO & ANY & ALL \crli \tskip4pt
+Percent Missing &  40.39\% & 15.41\% & 15.46\% & 40.56\% & 15.27\%\cr
+}
+\caption/t Proportion of Missing values in each column, any of them and all of them in historical orders
+\endinsert
+
 From a business perspective, anomalies in heating temperature carry risks similar to those associated with incorrect heating type selection. Both can lead to product damage or spoilage due to improper thermal conditions. However, temperature-related issues are often harder to detect during loading or transport and may only become apparent upon unloading, increasing the likelihood of undelivered or unusable cargo and resulting in financial losses or customer penalties.
 
 Temperature can be modeled as a categorical variable, but doing so discards its inherent ordinality, treating a difference between 100~°C and 30~°C as equivalent to one between 65~°C and 60~°C. Alternatively, it can be treated as a continuous numerical variable, preserving the magnitude of differences but requiring careful handling of missing values and outliers.
 
 \secc Presence of Heating Request
 This anomaly addresses whether transport orders appropriately include or omit a heating request. It complements, yet remains distinct from, the "Heating Type" anomaly described previously. While the "Heating Type" anomaly focuses on selecting the correct heating method when a request is made, this anomaly specifically targets cases where heating is mistakenly excluded from or incorrectly included in an order.
+
+\medskip
+\clabel[distributionHasHeating]{Distribution of Heating Types}
+\picw=15cm \cinspic imgs/Distribution-Has-heating.pdf
+\caption/f Distribution of presence of heating request
+\medskip
 
 The distinction is crucial for two primary reasons:
 \begitems
@@ -108,20 +136,26 @@ The technical formulation of this anomaly detection task also closely resembles 
 \secc Presence of the BHT/ZAPP/TCC number
 In the context of international freight forwarding, specific customs and port clearance identifiers are essential to ensure the seamless movement of goods through various European ports. Among these, BHT (Bremer Hafentelematik), ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port), and TCC (Terminal Customs Code) play pivotal roles in the export processes of ports like Bremerhaven, Hamburg, and Koper/Trieste, respectively.
 
+\medskip
+\clabel[distributionCustoms]{Distribution Customs Code}
+\picw=15cm \cinspic imgs/Distribution-Customs-number.pdf
+\caption/f Distribution of presence of Customs Code Request
+\medskip
+
 The absence of these critical identifiers in transport orders can lead to significant operational disruptions. Without the appropriate BHT, ZAPP, or TCC numbers, shipments may be held at ports, incurring storage fees, delaying delivery schedules, and potentially breaching contractual obligations with clients. Such delays can result in financial penalties, increased operational costs, and damage to the company's reputation. In some cases, the financial impact of these delays can amount to approximately €4,000 per incident.
 
-\begitems
-* BHT (Bremer Hafentelematik): This system facilitates electronic export declarations for shipments departing from the ports of Bremen and Bremerhaven. It ensures that all necessary customs information is accurately communicated to the relevant authorities, streamlining the export process. 
+\begitems \style X
+* BHT (Bremer Hafentelematik): This system facilitates electronic export declarations for shipments departing from the ports of Bremen and Bremerhaven. It ensures that all necessary customs information is accurately communicated to the relevant authorities, streamlining the export process. \cite[BHT, metransWiki]
 
-* ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port): Implemented in the Port of Hamburg, ZAPP is an electronic platform that manages export customs clearance. It allows for the digital submission and monitoring of export declarations, ensuring compliance with customs regulations and expediting the release of goods. 
+* ZAPP (Zoll-Ausfuhrüberwachung im Paperless Port): Implemented in the Port of Hamburg, ZAPP is an electronic platform that manages export customs clearance. It allows for the digital submission and monitoring of export declarations, ensuring compliance with customs regulations and expediting the release of goods.  \cite[metransWiki]
 
-* TCC (Terminal Customs Code): Utilized in ports such as Koper and Trieste, the TCC is a unique identifier required for customs clearance processes. It ensures that shipments are properly documented and authorized for export, preventing potential delays or rejections at the terminal. 
+* TCC (Terminal Customs Code): Utilized in ports such as Koper and Trieste, the TCC is a unique identifier required for customs clearance processes. It ensures that shipments are properly documented and authorized for export, preventing potential delays or rejections at the terminal. \cite[metransWiki]
 \enditems
 
 The anomaly detection task specifically involves identifying transport orders that require, but lack, the appropriate BHT, ZAPP, or TCC identifiers. Detecting the inverse scenario, where an order unnecessarily includes a BHT, ZAPP, or TCC number, was not prioritized by Metrans. This decision reflects the practical reality that the risk of overlooking a required customs identifier is significantly higher than mistakenly completing the additional paperwork and procedures associated with obtaining these identifiers for transport orders not bound for ports or customs clearance.
 
 The features utilized in this model include:
-\begitems \style o
+\begitems
 
 * Client information: Details about the ordering party, which may influence the necessity of specific customs identifiers.
 
@@ -140,11 +174,28 @@ Some transport orders at Metrans require an additional billing reference provide
 * Accounting Disruptions: Errors or delays in invoicing and financial reconciliation processes.
 \enditems
 
+\medskip
+\clabel[distributionRefEx]{Distribution of Additional Reference (export)}
+\picw=15cm \cinspic imgs/Distribution-Additional-reference-export.pdf
+\caption/f Distribution of presence of Additional Reference (export, for import see \ref[distributionRefIm]
+\medskip
+
 The technical definition is similar to BHT/ZAPP/TCC number. Both unnecessary inclusion and erroneous omission are relevant and need detection. But detecting omission is more critical. The anomaly detection task involves predicting the correct presence or absence of this billing reference using textual features, specifically client information and sender/recipient details. The target variable is binary. 1 - Billing reference is provided. 0 - Billing reference is not provided.
 
-\sec Chassis Type Anomaly
+\secc Chassis Type Anomaly
 The Chassis Type anomaly involves detecting inconsistencies in the selection of chassis types used for transporting containers. Similar to the Heating Type anomaly, this task focuses on identifying unusually chosen chassis type given specific transport order. The primary distinction lies in the significantly larger number of chassis classes, increasing both complexity and the potential for misclassification.
 
-From a business perspective, selecting an incorrect chassis can lead to similar issues as selecting incorrect heating type. But the costs may not be as severe. If the container is big enough for cargo and can be transported to final destination without issues.
+\medskip
+\clabel[distributionChassisEx]{Distribution of Chassis (export)}
+\picw=15cm \cinspic imgs/Distribution-Additional-reference-export.pdf
+\caption/f Distribution of presence of Chassis Type (export, for import see \ref[distributionChassisIm])
+\medskip
 
-The anomaly detection setup mirrors previous types, employing textual input features including client details and sender/recipient information. Due to the high number of chassis types, the target variable is multi-class categorical, with each class representing a distinct chassis type.
+From a business perspective, selecting an incorrect chassis can lead to issues similar to those associated with selecting an incorrect heating type. But the costs may not be as severe. If the container is large enough for cargo and can be transported to the final destination without issues.
+
+The anomaly detection setup mirrors previous types, employing textual input features including client details and sender/recipient information. Due to the high number of chassis types, the target variable is multiclass categorical, with each class representing a distinct chassis type.
+
+\sec Summary
+We have defined the nature of our data. In relation to both the real world and to abstract data types. Metrans' data for transportation orders are tabular and generally use several textual (or categorical) features to detect an anomaly on a two-class or multiclass categorical variable.
+
+In the next chapter, we will overview common methods for anomaly detection and discuss whether they are appropriate for our type of problem.
