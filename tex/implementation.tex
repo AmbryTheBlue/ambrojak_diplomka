@@ -25,10 +25,21 @@ In this project, Git and GitLab are used for version control, branching, and  sa
 \rfc{V téhle sekci bych chtěl přidat ukázky kódu, pipeline popřípadě nějaký diagram? Dává Smysl?}
 
 \secc Preprocessing
+In the preprocessing stage, all textual fields undergo normalization to eliminate superficial variations that do not affect semantics. Company and client names, sender and receiver identifiers, goods descriptions (in multiple languages), and HS codes are first stripped of leading and trailing whitespace, with consecutive spaces collapsed into a single space. We then remove diacritics and map every character to its ASCII equivalent, which ensures that entries such as “Název společnosti,” “NAZEV SPOLECNOSTI ,” and “ nazev    spolecnosti ” are treated identically. Special characters beyond alphanumeric symbols are also dropped or replaced consistently.
+
+For binary indicator columns—such as those denoting the presence of an additional billing reference or specific container markers (BHT/TCC/ZAPP)—we map all variants (for example, “X” an actual reference string, an empty string, or just ''NULL'') into a clean {0, 1} encoding. Chassis types, originally text strings describing container categories, are subjected to the same whitespace and casing normalization rules. Finally, heating temperature values, which were provided as inconsistent strings such as '40°C', '40 ° C', '40C', '40' '40 °', or even blank entries, are processed by stripping non-digit symbols and whitespace, then parsed into numeric Celsius values; any unparsable values are marked as missing.
 
 \secc Vecorization
+After cleaning, each text feature is converted into a numeric representation via an independent Bag-of-Words (BoW) transformer. We chose the BoW approach because company names often differ only by suffix or country, and shared tokens capture their relatedness. This method also tolerates minor typos by overlapping unigrams, and treats high-frequency tokens equally, which is desirable when even common words (such as the name of a major client) carry meaningful information rather than noise. \fnote{For this reason we have opted out of using TF-IDF vectorization.} The resulting sparse vectors, one per feature, are then horizontally concatenated into a single high-dimensional input vector.
+
+Because the target columns are binary or categorical flags, they are handled separately using a simple LabelEncoder that maps each class to an integer code rather than using BoW.
 
 \secc Synthetic anomaly generators
+To address the scarcity of real-world anomalies and stress-test our detection models, we generate synthetic anomalies by randomly corrupting target labels in otherwise normal records. For training set we do not introduce any synthetic entries. However for our testing set we generate for each record its anomalous counterpart by changing the label of target column.
+
+This procedure simulates errors such as missing or mistyped flags in production orders while preserving the data’s overall structure. Because all features are Label-Encoded prior to injection, these synthetic anomalies integrate seamlessly into the downstream pipeline.
+
+Using them only on the testing sets forbids us from introducing any False Positive anomalies into our training data. That is, we are trying to avoid a situation where for given features there may be several valid values of the target column. And our ``anomalous'' version with swapped labels would still be completely normal in reality.
 
 \secc Pipeline
 
