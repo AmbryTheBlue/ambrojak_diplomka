@@ -97,9 +97,9 @@ $$\rm
 $$
 
 \medskip
-\clabel[FigureF1]{Precision, Recall, F1}
+\clabel[FigureF1]{Typical metrics for model comparsion}
 \picw=15cm \cinspic imgs/metrics.png
-\caption/f Typical metrics used for anomaly detection
+\caption/f Typical metrics for anomaly detection used for model comparison
 \medskip
 
 \sec Visualization Techniques
@@ -112,12 +112,12 @@ An anomaly‐score distribution graph displays how the computed scores for each 
 \medskip
 \clabel[AnomalyScore]{Anomaly Score Distribtion}
 \picw=15cm \cinspic imgs/rf-anomaly-scores.png
-\caption/f Distrbution of anomaly scores
+\caption/f Distrbution of anomaly scores for Random Forest (Heating Type Anomaly)
 \medskip
 
 \label[ROC]
-\secc Reciever Operating Chracteristic
-A {\bf Receiver Operating Characteristic (ROC)} curve traces how a classifier’s true positive rate changes as its false positive rate increases when you slide the decision threshold from strict to permissive. At each threshold, the true positive rate (also called sensitivity) measures the proportion of actual positives correctly identified, while the false positive rate measures the proportion of actual negatives that are incorrectly labeled as positives. Plotting the false positive rate on the x-axis against the true positive rate on the y-axis yields a curve that starts at the origin (no positives predicted) and ends at the point (1, 1) (all instances predicted positive). A ROC curve that bows sharply toward the top-left corner indicates that the model achieves high sensitivity while keeping the false alarm rate low across a broad range of thresholds; by contrast, a curve that clings close to the diagonal line reflects a model whose predictions are barely better than random guessing
+\secc Reciever Operating Characteristic
+A {\bf Receiver Operating Characteristic (ROC)} curve traces how a classifier’s true positive rate changes as its false positive rate increases when you slide the decision threshold from strict to permissive. At each threshold, the true positive rate (also called sensitivity) measures the proportion of actual positives correctly identified, while the false positive rate measures the proportion of actual negatives that are incorrectly labeled as positives. Plotting the false positive rate on the x-axis against the true positive rate on the y-axis yields a curve that starts at the origin (no positives predicted) and ends at the point (1, 1) (all instances predicted positive). A ROC curve that bows sharply toward the top-left corner indicates that the model achieves high sensitivity while keeping the false alarm rate low across a broad range of thresholds; by contrast, a curve that clings close to the diagonal line reflects a model whose predictions are barely better than random guessing.\cite[murphy2012machine]
 
 \medskip
 \clabel[ROCCurve]{ROC Curve}
@@ -125,7 +125,7 @@ A {\bf Receiver Operating Characteristic (ROC)} curve traces how a classifier’
 \caption/f Example of Reciever Operating Characteristic Curve on Random Forest (Heating Type Anomaly)
 \medskip
 
-The {\bf Area Under the ROC curve} (often abbreviated as {\bf AUC-ROC}) provides a single-number summary of classification performance by quantifying the probability that the model will rank a randomly chosen positive instance higher than a randomly chosen negative one. An AUC of 1.0 represents a perfect classifier that assigns higher scores to all positives than to all negatives, while an AUC of 0.5 corresponds to performance no better than chance. Because the ROC AUC considers both types of errors equally, it remains largely insensitive to changes in class balance; however, in scenarios where false positives carry a heavier cost than false negatives (or vice versa), one may still need to select an operating threshold that reflects the desired trade-off, using the ROC curve to identify the point where the increase in true positive rate no longer justifies the rise in false positives.
+The {\bf Area Under the ROC curve} (often abbreviated as {\bf AUC-ROC}) provides a single-number summary of classification performance by quantifying the probability that the model will rank a randomly chosen positive instance higher than a randomly chosen negative one. An AUC of 1.0 represents a perfect classifier that assigns higher scores to all positives than to all negatives, while an AUC of 0.5 corresponds to performance no better than chance. Because the ROC AUC considers both types of errors equally, it remains largely insensitive to changes in class balance; however, in scenarios where false positives carry a heavier cost than false negatives (or vice versa), one may still need to select an operating threshold that reflects the desired trade-off, using the ROC curve to identify the point where the increase in true positive rate no longer justifies the rise in false positives.\cite[murphy2012machine]
 
 \label[PRC]
 \secc Precision Recall Curve
@@ -146,10 +146,27 @@ A precision-recall (PR Curve, PRC) curve visualizes the trade-off between precis
 \caption/f Example of precision recall curve on Random Forest (Heating Type Anomaly)
 \medskip
 
-When examining a precision–recall curve, the ideal situation is represented by a point at the top-right corner, where both precision and recall equal 1, meaning every positive instance is found and there are no false positives. If the curve sits toward the upper-left region, it indicates that the classifier is highly precise but has low recall—it only labels as positive those instances it is extremely confident about, and consequently misses many true positives. Conversely, when the curve bulges toward the lower-right region, it reflects high recall but low precision, implying that although most actual positives are flagged, a large number of negative instances are incorrectly classified as positive. The overall shape of the curve matters: a curve that hugs the top-right corner demonstrates strong performance, whereas a sharp drop in precision for only a slight gain in recall suggests that lowering the threshold adds mostly false positives without substantially improving detection of true positives.
+When examining a precision–recall curve, the ideal situation is represented by a point at the top-right corner, where both precision and recall equal 1, meaning every positive instance is found and there are no false positives. If the curve sits toward the upper-left region, it indicates that the classifier is highly precise but has low recall—it only labels as positive those instances it is extremely confident about, and consequently misses many true positives. Conversely, when the curve bulges toward the lower-right region, it reflects high recall but low precision, implying that although most actual positives are flagged, a large number of negative instances are incorrectly classified as positive. The overall shape of the curve matters: a curve that hugs the top-right corner demonstrates strong performance, whereas a sharp drop in precision for only a slight gain in recall suggests that lowering the threshold adds mostly false positives without substantially improving detection of true positives.\cite[murphy2012machine]
 
-The {\bf Area Under the Precision–Recall Curve (AUPRC)} provides a single-number summary of this trade-off across all thresholds. Because it focuses exclusively on the behavior of the classifier with respect to the positive class, AUPRC is especially informative when positive examples are rare. In contrast to the ROC AUC, which averages performance in both classes and can appear deceptively high if the negative class dominates, the AUPRC more accurately reflects a model’s ability to find positive cases while avoiding false alarms in imbalanced settings.
+The {\bf Area Under the Precision–Recall Curve (AUPRC)} provides a single-number summary of this trade-off across all thresholds. Because it focuses exclusively on the behavior of the classifier with respect to the positive class, AUPRC is especially informative when positive examples are rare. In contrast to the ROC AUC, which averages performance in both classes and can appear deceptively high if the negative class dominates, the AUPRC more accurately reflects a model’s ability to find positive cases while avoiding false alarms in imbalanced settings. \cite[murphy2012machine]
 
+\sec Heating Type
+
+\midinsert \clabel[tableHeatingType]{Model Copmarison}
+ \ctable{l|rrrrrrr|r}{
+Model & TP & FP & TN & FN & Accuracy & Recall & Precision & F1 \crli \tskip4pt
+PROBS:KNeighborsClassifier & 0.497 & 0.012 & 0.488 & 0.003 & 0.985 & 0.994 & 0.977 & 0.986 \cr
+PROBS:LogRegression & 0.496 & 0.011 & 0.489 & 0.004 & 0.985 & 0.992 & 0.979 & 0.985 \cr
+PROBS:sgdModifiedHuber & 0.496 & 0.012 & 0.488 & 0.004 & 0.984 & 0.993 & 0.976 & 0.984 \cr
+PROBS:rf & 0.494 & 0.010 & 0.490 & 0.006 & 0.983 & 0.988 & 0.979 & 0.983 \cr
+PROBS:sgdLogLoss & 0.492 & 0.013 & 0.487 & 0.008 & 0.979 & 0.985 & 0.974 & 0.979 \cr
+PROBS:MultinomialNB & 0.497 & 0.018 & 0.482 & 0.003 & 0.979 & 0.993 & 0.966 & 0.979 \cr
+PROBS:VotingClassifier & 0.491 & 0.012 & 0.488 & 0.009 & 0.979 & 0.983 & 0.975 & 0.979 \cr
+PROBS:ComplementNB & 0.486 & 0.019 & 0.481 & 0.014 & 0.967 & 0.972 & 0.963 & 0.967 \cr
+PROBS:BernoulliNB & 0.480 & 0.033 & 0.467 & 0.020 & 0.947 & 0.960 & 0.936 & 0.948 \cr
+}
+\caption/t Performance metrics per model in Heating Type Anomaly (sorted by F1)
+\endinsert
 
 
 \rfc{Vybrat složitější anomálii, kde se ukáže více typů grafů}

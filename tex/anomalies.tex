@@ -33,8 +33,6 @@ This section presents a structured exposition of the anomaly categories that wer
 This is followed by a concise technical synopsis that specifies the essential feature set, drawn mainly from textual attributes describing the client, sender, and recipient, supplemented where relevant by numerical indicators, and defines the target variable used in the detection models. The anomalies examined include misspecification of heating parameters (type, presence, and temperature), omission of required port or customs identifiers (BHT, ZAPP, and TCC), absence or superfluous inclusion of an additional billing reference, and selection of an inappropriate chassis type.  %\urlnote{https://metrans.eu/wp-content/uploads/2025/01/General25v2.pdf}
 
 Collectively, these six anomaly classes encompass a significatn part of costly order-entry errors and provide the empirical foundation for the modelling work discussed in subsequent sections.
-
-\rfc{Možná by to chtělo přidat grafy distribucí už sem. Ale plánuji je dát do sekce results?}
  
 \secc Heating Type Anomaly
 Metrans offers three primary heating methods for temperature-sensitive freight:
@@ -83,7 +81,7 @@ The Heating Temperature anomaly relates closely to the previously described Heat
 \medskip
 \clabel[distributionTemperatures]{Distribution of Temperatures}
 \picw=15cm \cinspic imgs/Distribution-TEMPERATURE.pdf
-\caption/f Distribution of Temperatures, note this are not °C but label created by LabelEncoder to give us an insight into number of different classes
+\caption/f Distribution of Temperatures, note this are not °C but label created by LabelEncoder to give us an insight into proportion of different classes
 \medskip
 
 A significant complexity arises from numerous missing ("NULL" or "None" or {\it Whitespace string}) values, see Table \ref[missingTemperatures] These omissions occurred due to a lack of standardization in historical data. Some Metrans employees in the past did not fill in those data. In present time, however, all temperature fields are required to be filled and if they are not, then we should treat them as anomalous.
@@ -187,8 +185,8 @@ The Chassis Type anomaly involves detecting inconsistencies in the selection of 
 
 \medskip
 \clabel[distributionChassisEx]{Distribution of Chassis (export)}
-\picw=15cm \cinspic imgs/Distribution-Additional-reference-export.pdf
-\caption/f Distribution of presence of Chassis Type (export, for import see \ref[distributionChassisIm])
+\picw=15cm \cinspic imgs/Distribution-Chassis-type-export.pdf
+\caption/f Distribution of Chassis Type (export, for import see \ref[distributionChassisIm])
 \medskip
 
 From a business perspective, selecting an incorrect chassis can lead to issues similar to those associated with selecting an incorrect heating type. But the costs may not be as severe. If the container is large enough for cargo and can be transported to the final destination without issues.

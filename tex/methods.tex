@@ -2,7 +2,7 @@
 % !TEX root = ambrojak-thesis-masters.tex
 \label[methods]
 \chap Methods for Anomaly Detection
-\rfc{This chapter (Theorethical background and approaches) should probably be revised. Maybe moved after anomaly and stated which models to use based on our data or keep it here and more thereical/general? But I do not like the writing style very much.}
+This theoretical chapter starts with a definition of Anomaly Detection and introduces the difference between supervised, semi-supervised and unsupervised problems. Afterwards a brief introduction to several methods typically associated with anomaly detection is given. They are split into statistical, clustering, tree-based, and deep learning sections. We end this chapter with discussion of which of these seems most appropriate for our data.
 
 
 \sec Introduction to Anomaly Detection
@@ -72,182 +72,49 @@ Metrans transportation order data are tabular, text-heavy and possibly multimoda
 
 Clustering-based anomaly detection methods group data points into clusters based on their similarity and identify anomalies as points that do not belong to any cluster or are significantly far from cluster centroids. These methods are unsupervised, making them suitable for scenarios where no labeled data is available. \cite[dataClustering]
 
-\secc Core Principles
-Cluster Membership:
-\begitems
-* Normal data points form dense, well-defined clusters.
-* Anomalies are isolated points or lie in low-density regions.
-\enditems
-Distance to Clusters:
-\begitems
-* Anomalies are distant from cluster centroids or boundaries.
-\enditems
+Clustering-based anomaly detection relies on two fundamental principles. First, normal observations form dense, well-defined clusters, whereas anomalies manifest as isolated points or occupy regions of markedly low density. Second, by measuring the distance of each observation to its corresponding cluster centroid or to cluster boundaries, one can distinguish anomalous points as those whose distances exceed typical thresholds.\cite[dataClustering, Aggarwal2016]
 
 
 \secc K-Means
-Methodology:
-\begitems
-* Assigns data points to k clusters by minimizing the distance to the nearest cluster centroid.
-* Anomalies are points with high distances from their assigned cluster centroid.
-\enditems
-\nl
-Strengths:
-\begitems
-* Simple and computationally efficient.
-\enditems
-\nl
-Limitations:
-\begitems
-* Requires predefining the number of clusters (k).
-* Assumes clusters are spherical and equally sized, which may not align with real-world data.
-\enditems
+The k-means algorithm partitions the dataset into a pre-specified number of clusters by iteratively assigning each point to the cluster with the nearest centroid and then recalculating centroids to minimize the within-cluster sum of squared distances. Once convergence is reached, points exhibiting unusually large distances from their assigned centroids are deemed anomalous. The appeal of k-means lies in its straightforward implementation and its computational efficiency, which render it suitable for large-scale datasets. However, its requirement to predefine the number of clusters can lead to suboptimal performance when the true cluster count is unknown, and its implicit assumption that clusters are spherical and of comparable size often fails for complex, real-world data distributions. \cite[Aggarwal2016]
+
 \secc DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
-Methodology:
-\begitems
-* Groups points into clusters based on local density. Points in sparse regions are classified as noise (anomalies).
-\enditems
-\nl
-Strengths:
-\begitems
-* Handles arbitrary cluster shapes.
-* Does not require specifying the number of clusters.
-\enditems
-\nl
-Limitations:
-\begitems
-* Sensitive to the choice of parameters (e.g., neighborhood radius ε and minimum points).
-* Struggles with varying density levels.
-\enditems
+Density-Based Spatial Clustering of Applications with Noise (DBSCAN) identifies clusters as contiguous regions of high point density, classifying observations in sparse regions as noise—that is, anomalies. This approach accommodates clusters of arbitrary shape and obviates the need to specify the number of clusters in advance. Nevertheless, its efficacy hinges on the appropriate selection of the neighborhood radius ($ε$) and the minimum number of points required to form a dense region ($minPts$). Moreover, DBSCAN may struggle when confronted with datasets exhibiting clusters of widely varying density. \cite[Aggarwal2016]
 
 \secc Hierarchical Clustering
-Methodology:
-\begitems
-* Constructs a hierarchy of clusters via agglomerative (bottom-up) or divisive (top-down) methods.
-* Anomalies are points that remain unclustered at a specific level of the hierarchy or form singleton clusters.
-\enditems
-\nl
-Strengths:
-\begitems
-* Provides a flexible structure for identifying outliers at various levels.
-\enditems
-\nl
-Limitations:
-\begitems
-* Computationally expensive for large datasets.
-\enditems
+Hierarchical clustering constructs a dendrogram representing nested groupings of observations, either by successively merging the closest clusters in an agglomerative (bottom-up) fashion or by recursively dividing the dataset in a divisive (top-down) manner. Observations that remain isolated at a chosen level of the hierarchy, or that appear as singleton clusters, are flagged as outliers. This multi-scale perspective facilitates the detection of anomalies at varying levels of granularity. The principal drawback of hierarchical methods is their computational complexity, which grows rapidly with dataset size and can render them impractical for very large datasets.\cite[Aggarwal2016]
+
+
 
 \secc Gaussian Mixture Models (GMM)
-Methodology:
-\begitems
- * Assumes data is generated from a mixture of Gaussian distributions.
-* Anomalies are points with low probabilities under the fitted Gaussian components.
-\enditems
-\nl
-Strengths:
-\begitems
-* Probabilistic foundation provides interpretable scores.
-\enditems
-\nl
-Limitations:
-\begitems
-* Assumes Gaussian clusters, which may not suit all data.
-\enditems
+Gaussian Mixture Models (GMMs) posit that the data are generated by a linear combination of multiple Gaussian distributions. By fitting such a mixture using expectation-maximization, one obtains probabilistic descriptions of cluster membership. Observations that yield low likelihoods under all fitted Gaussian components are classified as anomalous. The probabilistic nature of GMMs allows one to derive interpretable anomaly scores based on estimated densities. However, the assumption that clusters follow Gaussian shapes limits their applicability in cases where the true data structure deviates substantially from normality. \cite[Aggarwal2016]
 
 \secc Spectral Clustering
-Methodology:
-\begitems
-* Constructs a similarity graph and uses its eigenvalues to form clusters.
-* Points with weak connections to any cluster are flagged as anomalies.
-\enditems
-Strengths:
-\begitems
-* Effective for non-linear cluster structures.
-\enditems
-Limitations:
-\begitems
-* Computationally intensive for large datasets.
-\enditems
+Spectral clustering represents the dataset as a similarity graph and employs the eigenvalues and eigenvectors of the graph Laplacian to project observations into a lower-dimensional space, where clusters become more evident. Points with weak connectivity in this spectral embedding are identified as anomalies. This technique excels at discovering complex, non-linear cluster geometries that challenge conventional distance-based methods. Its principal limitation is the computational burden associated with constructing and decomposing large affinity matrices, which can impede scalability on sizable datasets. \cite[Aggarwal2016]
 
 \secc Strengths and Limitations
-{\em Strengths:}
-\begitems
-* {\bf Unsupervised:} No need for labeled data.
-* {\bf Versatile:} Handles various types of data.
-* {\bf Intuitive:} Anomalies are naturally defined by distance or density.
-\enditems
-{\em Limitations:}
-\begitems
-* {\bf Parameter Sensitivity:} Performance depends on parameters like k, ε, or minimum density.
-* {\bf High Dimensionality:} Clustering algorithms often struggle in high-dimensional spaces ("curse of dimensionality").
-* {\bf Scalability:} Methods like hierarchical or spectral clustering are computationally expensive for large datasets.
-\enditems
-
-Clustering-based methods are widely used in anomaly detection and are often combined with feature engineering or dimensionality reduction to improve performance.
+Clustering-based anomaly detection offers clear advantages: it does not require labeled data, adapts readily to diverse data types, and provides an intuitive framework in which anomalies are defined by deviations in distance or density. Nonetheless, these methods exhibit sensitivity to parameter choices—such as the number of clusters, density thresholds, and affinity definitions—and they frequently underperform in high-dimensional settings due to the curse of dimensionality. Furthermore, algorithms with hierarchical or spectral foundations often incur prohibitive computational costs when applied to large datasets. To mitigate these challenges, practitioners commonly combine clustering with feature engineering or dimensionality reduction techniques, thereby enhancing both detection accuracy and computational feasibility.\cite[Aggarwal2016]
 
 \sec Isolation Forest and Tree-Based Methods for Anomaly Detection
-
-Tree-based methods leverage the structure of decision trees to isolate anomalies based on their distinct characteristics. These techniques are particularly suited for unsupervised anomaly detection, as they do not rely on labeled data and work well with mixed data types.
+Tree-based methods exploit the hierarchical structure of decision trees to isolate observations with unusual characteristics. These approaches are well suited for unsupervised anomaly detection because they do not require labeled data and can accommodate mixed data types. By recursively partitioning the feature space, tree-based techniques effectively separate rare data points from the bulk of the distribution, making them robust tools for identifying outliers in diverse datasets. \cite[Aggarwal2016]
 
 \secc Isolation Forest
-Isolation Forest ({\em iForest}) is explicitly designed for anomaly detection. It operates on the principle that anomalies are easier to isolate than normal points because they are rare and distinct. \cite[isoForest]
-\nl
-{\em Description of the core algorithm}
-\begitems
-* {\bf Random Partitioning:} Randomly select a feature and split the dataset at a randomly chosen value within the feature's range.
-* {\bf Recursive Splitting:} Build a tree by recursively partitioning the data until all points are isolated or a maximum tree depth is reached.
-* {\bf Anomaly Scoring:} The depth of a point in the tree (number of splits required to isolate it) is inversely proportional to its anomaly score. Points isolated in fewer splits (shorter depth) are considered anomalous.
-\enditems
-\nl
-Strengths:
-\begitems
-* {\bf Computational Efficiency:} Works in linear time with respect to the number of data points.
-* {\bf Handles Mixed Data:} Suitable for both categorical and numerical features.
-* {\bf Scalable:} Works well with large datasets.
-\enditems
-\nl
-Limitations
-\begitems
-* Requires parameter tuning (e.g., number of trees, subsampling size).
-* May struggle with data where anomalies closely resemble the majority class.
-\enditems
+Isolation Forest (iForest, often abbreviated as iForest, was explicitly designed to detect anomalies by capitalizing on the fact that abnormal instances are typically few in number and exhibit distinct attribute values. The algorithm begins by constructing an ensemble of trees through random partitioning: at each node, it selects a feature at random and splits the data at a randomly chosen value within that feature’s observed range. This recursive splitting continues until every instance is isolated or a prescribed maximum tree depth is reached. The number of splits required to isolate an instance—the depth of the leaf in which it resides—is used to compute its anomaly score.\cite[isoForest]
+
+Shorter paths correspond to higher anomaly scores since fewer splits imply easier isolation. Isolation Forest operates in linear time relative to the number of observations, scales effectively to large datasets, and naturally handles both categorical and numerical features. However, its performance may depend on the choice of hyperparameters such as the number of trees and the subsampling size. Moreover, the algorithm may encounter difficulties when anomalies closely resemble the majority class, potentially requiring additional feature engineering or complementary detection methods.\cite[isoForest]
 
 \secc Decision Trees for Anomaly Detection
-{\bf Supervised Context: }
-When labeled data is available, decision trees (e.g., CART, C4.5) can classify anomalies explicitly. Fit a tree to distinguish between "normal" and "anomalous" data. Less interpretable in the presence of subtle anomalies.
+When labeled data are available, decision trees such as CART or C4.5 can be trained to distinguish between normal and anomalous examples in a supervised learning framework. In this context, the tree learns explicit decision rules that separate the two classes, although it may struggle to capture subtle or context-dependent anomalies without extensive feature design.\cite[Aggarwal2016]
 
-
-{\bf Unsupervised Context: }
-Adapt decision tree logic to identify patterns in the majority class and flag outliers. Use thresholds for decision paths where certain leaf nodes represent unusual patterns. Random splits or density-based measures are employed to enhance detection.
-\nl
-Strengths
-\begitems
-* Easy to interpret, especially for small trees.
-* Handles both numerical and categorical data.
-\enditems
-Limitations
-\begitems
-* Can overfit without proper pruning or parameter tuning.
-* Less robust to high-dimensional data compared to ensemble methods like Isolation Forest.
-\enditems
+In the absence of labels, decision tree logic can be adapted to identify majority-class patterns and to flag deviations as outliers. This unsupervised strategy typically involves growing trees with either random or density-guided splits and then defining thresholds on the resulting leaves: observations that fall into rarely populated or low-density leaves are flagged as anomalies. Despite their interpretability and ability to process mixed data types, standalone decision trees are prone to overfitting if not properly pruned or tuned, and they tend to be less robust in high-dimensional settings compared to ensemble methods.\cite[Aggarwal2016]
 
 \secc Random Forests for Anomaly Detection
-Random forests, while typically used for classification or regression, can be adapted for anomaly detection:
-\begitems
-* Compute leaf nodes for each tree and measure how often a data point lands in rare or low-density leaves.
-* Combine these measures to produce an anomaly score.
-\enditems
-\nl
-Strengths:
-\begitems
-* Benefits from ensemble robustness.
-* Can handle diverse types of data.
-\enditems
-\nl
-Limitations
-\begitems
-* Computationally more expensive than simpler tree-based models.
-* Requires careful interpretation of output anomaly scores
-\enditems
+Although random forests are commonly employed for classification and regression tasks, they can be adapted for anomaly detection by leveraging the distribution of data points across the ensemble’s leaf nodes. For each tree in the forest, one records the leaf into which a data point falls; leaves that contain few observations are indicative of uncommon patterns.\cite[Aggarwal2016]
+
+By aggregating these rarity measures across all trees, one derives an overall anomaly score for each instance. This ensemble approach benefits from the robustness and variance-reduction properties inherent to random forests and maintains compatibility with both categorical and numerical features. Nevertheless, it is more computationally intensive than simpler tree-based methods, and interpreting the resulting anomaly scores may require additional care to account for the ensemble’s complexity. \cite[Aggarwal2016]
+
+\secc Overview of Tree-based methods
+In summary, tree-based methods offer a compelling balance between interpretability and computational efficiency in anomaly detection. Isolation Forest provides a fast, scalable, and unsupervised baseline that excels in many scenarios, while decision trees and random forests extend this framework by introducing supervised classification capabilities or ensemble-based robustness. Selecting the appropriate method depends on the availability of labels, the dimensionality of the data, and the need for interpretability versus raw detection performance.\cite[Aggarwal2016]
 
 \sec Deep-learning-based methods
 Deep learning (DL) has rapidly enriched the anomaly detection toolbox by replacing handcrafted representations with features learned automatically from raw data, often yielding large accuracy gains in images, audio and high-dimensional sensor streams. Unlike classic statistical or tree-based methods that work directly in the original space, modern DL detectors embed inputs into a non-linear manifold where ``normality'' is easier to model and deviations stand out. \cite[deeplearninganomalydetection]
@@ -258,7 +125,15 @@ However, their limitations are significant. Deep models require large, clean dat
 
 Deep learning is most appropriate for image-based tasks, high-frequency multivariate time series, unstructured logs, and graph-structured data. In contrast, for structured, tabular datasets, such as those used in this thesis, classical models remain more suitable due to their lower complexity, higher interpretability, and comparable or superior performance.
 
-\sec Overview 
-Tree-based methods are particularly valuable when interpretability and computational efficiency are critical. Isolation Forest, in particular, is a strong baseline for anomaly detection in many scenarios.
-\nl
-\cite[aima, outlierSurvey]
+\sec Summary
+
+Statistical methods model expected patterns in the data and flag orders that deviate significantly. For categorical transport data, this often means identifying category values or combinations that are exceedingly rare or improbable under the historical distribution. For example, a {\em simple frequency-based approach} might assign anomaly scores to records containing infrequent sender-receiver combinations or unusual flag settings. These techniques are straightforward but mainly catch obvious outliers (e.g. a never-before-seen category value) and can miss anomalies that only emerge from subtle interactions between fields.
+
+Clustering methods detect anomalies by grouping similar instances and isolating those that don’t fit well in any cluster. Algorithms like k-means (or its categorical counterpart k-modes) form clusters of typical orders, then label points in sparse regions or far from any cluster centroid as outliers. Likewise, density-based clustering (e.g. DBSCAN) can mark orders as anomalous “noise” if they have no dense neighbor region. Clustering considers multiple features jointly and can reveal unusual combinations; however, it requires defining a distance or similarity measure for categorical data and may struggle with very high-dimensional one-hot encoded inputs.
+
+Tree-based methods such as Isolation Forest use ensembling of decision trees to separate anomalies from normal points. Isolation Forest randomly splits features; anomalous records (with unique or infrequent categories) tend to be isolated with fewer splits, yielding higher anomaly scores. These methods handle heterogeneous tabular data well – decision trees can branch on categorical features (especially with encodings or native support) to capture logical rules. 
+
+Deep learning methods model the normal data distribution with neural networks to catch outliers as deviations. An autoencoder network, for instance, can be trained to reconstruct normal orders, then orders that reconstruct poorly (high error) are flagged as anomalies. Such models can capture complex feature dependencies that simpler methods might miss, improving detection accuracy when ample data and computational resources are available.
+
+
+\nocite[aima]

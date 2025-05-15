@@ -2,8 +2,8 @@
 % !TEX root = ambrojak-thesis-masters.tex
 \label[approaches]
 \chap Approaches and Model Design for Anomaly Detection in Metrans Orders
-
-In this chapter, we present three distinct approaches to anomaly detection tailored for structured, tabular data as found in transport order records. Each method captures a different facet of unexpected behaviour: Misclassification Detection identifies inconsistencies between model predictions and recorded labels; Frequency-Based Outlier Detection flags rare combinations of categorical features; and Confidence-Based Anomaly Detection detects uncertain predictions indicative of atypical inputs. Together, these methods provide a complementary toolkit suited to the categorical, multi-modal, and label-sparse nature of real-world logistics data.
+In this chapter, we present three distinct approaches to anomaly detection tailored for structured, tabular data as found in transport order records. Each approach captures a different facet of unexpected behavior: Misclassification Detection identifies inconsistencies between model predictions and recorded labels; Frequency-Based Outlier Detection flags rare combinations of categorical features; and Confidence-Based Anomaly Detection detects uncertain predictions indicative of atypical inputs.
+These approaches were selected based on the most promising methods from the previous chapter. Simple frequency based classifier is an inspiration for \ref[FBOD]. For tree-based we have looked into classifying by anomaly score (sec \ref[CBAD]) but also into simply comparing the class prediction vs class actual (sec \ref[MD]). Working in scikit-learn also allowed us to use other classifiers than tree-based ones. Quick mention of them is in section \ref[]
 
 \label[MD]
 \sec Misclassification Detection
@@ -14,14 +14,39 @@ This technique is commonly associated with open-set recognition and out-of-distr
 TODO - add equation\rfc{TODO - add equation}
 
 
+\label[OtherClassifiers]
+\secc Used Classifiers
+Classifiers used (or at least tried but dropped due extreme training times) for MD and CBAD (sec \ref[CBAD]). We give a short description of each of them based on the scikit-learn documentation \cite[scikitlearnUserGuide].
+
+The {\bf RandomForestClassifier} builds an ensemble of decision trees using bootstrap sampling and random feature selection at each split. It reduces overfitting by averaging across diverse models, offering high accuracy and robustness, though at the cost of increased memory usage and interpretability.
+
+{\bf LogisticRegression} is a linear model that predicts class membership probabilities using the logistic (sigmoid) function. It’s fast, interpretable, and works well when the classes are linearly separable, but its performance drops sharply on non-linear problems.
+
+{\bf XGBClassifier} implements eXtreme Gradient Boosting, a regularized boosting technique that builds additive tree models in a sequential manner. Known for its strong performance on structured data, it often wins ML competitions, though it can overfit and is sensitive to hyperparameters.
+
+{\bf LGBMClassifier}, based on LightGBM, is a gradient boosting framework that uses histogram-based methods and leaf-wise tree growth. It is highly efficient on large datasets but may be unstable on smaller ones and requires cautious parameter tuning.
+
+The {\bf KerasNNClassifier} wraps neural networks built with Keras for classification tasks. It allows for flexible architectures to capture complex patterns but demands extensive tuning, significant computational resources, and careful handling to avoid overfitting.
+
+{\bf SVC} (Support Vector Classifier) finds the optimal hyperplane maximizing margin between classes, with optional kernel tricks to handle non-linear boundaries. It performs well in high-dimensional spaces but scales poorly with large datasets and requires careful parameter selection.\fnote{It had to be dropped on most instances due to this issue.}
+
+{\bf SGDClassifier} uses stochastic gradient descent to optimize linear classifiers such as logistic regression or linear SVMs. It is well-suited for large-scale problems and online learning but is sensitive to hyperparameters and feature scaling.
+
+{\bf ComplementNB} is a variant of Naive Bayes tailored for imbalanced text classification. It improves robustness by adjusting the likelihoods based on complement classes, offering better performance than MultinomialNB in skewed datasets.
+
+{\bf MultinomialNB} assumes features represent counts (like term frequencies in text) and calculates class probabilities using naive Bayes assumptions. It is fast and simple, often effective for NLP tasks, but fails when features are not truly discrete or independent.
+
+{\bf BernoulliNB} models binary features using Bernoulli distributions, making it useful for classification tasks involving presence/absence indicators. It’s effective for binary text features but ignores frequency information, limiting performance in many NLP settings.
+
+{\bf KNeighborsClassifier} assigns labels based on the majority vote among k nearest neighbors in the feature space. It requires no training phase and is easy to understand but suffers from poor scalability and performance degradation in high-dimensional spaces.
+
+
 \secc Advantages and Limitations
 One advantage of this approach is its simplicity and ease of implementation. Since the system relies on standard supervised classification pipelines, it integrates seamlessly into the existing model infrastructure, especially within the scikit-learn ecosystem. Moreover, this method provides high interpretability: when an anomaly is detected, the predicted class offers a direct suggestion as to what the "correct" category might have been, facilitating manual inspection and correction.
 
 However, this approach is subject to several critical limitations. A notable issue is the potential for multi-modal consistency. In real-world logistics data, it is often the case that multiple class labels may be valid for the same set of features. For instance, a client may legitimately use either a 20-foot or a 40-foot container type depending on the specific goods or logistics partner involved. In such cases, a mismatch between predicted and observed labels does not necessarily imply an error, leading to false positive detections.
 
 Furthermore, misclassification detection assumes that the classifier is well-calibrated and that the training data sufficiently captures the diversity of valid cases. In practice, this assumption may not hold, especially in dynamic business environments such as intermodal logistics, where new routes, clients, or service configurations may emerge regularly.
-
-\rfc{Přidat Typy Klasifikačních modelů, které jsem používal... To je celkem důelžitý.}
 
 \secc Applicability in This Thesis
 In the context of anomalies defined in previous chapter, misclassification detection serves as a baseline method for identifying anomalous transport orders. The classifier is trained using historical, verified (i.e., assumed error-free) data, and evaluated on newly submitted or manually modified orders. This method is particularly suitable for use cases where the target variable is relatively stable and categorical (e.g., heating type, presence of BHT/ ZAPP/ TCC number). However, for features that naturally support multiple valid values per context, additional anomaly detection strategies are required, such as frequency-based outlier scoring (\ref[FBOD]) or confidence calibration (\ref[CBAD], to reduce the rate of false alarms.
