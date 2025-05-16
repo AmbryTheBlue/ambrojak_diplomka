@@ -22,25 +22,137 @@ In this project, Git and GitLab are used for version control, branching, and  sa
 {\bf GitLab} is a web-based platform built on Git that integrates version control, CI / CD, and project management. It supports collaboration, code reviews, and automation, making it ideal for DevOps and team workflow.\urlnote{https://about.gitlab.com/}
 
 \sec My models and pipelines
-\rfc{V téhle sekci bych chtěl přidat ukázky kódu, pipeline popřípadě nějaký diagram? Dává Smysl?}
+This section provides more precise description of the steps involved in our machine learning pipeline. This includes detailing preprocessing, vectorization and synthetic anomaly generation. With some small illustrative code snippets, the key files are in full located in the Appendix \ref[src-snippets].\fnote{For more curious readers, the source code in full is located in \url{GitHub}}
+\rfc{Addd Github Link}
+
+At the end of this section is a description of full workflow.
+
+\begtt \hisyntax{Python}
+def create_pipelines(X_cols, estimators=None):
+    """
+    Creates a pipelines with text preprocessing and the given estimators.
+    """
+    if not estimators:
+        estimators = [
+            ("LogRegression", LogisticRegression()),
+            ('rf', RandomForestClassifier(n_estimators=100, random_state=42)),
+            ('xgb', XGBClassifier(use_label_encoder=False,
+             eval_metric='logloss', random_state=42)),
+            ('lgbm', LGBMClassifier(use_label_encoder=False,
+             random_state=42, verbosity=-1)),
+            # ('svc', SVC(probability=True, random_state=42)),
+            # probability=True enables predict_proba
+            #Probably takes the longest time
+            ('KerasNNClassifier', KerasClassifier(
+                model=build_model, epochs=5, verbose=0)),
+        ]
+    voting = VotingClassifier(
+        estimators=estimators,
+        voting="soft",
+    )
+
+    cols = [('BagOfWords' + col, TfidfVectorizer(), col) for col in X_cols]
+    basic_pipeline = [
+        ('TextPreprocessor', TextPreprocessor(X_cols)),
+        ('VectorizeText', ColumnTransformer(cols)),
+    ]
+    pipelines = []
+    for estimator in estimators + [('VotingClassifier', voting)]:
+        pipelines.append(Pipeline(basic_pipeline + [estimator]))
+    return pipelines
+\endtt
 
 \secc Preprocessing
-In the preprocessing stage, all textual fields undergo normalization to eliminate superficial variations that do not affect semantics. Company and client names, sender and receiver identifiers, goods descriptions (in multiple languages), and HS codes are first stripped of leading and trailing whitespace, with consecutive spaces collapsed into a single space. We then remove diacritics and map every character to its ASCII equivalent, which ensures that entries such as “Název společnosti,” “NAZEV SPOLECNOSTI ,” and “ nazev    spolecnosti ” are treated identically. Special characters beyond alphanumeric symbols are also dropped or replaced consistently.
+In the preprocessing stage, all textual fields undergo normalization to eliminate superficial variations that do not affect semantics. Company and client names, sender and receiver identifiers, goods descriptions (in multiple languages), and HS codes are first stripped of leading and trailing whitespace, with consecutive spaces collapsed into a single space. We then remove diacritics and map every character to its ASCII equivalent, which ensures that entries such as “Název společnosti”\fnote{In English ``Company Name''}, “NAZEV SPOLECNOSTI ”, and “ nazev       spolecnosti ” are treated identically. Special characters beyond alphanumeric symbols are also dropped or replaced consistently.
 
-For binary indicator columns—such as those denoting the presence of an additional billing reference or specific container markers (BHT/TCC/ZAPP)—we map all variants (for example, “X” an actual reference string, an empty string, or just ''NULL'') into a clean {0, 1} encoding. Chassis types, originally text strings describing container categories, are subjected to the same whitespace and casing normalization rules. Finally, heating temperature values, which were provided as inconsistent strings such as '40°C', '40 ° C', '40C', '40' '40 °', or even blank entries, are processed by stripping non-digit symbols and whitespace, then parsed into numeric Celsius values; any unparsable values are marked as missing.
+\begtt \hisyntax{Python}
+def preprocess_text(self, text):
+    # Normalize and replace accented chars with ASCII equivalents
+    text = unicodedata.normalize('NFKD', text)
+    text = text.encode('ascii', 'ignore').decode('ascii')
+    text = re.sub(r'\s', ' ', text)
+    text = text.upper()
+    text = re.sub(r'[^A-Z0-9]', ' ', text)
+    text = re.sub(r' +', ' ', text)
+    return text.strip()
+\endtt
 
-\secc Vecorization
+For binary indicator columns—such as those denoting the presence of an additional billing reference or specific container markers (BHT/TCC/ZAPP)—we map all variants (for example, “X” an actual reference string, an empty string, or just ''NULL'') into a clean {0, 1} encoding. Chassis types, originally text strings describing container categories, are subjected to the same whitespace and casing normalization rules. Finally, heating temperature values, which were provided as inconsistent strings such as '+40°C', '40 ° C', '+40C', '40', '40 °', or even blank entries, are processed by stripping non-digit symbols and whitespace, then parsed into numeric Celsius values; any unparsable values are marked as missing.
+
+\begtt \hisyntax{Python}
+if self.target_col in ["HAS_HEAING", "HAS_CUSTOMS_NUMBER"]:
+    X[self.target_col] = X[self.target_col].map(
+        {None: 0.0, ' ': 0.0, 'X': 1.0}).fillna(X[self.target_col])
+    X[self.target_col] = pd.to_numeric(
+        X[self.target_col], errors='coerce')
+elif self.target_col in ["TEMP_FROM", "TEMP_TO", "TEMPERATURE"]:
+    X[self.target_col] = X[self.target_col].apply(lambda x: int(
+    str(x).replace(
+    "°","").replace("C","").replace('+','').strip()) 
+            if pd.notnull(x) and str(x).replace("°", "").replace("C",
+            "").replace('+','').strip().isdigit() 
+            else -1000 # np.nan # causes problems later
+            # create dummy value that is far away from everything
+            )
+    X[self.target_col] = pd.to_numeric(
+        X[self.target_col], errors='coerce')
+elif self.target_col in ["ADITIONAL_REF_IM", "ADDITIONAL_REF_EX"]:
+    X[self.target_col] = X[self.target_col].astype(str)
+    X[self.target_col] = X[self.target_col].apply(
+        lambda x: 0 if pd.isna(x) or str(x).strip() == '' else 1)
+# And so on for other anomalies
+\endtt
+
+\secc Vectorization
 After cleaning, each text feature is converted into a numeric representation via an independent Bag-of-Words (BoW) transformer. We chose the BoW approach because company names often differ only by suffix or country, and shared tokens capture their relatedness. This method also tolerates minor typos by overlapping unigrams, and treats high-frequency tokens equally, which is desirable when even common words (such as the name of a major client) carry meaningful information rather than noise. \fnote{For this reason we have opted out of using TF-IDF vectorization.} The resulting sparse vectors, one per feature, are then horizontally concatenated into a single high-dimensional input vector.
 
-Because the target columns are binary or categorical flags, they are handled separately using a simple LabelEncoder that maps each class to an integer code rather than using BoW.
+Because the target columns are binary or categorical flags, they are handled separately using a simple "LabelEncoder" that maps each class to an integer code rather than using BoW.
 
 \secc Synthetic anomaly generators
 To address the scarcity of real-world anomalies and stress-test our detection models, we generate synthetic anomalies by randomly corrupting target labels in otherwise normal records. For training set we do not introduce any synthetic entries. However for our testing set we generate for each record its anomalous counterpart by changing the label of target column.
 
 This procedure simulates errors such as missing or mistyped flags in production orders while preserving the data’s overall structure. Because all features are Label-Encoded prior to injection, these synthetic anomalies integrate seamlessly into the downstream pipeline.
 
-Using them only on the testing sets forbids us from introducing any False Positive anomalies into our training data. That is, we are trying to avoid a situation where for given features there may be several valid values of the target column. And our ``anomalous'' version with swapped labels would still be completely normal in reality.
+\begtt \hisyntax{Python}
+def create_shuffled_mapping(categories):
+    """
+    Creates a shuffled mapping for anomaly generation.
+    """
+    shuffled = categories.copy()
+    if len(categories) <= 1:
+        return dict(zip(categories, categories))
+    while True:
+        np.random.shuffle(shuffled)
+        if not np.any(shuffled == categories):
+            break
+    return dict(zip(categories, shuffled))
+\endtt
 
-\secc Pipeline
+Using them only on the testing sets forbids us from introducing any False anomalies into our training data. That is, we are trying to avoid a situation where for given features there may be several valid values of the target column. And our ``anomalous'' version with swapped labels would still be completely normal in reality.
 
-\secc Steps Combined
+\secc Combined Workflow
+
+\begitems
+* For a chosen anomaly type load appropriate data from Metrans database
+
+* Preprocess the target column, apply "LabelEncoder" if necessary (this ensures labels are consistent in training and testing sets).
+
+* Split the data into training and test sets, where testing compromises 10\%
+
+* For a selected estimators (such as Random Forest or Neural Network) apply our sklearn pipeline that does the following:
+
+\begitems \style a
+* Preprocess feature columns
+* Vectorize those columns
+* Train the estimator
+* generate and anomalous dataset from testing dataset
+* Apply the pipeline's predict function on testing and anomalous dataset
+* Evaluate the predictions
+* Save the TP, FP, TN, FN
+\enditems
+
+* Compare the performance of different estimators on our chosen metric - generally 
+ F1 (but it could be Precision, Recall, Accuracy etc.)
+
+ * Select the best performing model and save it using MLflow for future use.
+\enditems
