@@ -363,5 +363,40 @@ CBAD(t=0.9):ComplementNB & 0.500 & 0.470 & 0.030 & 0.000 & 0.530 & 1.000 & 0.516
 \caption/t Performance metrics per model in TEMPERATURE (sorted by F1)
 \endinsert
 
+\midinsert \clabel[tableTEMPERATUREwithinfo]{Model Comparison TEMPERATURE with info}
+\ctable{l|rrrrrrr|r}{
+Model & TP & FP & TN & FN & Acc & Rec & Prec & F1 \crli \tskip4pt
+CBAD(t=0.1):LogRegression & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.989 & 0.994 \cr
+CBAD(t=0.1):sgdModifiedHuber & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.988 & 0.994 \cr
+FBODBackOff-preprocess & 0.499 & 0.006 & 0.494 & 0.001 & 0.993 & 0.998 & 0.988 & 0.993 \cr
+FBOD & 0.499 & 0.009 & 0.491 & 0.001 & 0.991 & 0.999 & 0.983 & 0.991 \cr
+CBAD(t=0.1):sgdLogLoss & 0.497 & 0.006 & 0.494 & 0.003 & 0.991 & 0.994 & 0.988 & 0.991 \cr
+FBODBackOff & 0.496 & 0.006 & 0.494 & 0.004 & 0.991 & 0.993 & 0.988 & 0.991 \cr
+FBOD-preprocess & 0.497 & 0.008 & 0.492 & 0.003 & 0.990 & 0.994 & 0.985 & 0.990 \cr
+CBAD(t=0.1):MultinomialNB & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.952 & 0.975 \cr
+MD:LogRegression & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
+MD:rf & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
+MD:KerasNNClassifier & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.948 & 0.973 \cr
+MD:KNeighborsClassifier & 0.499 & 0.027 & 0.473 & 0.001 & 0.972 & 0.999 & 0.948 & 0.973 \cr
+CBAD(t=0.1):VotingClassifier & 0.478 & 0.005 & 0.495 & 0.022 & 0.973 & 0.957 & 0.989 & 0.973 \cr
+CBAD(t=0.1):rf & 0.478 & 0.006 & 0.494 & 0.022 & 0.973 & 0.957 & 0.988 & 0.972 \cr
+CBAD(t=0.1):ComplementNB & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.928 & 0.962 \cr
+CBAD(t=0.9):KNeighborsClassifier & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.927 & 0.962 \cr
+CBAD(t=0.9):ComplementNB & 0.500 & 0.043 & 0.457 & 0.000 & 0.957 & 1.000 & 0.921 & 0.959 \cr
+MD:VotingClassifier & 0.478 & 0.027 & 0.473 & 0.022 & 0.952 & 0.957 & 0.947 & 0.952 \cr
+CBAD(t=0.1):KNeighborsClassifier & 0.475 & 0.024 & 0.476 & 0.025 & 0.951 & 0.950 & 0.952 & 0.951 \cr
+MD:lgbm & 0.499 & 0.054 & 0.446 & 0.001 & 0.946 & 0.999 & 0.903 & 0.949 \cr
+CBAD(t=0.1):BernoulliNB & 0.499 & 0.114 & 0.386 & 0.001 & 0.886 & 0.998 & 0.815 & 0.897 \cr
+CBAD(t=0.9):sgdModifiedHuber & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.801 & 0.889 \cr
+CBAD(t=0.9):rf & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.799 & 0.889 \cr
+CBAD(t=0.9):LogRegression & 0.500 & 0.129 & 0.371 & 0.000 & 0.871 & 1.000 & 0.794 & 0.885 \cr
+CBAD(t=0.9):MultinomialNB & 0.500 & 0.132 & 0.368 & 0.000 & 0.868 & 1.000 & 0.791 & 0.884 \cr
+CBAD(t=0.9):VotingClassifier & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
+CBAD(t=0.9):BernoulliNB & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
+CBAD(t=0.9):sgdLogLoss & 0.500 & 0.144 & 0.356 & 0.000 & 0.856 & 1.000 & 0.776 & 0.874 \cr
+}
+\caption/t Performance metrics per model in TEMPERATURE with info (sorted by F1)
+\endinsert
+
 
 \sec Discussion
