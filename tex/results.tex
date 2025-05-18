@@ -156,7 +156,7 @@ The performance of various models can be seen in \ref[tableHeatingTypeAnomalyBoW
 
 In several more tables we have tried to decompose the major sources of our success. First of all we have removed our preprocessing (see Table \ref[tableHeatingTypeAnomalyNoPreproces]). Preprocessing seems to have made some improvement, but not much. I suspect that it is because internally BoW or TF-IDF provided by sklearn does the most crucial parts of preprocessing by itself (e.g. case unification). But it seem to have some small improvements for. At least FBOD models, see Table \ref[tableComparepreprocessingFBOD].
 
-Second we have tried swichting from BoW to TF-IDF (see Table \ref[tableHeatingTypeAnomalyGoodsChassis]). Once again the TF-IDF version is a bit worse but not a significant ammount. It seem the best improvement over the baseline model \ref[tableHeatingTypeAnomaly] was adding more information about the order. Both chassis and goods information has helped, although goods seem to be the more important (see Table \ref[tableHeatingTypeAnomalyGoods]).
+Second, we have tried switching from BoW to TF-IDF (see Table \ref[tableHeatingTypeAnomalyGoodsChassis]). Once again, the TF-IDF version is a bit worse but not a significant ammount. The best improvement over the baseline model \ref[tableHeatingTypeAnomaly] seems to be adding more information about the order. The information on both chassis and goods has helped, although the goods seem to be the more important (see Table \ref[tableHeatingTypeAnomalyGoods]).
 
 Overall even the performance of baseline models was very good. That is not suprising as further look into anomaly scores (see Figure \ref[AnomalyScore]) shows us that for most models the difference between anomalous and nonanomlaous data is significant. Despite that we have made some further Accuracy (and F1 score) gains using better preprocessing, vectorization and most importantly adding more info about the transportation order.
 The models seem to have been Random Forests (as were expected) but are closely followed by CBAD with even unexpect estimators such as LogRegression or SGD.
@@ -196,6 +196,56 @@ FBOD & 0.489 & 0.006 & 0.494 & 0.011 & 0.984 & 0.979 & 0.989 & 0.984 \cr
 }
 \caption/t Performance metrics in FBOD with and without preprocessing (sorted by F1)
 \endinsert
+
+\secc Temperature
+Assumed to be one of the harder anomalies in our set, the temperature anomaly is split into three subtypes TEMPERATURE (heating medium temperature), TEMP_TO (upper bound on temperature of the goods) and TEMP_FROM (lower bound on the temperature of the goods).
+
+We have treated each possible temperature as a separate category. With our preprocessing of the target column we were able to go from roughly 150 classes to around 30-70 classes\fnote{Depends on subtype, TEMP_TO and TEMP_FROM are around 70, while TEMPERATURE is at 30. This may explain better performance on the latter.} where the majority of cases (90\%+) were from a few (5) classes.
+
+Thus, we also treated this as a categorical problem.\fnote{We will face similar issues in chassis type anyway, see \ref[chassis-results]}. Another issue was an abundance of NULL values. After discussing the current MIS3 database with Metrans, I have decided to omit them from the training (and testing) dataset, because in the current standard these values cannot be left blank and should always be filled out. \fnote{For those interested the performance on the models on the problem with NULLs see Table \ref[tableTEMPERATUREwithNULLS] or Table \ref[tableTEMPERATUREwithNULLSCBAD]}
+
+In the data set without NULLs, we could reach a F1 score of $0.995$, see Table \ref[tableTEMPERATURE]. We have experimented with using purely "LabelEncoder" without our preprocessing and we have reached $0.994$, see Table \ref[tableTEMPERATURELabelEncoder]. After that we have used the promising tactic of using more information about the transport order - that is goods (description CZ/DE, HS Code) and chassis type, see Table \ref[tableTEMPERATUREwithinfo]. This is the most surprsing result as it did not only not improve but actively worsened our performance to F1 score of $0.994$.
+
+The performances for TEMP_FROM (Table \ref[tableTEMP_FROM]) and TEMP_TO (Table \ref[tableTEMP_TO]) were a littler worse - $0.985$ and $0.967$ respectively.
+
+Overall, we see that the decision to include FBOD and CBAD models has allowed us to surpass simple MD models. However the best classifier in CBAD were not only expected RF (Random Forest a tree-based method) but also SGD \fnote{This estimator implements regularized linear models with stochastic gradient descent \url{https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html}} or even simple Logistic Regression.
+
+
+\midinsert \clabel[tableTEMPERATUREwithinfo]{Model Comparison TEMPERATURE with info}
+\ctable{l|rrrrrrr|r}{
+Model & TP & FP & TN & FN & Acc & Rec & Prec & F1 \crli \tskip4pt
+CBAD(t=0.1):LogRegression & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.989 & 0.994 \cr
+CBAD(t=0.1):sgdModifiedHuber & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.988 & 0.994 \cr
+FBODBackOff-preprocess & 0.499 & 0.006 & 0.494 & 0.001 & 0.993 & 0.998 & 0.988 & 0.993 \cr
+FBOD & 0.499 & 0.009 & 0.491 & 0.001 & 0.991 & 0.999 & 0.983 & 0.991 \cr
+CBAD(t=0.1):sgdLogLoss & 0.497 & 0.006 & 0.494 & 0.003 & 0.991 & 0.994 & 0.988 & 0.991 \cr
+FBODBackOff & 0.496 & 0.006 & 0.494 & 0.004 & 0.991 & 0.993 & 0.988 & 0.991 \cr
+FBOD-preprocess & 0.497 & 0.008 & 0.492 & 0.003 & 0.990 & 0.994 & 0.985 & 0.990 \cr
+CBAD(t=0.1):MultinomialNB & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.952 & 0.975 \cr
+MD:LogRegression & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
+MD:rf & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
+MD:KerasNNClassifier & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.948 & 0.973 \cr
+MD:KNeighborsClassifier & 0.499 & 0.027 & 0.473 & 0.001 & 0.972 & 0.999 & 0.948 & 0.973 \cr
+CBAD(t=0.1):VotingClassifier & 0.478 & 0.005 & 0.495 & 0.022 & 0.973 & 0.957 & 0.989 & 0.973 \cr
+CBAD(t=0.1):rf & 0.478 & 0.006 & 0.494 & 0.022 & 0.973 & 0.957 & 0.988 & 0.972 \cr
+CBAD(t=0.1):ComplementNB & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.928 & 0.962 \cr
+CBAD(t=0.9):KNeighborsClassifier & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.927 & 0.962 \cr
+CBAD(t=0.9):ComplementNB & 0.500 & 0.043 & 0.457 & 0.000 & 0.957 & 1.000 & 0.921 & 0.959 \cr
+MD:VotingClassifier & 0.478 & 0.027 & 0.473 & 0.022 & 0.952 & 0.957 & 0.947 & 0.952 \cr
+CBAD(t=0.1):KNeighborsClassifier & 0.475 & 0.024 & 0.476 & 0.025 & 0.951 & 0.950 & 0.952 & 0.951 \cr
+MD:lgbm & 0.499 & 0.054 & 0.446 & 0.001 & 0.946 & 0.999 & 0.903 & 0.949 \cr
+CBAD(t=0.1):BernoulliNB & 0.499 & 0.114 & 0.386 & 0.001 & 0.886 & 0.998 & 0.815 & 0.897 \cr
+CBAD(t=0.9):sgdModifiedHuber & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.801 & 0.889 \cr
+CBAD(t=0.9):rf & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.799 & 0.889 \cr
+CBAD(t=0.9):LogRegression & 0.500 & 0.129 & 0.371 & 0.000 & 0.871 & 1.000 & 0.794 & 0.885 \cr
+CBAD(t=0.9):MultinomialNB & 0.500 & 0.132 & 0.368 & 0.000 & 0.868 & 1.000 & 0.791 & 0.884 \cr
+CBAD(t=0.9):VotingClassifier & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
+CBAD(t=0.9):BernoulliNB & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
+CBAD(t=0.9):sgdLogLoss & 0.500 & 0.144 & 0.356 & 0.000 & 0.856 & 1.000 & 0.776 & 0.874 \cr
+}
+\caption/t Performance metrics per model in TEMPERATURE with info (sorted by F1)
+\endinsert
+
 
 \secc Has Heating
 We have tried several models, see table \ref[tableHasHeating]. The best models are reaching a point with units of errors per 10,000 orders. This makes sense as there are likely only a few companies in Central Europe that order tank heating. But this proves our decision to split of this anomaly from Heating type anomaly as important. As this anomaly is easier and would artificially improve our performance on the latter.
@@ -262,141 +312,48 @@ CBAD:ComplementNB & 0.458 & 0.043 & 0.457 & 0.042 & 0.915 & 0.915 & 0.915 & 0.91
 \caption/t Performance metrics per model in Additional Reference Export (sorted by F1)
 \endinsert
 
-\sec Temperature
+\label[chassis-results]
+\secc Chassis Type
+This has proved as probably the hardest anomaly. F1 score sits at $0.98$ on both import orders (Table \ref[tableChassisimport]) and export (Table \ref[tableChassisexport]). That is, however,  after filtering out NULL values (just as we did in the Temperature anomaly). In the version with missing values we are looking at F1 around $0.89$ (Table \ref[tableChassisimportwithNULLs]).
+As we have expected simple MD models perform poorly (it  is possible that several container types are ok). And The topof these tables are FBOD and CBAD. For CBAD it is still necessary to choose an appropriate threshold.
 
-\midinsert \clabel[tableTEMPERATUREwithNULLS]{Model ComparisonTEMPERATURE with NULLS}
-\ctable{l|rrrrrrr|r}{
-Model & TP & FP & TN & FN & Accuracy & Recall & Precision & F1 \crli \tskip4pt
-FBODBackOff-preprocess & 0.500 & 0.015 & 0.485 & 0.000 & 0.984 & 0.999 & 0.970 & 0.984 \cr
-FBOD & 0.499 & 0.016 & 0.484 & 0.001 & 0.984 & 0.999 & 0.970 & 0.984 \cr
-FBOD-preprocess & 0.499 & 0.016 & 0.484 & 0.001 & 0.984 & 0.998 & 0.970 & 0.984 \cr
-FBODBackOff & 0.498 & 0.015 & 0.485 & 0.002 & 0.982 & 0.996 & 0.970 & 0.983 \cr
-MD:VotingClassifier & 0.500 & 0.179 & 0.321 & 0.000 & 0.821 & 1.000 & 0.737 & 0.848 \cr
-MD:KerasNNClassifier & 0.500 & 0.179 & 0.321 & 0.000 & 0.821 & 1.000 & 0.737 & 0.848 \cr
-MD:LogRegression & 0.500 & 0.179 & 0.321 & 0.000 & 0.821 & 1.000 & 0.736 & 0.848 \cr
-CBAD:sgdModifiedHuber & 0.499 & 0.180 & 0.320 & 0.001 & 0.820 & 0.999 & 0.735 & 0.847 \cr
-MD:rf & 0.496 & 0.179 & 0.321 & 0.004 & 0.817 & 0.992 & 0.735 & 0.845 \cr
-CBAD:LogRegression & 0.497 & 0.180 & 0.320 & 0.003 & 0.817 & 0.994 & 0.734 & 0.844 \cr
-CBAD:sgdLogLoss & 0.500 & 0.186 & 0.314 & 0.000 & 0.814 & 1.000 & 0.728 & 0.843 \cr
-CBAD:VotingClassifier & 0.499 & 0.191 & 0.309 & 0.001 & 0.808 & 0.998 & 0.723 & 0.839 \cr
-CBAD:rf & 0.488 & 0.180 & 0.320 & 0.012 & 0.808 & 0.976 & 0.731 & 0.836 \cr
-MD:lgbm & 0.500 & 0.215 & 0.285 & 0.000 & 0.785 & 1.000 & 0.700 & 0.823 \cr
-CBAD:MultinomialNB & 0.500 & 0.218 & 0.282 & 0.000 & 0.782 & 1.000 & 0.697 & 0.821 \cr
-CBAD:BernoulliNB & 0.495 & 0.225 & 0.275 & 0.005 & 0.770 & 0.989 & 0.688 & 0.811 \cr
-MD:KNeighborsClassifier & 0.500 & 0.278 & 0.222 & 0.000 & 0.722 & 1.000 & 0.643 & 0.782 \cr
-CBAD:KNeighborsClassifier & 0.500 & 0.282 & 0.218 & 0.000 & 0.718 & 0.999 & 0.639 & 0.780 \cr
-CBAD:ComplementNB & 0.500 & 0.445 & 0.055 & 0.000 & 0.554 & 1.000 & 0.529 & 0.692 \cr
-}
-\caption/t Performance metrics per model in TEMPERATURE with NULLS (sorted by F1)
-\endinsert
+And the more unexpected part are the models that perform on top for this anomaly such as SGD (once with LogLoss and once with ModifiedHuber), Logistic Regression or even voting classifiers, which have in previous anomalies performed roughly in the middle of the classifiers they are composed of.
 
-\midinsert \clabel[tableTEMPERATUREwithNULLSCBAD]{Model threshold Comparison TEMPERATURE with NULLs }
+\midinsert \clabel[tableChassisimport]{Model Comparison Chassis import}
 \ctable{l|rrrrrrr|r}{
 Model & TP & FP & TN & FN & Acc & Rec & Prec & F1 \crli \tskip4pt
-CBAD(t=0.1):rf & 0.500 & 0.015 & 0.485 & 0.000 & 0.984 & 0.999 & 0.970 & 0.985 \cr
-FBODBackOff-preprocess & 0.500 & 0.015 & 0.485 & 0.000 & 0.984 & 0.999 & 0.970 & 0.984 \cr
-FBOD & 0.499 & 0.016 & 0.484 & 0.001 & 0.984 & 0.999 & 0.970 & 0.984 \cr
-FBOD-preprocess & 0.499 & 0.016 & 0.484 & 0.001 & 0.984 & 0.998 & 0.970 & 0.984 \cr
-FBODBackOff & 0.498 & 0.015 & 0.485 & 0.002 & 0.982 & 0.996 & 0.970 & 0.983 \cr
-CBAD(t=0.1):KNeighborsClassifier & 0.488 & 0.016 & 0.484 & 0.012 & 0.972 & 0.975 & 0.969 & 0.972 \cr
-CBAD(t=0.1):LogRegression & 0.487 & 0.018 & 0.482 & 0.013 & 0.969 & 0.975 & 0.964 & 0.969 \cr
-CBAD(t=0.1):sgdLogLoss & 0.477 & 0.016 & 0.484 & 0.023 & 0.961 & 0.954 & 0.967 & 0.960 \cr
-CBAD(t=0.1):MultinomialNB & 0.499 & 0.057 & 0.443 & 0.001 & 0.942 & 0.998 & 0.898 & 0.945 \cr
-CBAD:sgdModifiedHuber & 0.499 & 0.180 & 0.320 & 0.001 & 0.820 & 0.999 & 0.735 & 0.847 \cr
-CBAD:LogRegression & 0.497 & 0.180 & 0.320 & 0.003 & 0.817 & 0.994 & 0.734 & 0.844 \cr
-CBAD:sgdLogLoss & 0.500 & 0.186 & 0.314 & 0.000 & 0.814 & 1.000 & 0.728 & 0.843 \cr
-CBAD:VotingClassifier & 0.499 & 0.191 & 0.309 & 0.001 & 0.808 & 0.998 & 0.723 & 0.839 \cr
-CBAD:rf & 0.488 & 0.180 & 0.320 & 0.012 & 0.808 & 0.976 & 0.731 & 0.836 \cr
-CBAD:MultinomialNB & 0.500 & 0.218 & 0.282 & 0.000 & 0.782 & 1.000 & 0.697 & 0.821 \cr
-CBAD:BernoulliNB & 0.495 & 0.225 & 0.275 & 0.005 & 0.770 & 0.989 & 0.688 & 0.811 \cr
-CBAD(t=0.9):BernoulliNB & 0.495 & 0.226 & 0.274 & 0.005 & 0.769 & 0.989 & 0.686 & 0.810 \cr
-CBAD(t=0.1):BernoulliNB & 0.491 & 0.221 & 0.279 & 0.009 & 0.770 & 0.982 & 0.690 & 0.810 \cr
-CBAD(t=0.1):VotingClassifier & 0.342 & 0.015 & 0.485 & 0.158 & 0.827 & 0.684 & 0.959 & 0.799 \cr
-CBAD:KNeighborsClassifier & 0.500 & 0.282 & 0.218 & 0.000 & 0.718 & 0.999 & 0.639 & 0.780 \cr
-CBAD(t=0.1):ComplementNB & 0.499 & 0.440 & 0.060 & 0.001 & 0.559 & 0.998 & 0.531 & 0.694 \cr
-CBAD:ComplementNB & 0.500 & 0.445 & 0.055 & 0.000 & 0.554 & 1.000 & 0.529 & 0.692 \cr
-CBAD(t=0.9):ComplementNB & 0.500 & 0.455 & 0.045 & 0.000 & 0.545 & 1.000 & 0.524 & 0.687 \cr
-CBAD(t=0.9):KNeighborsClassifier & 0.500 & 0.465 & 0.035 & 0.000 & 0.535 & 1.000 & 0.518 & 0.683 \cr
-CBAD(t=0.9):sgdModifiedHuber & 0.500 & 0.470 & 0.030 & 0.000 & 0.530 & 1.000 & 0.515 & 0.680 \cr
-CBAD(t=0.9):LogRegression & 0.500 & 0.473 & 0.027 & 0.000 & 0.527 & 1.000 & 0.514 & 0.679 \cr
-CBAD(t=0.9):MultinomialNB & 0.500 & 0.474 & 0.026 & 0.000 & 0.526 & 1.000 & 0.513 & 0.678 \cr
-CBAD(t=0.9):rf & 0.497 & 0.468 & 0.032 & 0.003 & 0.529 & 0.994 & 0.515 & 0.678 \cr
-CBAD(t=0.9):VotingClassifier & 0.500 & 0.486 & 0.014 & 0.000 & 0.513 & 0.999 & 0.507 & 0.673 \cr
-CBAD(t=0.9):sgdLogLoss & 0.500 & 0.491 & 0.009 & 0.000 & 0.509 & 0.999 & 0.504 & 0.670 \cr
-CBAD(t=0.1):sgdModifiedHuber & 0.225 & 0.003 & 0.497 & 0.275 & 0.722 & 0.449 & 0.987 & 0.617 \cr
+CBAD(t=0.1):sgdLogLoss & 0.493 & 0.013 & 0.487 & 0.007 & 0.980 & 0.985 & 0.974 & 0.980 \cr
+FBODBackOff & 0.491 & 0.028 & 0.472 & 0.009 & 0.963 & 0.981 & 0.946 & 0.963 \cr
+CBAD(t=0.1):KNeighborsClassifier & 0.485 & 0.034 & 0.466 & 0.015 & 0.951 & 0.969 & 0.935 & 0.952 \cr
+CBAD(t=0.1):BernoulliNB & 0.494 & 0.067 & 0.433 & 0.006 & 0.927 & 0.988 & 0.880 & 0.931 \cr
+CBAD(t=0.1):sgdModifiedHuber & 0.420 & 0.019 & 0.481 & 0.080 & 0.901 & 0.840 & 0.957 & 0.894 \cr
+CBAD(t=0.1):LogRegression & 0.420 & 0.020 & 0.480 & 0.080 & 0.899 & 0.839 & 0.954 & 0.893 \cr
+FBOD-preprocess & 0.437 & 0.052 & 0.448 & 0.063 & 0.886 & 0.875 & 0.894 & 0.884 \cr
+FullFBODBackOff & 0.400 & 0.028 & 0.472 & 0.100 & 0.872 & 0.800 & 0.934 & 0.862 \cr
+FBODBackOff-preprocess & 0.395 & 0.027 & 0.473 & 0.105 & 0.868 & 0.789 & 0.936 & 0.856 \cr
+MD:KerasNNClassifier & 0.498 & 0.186 & 0.314 & 0.002 & 0.812 & 0.996 & 0.728 & 0.841 \cr
+MD:rf & 0.498 & 0.186 & 0.314 & 0.002 & 0.812 & 0.996 & 0.728 & 0.841 \cr
+FullFBODBackOff-preprocess & 0.375 & 0.027 & 0.473 & 0.125 & 0.848 & 0.749 & 0.933 & 0.831 \cr
+CBAD(t=0.1):rf & 0.368 & 0.025 & 0.475 & 0.132 & 0.843 & 0.736 & 0.936 & 0.824 \cr
+MD:LogRegression & 0.486 & 0.195 & 0.305 & 0.014 & 0.791 & 0.972 & 0.714 & 0.823 \cr
+MD:KNeighborsClassifier & 0.498 & 0.228 & 0.272 & 0.002 & 0.771 & 0.996 & 0.686 & 0.813 \cr
+CBAD(t=0.1):VotingClassifier & 0.356 & 0.023 & 0.477 & 0.144 & 0.833 & 0.712 & 0.939 & 0.810 \cr
+MD:VotingClassifier & 0.431 & 0.199 & 0.301 & 0.069 & 0.732 & 0.863 & 0.684 & 0.763 \cr
+CBAD(t=0.1):ComplementNB & 0.432 & 0.214 & 0.286 & 0.068 & 0.718 & 0.863 & 0.669 & 0.754 \cr
+CBAD(t=0.1):MultinomialNB & 0.342 & 0.065 & 0.435 & 0.158 & 0.777 & 0.684 & 0.840 & 0.754 \cr
+CBAD(t=0.9):BernoulliNB & 0.488 & 0.363 & 0.137 & 0.012 & 0.625 & 0.977 & 0.574 & 0.723 \cr
+FBOD & 0.316 & 0.058 & 0.442 & 0.184 & 0.758 & 0.631 & 0.845 & 0.723 \cr
+CBAD(t=0.9):MultinomialNB & 0.482 & 0.365 & 0.135 & 0.018 & 0.618 & 0.965 & 0.569 & 0.716 \cr
+CBAD(t=0.9):rf & 0.499 & 0.405 & 0.095 & 0.001 & 0.594 & 0.998 & 0.552 & 0.711 \cr
+MD:lgbm & 0.494 & 0.398 & 0.102 & 0.006 & 0.597 & 0.988 & 0.554 & 0.710 \cr
+CBAD(t=0.9):KNeighborsClassifier & 0.496 & 0.405 & 0.095 & 0.004 & 0.591 & 0.992 & 0.550 & 0.708 \cr
+CBAD(t=0.9):LogRegression & 0.499 & 0.437 & 0.063 & 0.001 & 0.562 & 0.998 & 0.533 & 0.695 \cr
+CBAD(t=0.9):sgdModifiedHuber & 0.499 & 0.439 & 0.061 & 0.001 & 0.560 & 0.999 & 0.532 & 0.694 \cr
+CBAD(t=0.9):VotingClassifier & 0.500 & 0.444 & 0.056 & 0.000 & 0.556 & 1.000 & 0.530 & 0.692 \cr
+CBAD(t=0.9):ComplementNB & 0.499 & 0.452 & 0.048 & 0.001 & 0.547 & 0.999 & 0.525 & 0.688 \cr
+CBAD(t=0.9):sgdLogLoss & 0.500 & 0.476 & 0.024 & 0.000 & 0.524 & 0.999 & 0.512 & 0.677 \cr
 }
-\caption/t Performance metrics per model in TEMPERATURE with NULLS, CBAD with different thresholds (sorted by F1)
+\caption/t Performance metrics per model in Chassis import (sorted by F1)
 \endinsert
-
-\midinsert \clabel[tableTEMPERATURE]{Model Comparison TEMPERATURE}
-\ctable{l|rrrrrrr|r}{
-Model & TP & FP & TN & FN & Acc & Rec & Prec & F1 \crli \tskip4pt
-CBAD(t=0.1):sgdModifiedHuber & 0.500 & 0.004 & 0.496 & 0.000 & 0.995 & 0.999 & 0.992 & 0.995 \cr
-CBAD(t=0.1):KNeighborsClassifier & 0.500 & 0.024 & 0.476 & 0.000 & 0.976 & 1.000 & 0.954 & 0.976 \cr
-FBODBackOff-preprocess & 0.500 & 0.024 & 0.476 & 0.000 & 0.975 & 1.000 & 0.953 & 0.976 \cr
-CBAD(t=0.1):VotingClassifier & 0.499 & 0.024 & 0.476 & 0.001 & 0.975 & 0.998 & 0.954 & 0.976 \cr
-CBAD(t=0.1):LogRegression & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.953 & 0.975 \cr
-FBOD-preprocess & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.953 & 0.975 \cr
-CBAD(t=0.1):rf & 0.499 & 0.024 & 0.476 & 0.001 & 0.975 & 0.998 & 0.953 & 0.975 \cr
-FBOD & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.953 & 0.975 \cr
-CBAD(t=0.1):sgdLogLoss & 0.500 & 0.026 & 0.474 & 0.000 & 0.974 & 0.999 & 0.951 & 0.975 \cr
-MD:VotingClassifier & 0.500 & 0.028 & 0.472 & 0.000 & 0.972 & 1.000 & 0.947 & 0.973 \cr
-MD:rf & 0.500 & 0.028 & 0.472 & 0.000 & 0.972 & 1.000 & 0.947 & 0.973 \cr
-MD:KerasNNClassifier & 0.500 & 0.028 & 0.472 & 0.000 & 0.972 & 1.000 & 0.947 & 0.973 \cr
-MD:KNeighborsClassifier & 0.500 & 0.028 & 0.472 & 0.000 & 0.972 & 1.000 & 0.947 & 0.973 \cr
-MD:LogRegression & 0.498 & 0.028 & 0.472 & 0.002 & 0.970 & 0.996 & 0.947 & 0.971 \cr
-CBAD(t=0.1):MultinomialNB & 0.499 & 0.033 & 0.467 & 0.001 & 0.966 & 0.997 & 0.939 & 0.967 \cr
-FBODBackOff & 0.489 & 0.024 & 0.476 & 0.011 & 0.964 & 0.978 & 0.952 & 0.965 \cr
-CBAD(t=0.1):ComplementNB & 0.499 & 0.042 & 0.458 & 0.001 & 0.956 & 0.997 & 0.922 & 0.958 \cr
-CBAD(t=0.9):MultinomialNB & 0.500 & 0.048 & 0.452 & 0.000 & 0.952 & 1.000 & 0.912 & 0.954 \cr
-CBAD(t=0.9):KNeighborsClassifier & 0.500 & 0.051 & 0.449 & 0.000 & 0.949 & 1.000 & 0.908 & 0.952 \cr
-CBAD(t=0.9):BernoulliNB & 0.500 & 0.051 & 0.449 & 0.000 & 0.949 & 0.999 & 0.908 & 0.951 \cr
-CBAD(t=0.9):LogRegression & 0.500 & 0.052 & 0.448 & 0.000 & 0.948 & 1.000 & 0.907 & 0.951 \cr
-CBAD(t=0.9):VotingClassifier & 0.500 & 0.061 & 0.439 & 0.000 & 0.939 & 1.000 & 0.891 & 0.942 \cr
-CBAD(t=0.1):BernoulliNB & 0.478 & 0.047 & 0.453 & 0.022 & 0.932 & 0.957 & 0.911 & 0.933 \cr
-CBAD(t=0.9):rf & 0.478 & 0.047 & 0.453 & 0.022 & 0.931 & 0.956 & 0.910 & 0.932 \cr
-CBAD(t=0.9):sgdLogLoss & 0.500 & 0.075 & 0.425 & 0.000 & 0.925 & 1.000 & 0.870 & 0.930 \cr
-MD:lgbm & 0.500 & 0.078 & 0.422 & 0.000 & 0.922 & 1.000 & 0.865 & 0.927 \cr
-CBAD(t=0.9):sgdModifiedHuber & 0.500 & 0.461 & 0.039 & 0.000 & 0.539 & 1.000 & 0.520 & 0.685 \cr
-CBAD(t=0.9):ComplementNB & 0.500 & 0.470 & 0.030 & 0.000 & 0.530 & 1.000 & 0.516 & 0.680 \cr
-}
-\caption/t Performance metrics per model in TEMPERATURE (sorted by F1)
-\endinsert
-
-\midinsert \clabel[tableTEMPERATUREwithinfo]{Model Comparison TEMPERATURE with info}
-\ctable{l|rrrrrrr|r}{
-Model & TP & FP & TN & FN & Acc & Rec & Prec & F1 \crli \tskip4pt
-CBAD(t=0.1):LogRegression & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.989 & 0.994 \cr
-CBAD(t=0.1):sgdModifiedHuber & 0.500 & 0.006 & 0.494 & 0.000 & 0.994 & 1.000 & 0.988 & 0.994 \cr
-FBODBackOff-preprocess & 0.499 & 0.006 & 0.494 & 0.001 & 0.993 & 0.998 & 0.988 & 0.993 \cr
-FBOD & 0.499 & 0.009 & 0.491 & 0.001 & 0.991 & 0.999 & 0.983 & 0.991 \cr
-CBAD(t=0.1):sgdLogLoss & 0.497 & 0.006 & 0.494 & 0.003 & 0.991 & 0.994 & 0.988 & 0.991 \cr
-FBODBackOff & 0.496 & 0.006 & 0.494 & 0.004 & 0.991 & 0.993 & 0.988 & 0.991 \cr
-FBOD-preprocess & 0.497 & 0.008 & 0.492 & 0.003 & 0.990 & 0.994 & 0.985 & 0.990 \cr
-CBAD(t=0.1):MultinomialNB & 0.500 & 0.025 & 0.475 & 0.000 & 0.975 & 0.999 & 0.952 & 0.975 \cr
-MD:LogRegression & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
-MD:rf & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.950 & 0.974 \cr
-MD:KerasNNClassifier & 0.500 & 0.027 & 0.473 & 0.000 & 0.973 & 1.000 & 0.948 & 0.973 \cr
-MD:KNeighborsClassifier & 0.499 & 0.027 & 0.473 & 0.001 & 0.972 & 0.999 & 0.948 & 0.973 \cr
-CBAD(t=0.1):VotingClassifier & 0.478 & 0.005 & 0.495 & 0.022 & 0.973 & 0.957 & 0.989 & 0.973 \cr
-CBAD(t=0.1):rf & 0.478 & 0.006 & 0.494 & 0.022 & 0.973 & 0.957 & 0.988 & 0.972 \cr
-CBAD(t=0.1):ComplementNB & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.928 & 0.962 \cr
-CBAD(t=0.9):KNeighborsClassifier & 0.500 & 0.039 & 0.461 & 0.000 & 0.961 & 1.000 & 0.927 & 0.962 \cr
-CBAD(t=0.9):ComplementNB & 0.500 & 0.043 & 0.457 & 0.000 & 0.957 & 1.000 & 0.921 & 0.959 \cr
-MD:VotingClassifier & 0.478 & 0.027 & 0.473 & 0.022 & 0.952 & 0.957 & 0.947 & 0.952 \cr
-CBAD(t=0.1):KNeighborsClassifier & 0.475 & 0.024 & 0.476 & 0.025 & 0.951 & 0.950 & 0.952 & 0.951 \cr
-MD:lgbm & 0.499 & 0.054 & 0.446 & 0.001 & 0.946 & 0.999 & 0.903 & 0.949 \cr
-CBAD(t=0.1):BernoulliNB & 0.499 & 0.114 & 0.386 & 0.001 & 0.886 & 0.998 & 0.815 & 0.897 \cr
-CBAD(t=0.9):sgdModifiedHuber & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.801 & 0.889 \cr
-CBAD(t=0.9):rf & 0.500 & 0.125 & 0.375 & 0.000 & 0.875 & 1.000 & 0.799 & 0.889 \cr
-CBAD(t=0.9):LogRegression & 0.500 & 0.129 & 0.371 & 0.000 & 0.871 & 1.000 & 0.794 & 0.885 \cr
-CBAD(t=0.9):MultinomialNB & 0.500 & 0.132 & 0.368 & 0.000 & 0.868 & 1.000 & 0.791 & 0.884 \cr
-CBAD(t=0.9):VotingClassifier & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
-CBAD(t=0.9):BernoulliNB & 0.500 & 0.140 & 0.360 & 0.000 & 0.860 & 1.000 & 0.781 & 0.877 \cr
-CBAD(t=0.9):sgdLogLoss & 0.500 & 0.144 & 0.356 & 0.000 & 0.856 & 1.000 & 0.776 & 0.874 \cr
-}
-\caption/t Performance metrics per model in TEMPERATURE with info (sorted by F1)
-\endinsert
-
 
 \sec Discussion
