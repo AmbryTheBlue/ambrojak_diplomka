@@ -57,19 +57,21 @@ This makes it perfect for intermodal transportation companies like Metrans that 
 
 % {\bf Apache Flink} is an open-source stream processing framework for real-time data analytics. It is designed to process large-scale, unbounded data streams with low latency and high throughput. Flink supports both batch and stream processing and provides advanced features like stateful computations, event time processing, and windowing. It is highly scalable, fault-tolerant, and integrates well with other data systems like Apache Kafka, Hadoop, and various data stores. Flink is commonly used in applications requiring real-time analytics, monitoring, and event-driven processing.
 
+
+\medskip
+\clabel[ComponentDiagram]{Diagram For Anomaly Detection Component}
+\picw=14cm \cinspic imgs/component.pdf
+\caption/f Diagram For Anomaly Detection Component
+\medskip
+
 \sec Component model
 TODO more text
 
-\medskip
-\clabel[ComponentDiagram]{Diagram}
-\picw=14cm \cinspic imgs/component.pdf
-\caption/f Diagram For Anomaly detection
-\medskip
 
-\begitems
-* A component was developed that loaded the best model for each anomaly was developed.
-* The model was transferred using mlflow.
-* The model was applied on new orders.
-* Orders were found using Rabbit events triggered by Metrans
-* If anomaly was detected a notification was sent to human to double check the order.
-\enditems
+% \begitems
+% * A component was developed that loaded the best model for each anomaly was developed.
+% * The model was transferred using mlflow.
+% * The model was applied on new orders.
+% * Orders were found using Rabbit events triggered by Metrans
+% * If anomaly was detected a notification was sent to human to double check the order.
+% \enditems

@@ -1,7 +1,9 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
 \label[implementation]
-\chap Implementation and System Architecture
+\chap Implementation
+This chapter details the implementation and system architecture of the project, covering the technical stack utilized, the machine learning models and pipelines developed, and the combined workflow for anomaly detection. The technical foundation includes Python and various libraries such as Jupyter, scikit-learn, and Keras, alongside tools for managing the machine learning lifecycle like MLflow, and version control systems Git and GitLab.
+
 \sec Technical stack used
 
 \secc Python, Jupyter, scikit-learn, Keras
@@ -156,4 +158,7 @@ Using them only on the testing sets forbids us from introducing any False anomal
  * Select the best performing model and save it using MLflow for future use.
 \enditems
 
-In the next chapter, we describe how we evaluated the results of these pipelines for various models, approaches, and anomalies.
+
+Overall he machine learning pipeline involves several key steps: preprocessing textual data to normalize variations, vectorizing text features into a numerical format using a Bag-of-Words approach, and generating synthetic anomalies to robustly test the detection models. The preprocessing stage handles different data types, including textual fields, binary indicators, chassis types, and temperature values, applying specific normalization and encoding techniques to ensure data consistency. Vectorization converts cleaned text into sparse numerical vectors, which are then combined into a single input vector for the models. Synthetic anomalies are created by corrupting target labels in test data to simulate real-world errors without affecting the training set.
+
+In the next chapter, we describe the evaluation process of the results of these pipelines for various models, approaches, and anomalies. And show the results with additional comments.

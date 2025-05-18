@@ -3,6 +3,10 @@
 \label[results]
 \chap Evaluation of Detection Models
 
+This chapter starts with the evaluation of anomaly detection models, adopting performance metrics from binary classification theory. The approach involves comparing model predictions against ground-truth labels and visualizing trade-offs as score thresholds are adjusted. Key metrics such as the confusion matrix, precision, recall, and F1 score are discussed, alongside visualization techniques.
+
+Afterwards follows a section with results where we compare different models on the anomlies defined at the beggining of this thesis. And we end the chapter with dicussion of the results.
+
 \sec Evaluation methods
 Modern anomaly detection systems borrow their performance metrics from binary classification theory: they compare the predictions of the model (or anomaly scores) with ground-truth labels and visualize the trade-offs that arise when a score threshold is moved. Below is a concise overview of the core tabular metrics—confusion matrix, precision, recall and F1—and the threshold-sweeping visualisations.
 
@@ -161,7 +165,7 @@ For all anomalies, we have used $200k$ transport orders from the archives. We ha
 \secc Heating Type
 The performance of various models can be seen in \ref[tableHeatingTypeAnomalyBoW]. The best models reach F1 scores over $0.99$. In this table we have used our preprocessing methods, applied BoW vecotorization and used information about client, reciever, goods and chassis type.
 
-In several more tables we have tried to decompose the major sources of our success. First of all we have removed our preprocessing (see Table \ref[tableHeatingTypeAnomalyNoPreproces]). Preprocessing seems to have made some improvement, but not much. I suspect that it is because internally BoW or TF-IDF provided by sklearn does the most crucial parts of preprocessing by itself (e.g. case unification). But it seem to have some small improvements for. At least FBOD models, see Table \ref[tableComparepreprocessingFBOD].
+In several more tables we have tried to decompose the major sources of our success. First of all we have removed our preprocessing (see Table \ref[tableHeatingTypeAnomalyNoPreprocess]). Preprocessing seems to have made some improvement, but not much. I suspect that it is because internally BoW or TF-IDF provided by sklearn does the most crucial parts of preprocessing by itself (e.g. case unification). But it seem to have some small improvements for. At least FBOD models, see Table \ref[tableComparepreprocessingFBOD].
 
 Second, we have tried switching from BoW to TF-IDF (see Table \ref[tableHeatingTypeAnomalyGoodsChassis]). Once again, the TF-IDF version is a bit worse but not a significant ammount. The best improvement over the baseline model \ref[tableHeatingTypeAnomaly] seems to be adding more information about the order. The information on both chassis and goods has helped, although the goods seem to be the more important (see Table \ref[tableHeatingTypeAnomalyGoods]).
 
@@ -364,3 +368,9 @@ CBAD(t=0.9):sgdLogLoss & 0.500 & 0.476 & 0.024 & 0.000 & 0.524 & 0.999 & 0.512 &
 \endinsert
 
 \sec Discussion
+
+The evaluation of models across different anomaly types reveals varied performance outcomes. For the Heating Type anomaly, the best models achieved F1 scores exceeding $0.99$. The analysis indicates that preprocessing, while helpful, did not contribute as significantly as the inclusion of additional information about the transport order, such as goods and chassis type. The overall strong performance for this anomaly is attributed to the significant difference in anomaly scores between anomalous and non-anomalous data for most models.
+
+In contrast, the Temperature anomaly, initially considered harder, also showed high performance, with F1 scores reaching $0.995$ in datasets without NULL values. Interestingly, adding more information about the transport order, which proved beneficial for the Heating Type, did not improve performance for the Temperature anomaly and in some cases slightly worsened it. The Has Heating anomaly proved to be quite trivial, with most models achieving near-perfect accuracy. This supports the decision to evaluate it separately from the Heating Type anomaly.
+
+The Customs number anomaly showed good performance, with further improvements observed when incorporating information about port destinations. The Additional Billing Reference anomaly was found to be trivial, with most models achieving very high accuracy, although marginal improvements were still possible by adding information about the receiver. Finally, the Chassis Type anomaly appears to be one of the most challenging, with F1 scores around $0.98$ after filtering out NULL values. The performance on this anomaly also highlighted that unexpected models like SGD and Logistic Regression performed well, alongside the anticipated FBOD models.

@@ -6,12 +6,16 @@ In this chapter, we present three distinct approaches to anomaly detection tailo
 These approaches were selected based on the most promising methods from the previous chapter. Simple frequency based classifier is an inspiration for \ref[FBOD]. For tree-based we have looked into classifying by anomaly score (sec \ref[CBAD]) but also into simply comparing the class prediction vs class actual (sec \ref[MD]). Working in scikit-learn also allowed us to use other classifiers than tree-based ones. Quick mention of them is in section \ref[OtherClassifiers].
 
 \label[MD]
-\sec Misclassification Detection
-Misclassification detection is an approach to anomaly identification that leverages a supervised classifier trained exclusively on non-anomalous data. The core idea is straightforward: a model is trained to predict a categorical target variable representing the expected outcome (e.g., heating type, chassis type) for each transport order. At inference time, the model's predicted class is compared against the actual recorded class present in the data. If the prediction diverges from the observed label, the data point is considered anomalous.
+\sec Misclassification Detection (MD)
+Misclassification detection (MD) is an approach to anomaly identification that leverages a supervised classifier trained exclusively on non-anomalous data. The core idea is straightforward: a model is trained to predict a categorical target variable representing the expected outcome (e.g., heating type, chassis type) for each transport order. At inference time, the model's predicted class is compared against the actual recorded class present in the data. If the prediction diverges from the observed label, the data point is considered anomalous.
 
 This technique is commonly associated with open-set recognition and out-of-distribution (OOD) detection in supervised learning contexts. While the classifier is not exposed to anomalies during training, it is assumed that such anomalous instances will result in incorrect or low-confidence predictions. Usage of confidence is further discussed in \ref[CBAD]. The premise here aligns with the idea that misclassified  data points are often indicative of input patterns that differ fundamentally from those observed during training \cite[hendrycks2018baseline].
 
-TODO - add equation\rfc{TODO - add equation}
+An observation x with a true label y is considered anomalous if a classifier $C$, trained on normal data, predicts a label $\hat{y}$ that is different from $y$:
+
+$$\hbox{ Anomaly detected if:  } C(x) \neq y \eqmark[eq-MD]$$
+
+where $C$ is a classifier trained on non-anomalous data.
 
 
 \label[OtherClassifiers]
@@ -55,7 +59,12 @@ In the context of anomalies defined in previous chapter, misclassification detec
 \sec Confidence-Based Anomaly Detection (CBAD)
 Confidence-Based Anomaly Detection (CBAD) is a method that assesses the reliability of a model’s prediction in relation to the actual observed label. It is based on the premise that a well-calibrated classifier should assign a high probability to the correct class, assuming the input lies within the distribution observed during training. When this confidence is low, the model effectively signals that it is uncertain about the correctness of the given label. Such cases are treated as potential anomalies.
 
+
 This approach is closely related to the Maximum Softmax Probability (MSP) technique \cite[hendrycks2018baseline], which was originally developed for detecting out-of-distribution inputs in image classification models. However, the general principle is directly applicable to categorical decision problems, including the transport order domain investigated in this thesis.
+
+$$\hbox{Anomaly detected if } P(y | x) < \tau \eqmark[eq-CBAD]$$
+
+where $P(y∣x)$ is the probability assigned to the true class $y$ for observation $x$ by a trained classifier $C$, and $\tau$  is a predefined threshold.
 
 \secc Model Requirements and Relation to Misclassification Detection
 This method can be applied using the same classification models used for Misclassification Detection, see Section \ref[MD].
@@ -81,10 +90,14 @@ In practice, the threshold will probably be later adjusted based on the models p
 In the context of this work, confidence-based anomaly detection serves as a lightweight method for capturing uncertain decisions made by the classifier. It complements the hard-decision strategy of Misclassification Detection and the distributional rarity approach of Frequency-Based Outlier Detection (\ref[FBOD]). When used in tandem, these methods provide a comprehensive framework for identifying anomalous transport orders using different perspectives on what constitutes “unexpected” behavior.
 
 \label[FBOD]
-\sec  Frequency-based outlier detection
+\sec  Frequency-Based Outlier Detection (FBOD)
 Frequency-based outlier detection (FBOD) is a non-parametric, unsupervised method for identifying anomalies in categorical or mixed-type data. This approach is grounded in the assumption that valid observations—such as transport orders with correct field combinations—occur frequently in the training data, while anomalous or erroneous cases tend to be rare or entirely absent. Consequently, orders that contain uncommon combinations of categorical values (e.g., unusual client–reciever–heating-type configurations) are flagged as potential anomalies.
 
 This method is conceptually related to the Histogram-Based Outlier Score (HBOS), but is applied here to joint categorical statistics rather than independent numerical features. While HBOS decomposes multivariate data into univariate histograms and aggregates their scores under a naïve independence assumption, this work's implementation maintains joint counts for selected feature combinations to better reflect categorical dependencies present in logistics data.\cite[HBOS]
+
+$$
+\hbox{Anomaly detected if } {{\rm Count}(F, y)\over {\rm Count}(F) + 1} < \tau$$
+where $Count(F,y)$ is the frequency of the specific feature combination $F$ occurring with the true class label $y$ in the training data, $Count(F)$ is the total frequency of the feature combination $F$ in the training data, and $\tau$ is a predefined threshold. The $'+1'$ in the denominator is a form of smoothing to handle cases where $Count(F)$ is zero.
 
 \secc Advantages and Limitations
 
@@ -94,22 +107,16 @@ Another major advantage is its tolerance to multi-modality. Unlike classificatio
 
 Nevertheless, there are inherent limitations. The method requires the selection of an appropriate set of categorical features to define the key. If too few features are selected, anomalies may not stand out; if too many, the frequency table becomes sparse, increasing the risk of false positives due to low support. This issue solved by treating all unseen feature keys as okay data. Additionally, this approach does not model interdependencies beyond the selected keys.
 
-
-TODO - definetly add equation as it is a custom models\rfc{TODO - definetly add equation}
-
-
 \secc Applicability in This Thesis
 In this thesis, frequency-based outlier detection is applied to several anomaly detection tasks involving categorical decision fields, such as heating type and chassis selection. The technique is implemented directly using pandas for offline analysis and is compatible with integration into a real-time streaming pipeline due to its low computational overhead. While it is not based on probabilistic modeling, it complements other methods by capturing rare-but-valid edge cases that may be overlooked by classifiers.
 
 \sec Back-Off Smoothing for Sparse Frequency Estimation
 In practice, the effectiveness of frequency-based outlier detection (as described in Section \ref[FBOD]) is limited by the sparsity of high-cardinality categorical combinations. When a transport order contains a feature configuration that has not previously occurred in the training data, the system—if relying solely on exact frequency matches—fails to produce a score. To address this limitation, we adopt a back-off smoothing strategy, inspired by techniques developed for n-gram language models and sparse contingency table estimation \cite[katzBackoff,chen-goodman-1996-empirical].
 
-Back-off smoothing provides a principled mechanism for estimating probabilities (or frequencies) of unseen or rare events by recursively falling back to less specific contexts. In our implementation, this corresponds to progressively reducing the dimensionality of the feature combination $k=(f_1, f_2, f_3)$ used for frequency lookup.
+Back-off smoothing provides a principled mechanism for estimating probabilities (or frequencies) of unseen or rare events by recursively falling back to less specific contexts. In our implementation, this corresponds to progressively reducing the dimensionality of the feature combination $F=(f_1, f_2, f_3)$ used for frequency lookup.
 
 Specifically, the system attempts to evaluate the anomaly score using the full feature key. If this key is absent from the frequency table, it backs off to a lower-order projection—e.g., dropping one or more features—until a valid count is found. For example, given a triple $(f_1, f_2, f_3)$ the lookup proceeds in the following order:
 $$
 (f_1, f_2, f_3), (f_1, f_2), (f_1, f_3), (f_2, f_3), (f_1), (f_2), (f_3)
 $$
 The first successful match determines the anomaly score. If no match is found at any level, the order is treated as normal. The reason being that if no sender and reciever matches this new order then it is likely a new client where we lack any sort of data. In general application, it would have been treated as maximally anomalous.
-
-\rfc{Přidat specifické přístupy pro teplotu}
