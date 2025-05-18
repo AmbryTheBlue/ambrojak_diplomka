@@ -27,7 +27,9 @@ The table \ref[confusionMatrixTable] is explaining TP, FP, FN and TN. And an exa
 \caption/f Confusion matrix for FBOD models (on Customs Anomaly)
 \medskip
 
-Also there is a need to mention Type I and Type II errors. Type I error is an alternative name for FP (False Positive). And Type II error is a synonym for FN (False Negative) \cite[Chadha2020DistilledEvaluationMetrics]. They are, in my opinion, unnecessarily confusing names. And there is no need to mention them anywhere else in this thesis, as the terms FP and FN are sufficient, and furthermore, their names already hint at their meaning.
+Also there is a need to mention Type I and Type II errors. Type I error is an alternative name for FP (False Positive). And Type II error is a synonym for FN (False Negative) \cite[Chadha2020DistilledEvaluationMetrics].
+
+They are, in my opinion, unnecessarily confusing names. And there is no need to mention them anywhere else in this thesis, as the terms FP and FN are sufficient, and furthermore, their names already hint at their meaning.
 
 \secc Accuracy
 The simplest way to measure the performance of the model is to measure the frequency with which the prediction of the model matches the actual class. This measure may hide crucial information when one class is very rare \cite[Chadha2020DistilledEvaluationMetrics].
@@ -150,7 +152,12 @@ When examining a precision–recall curve, the ideal situation is represented by
 
 The {\bf Area Under the Precision–Recall Curve (AUPRC)} provides a single-number summary of this trade-off across all thresholds. Because it focuses exclusively on the behavior of the classifier with respect to the positive class, AUPRC is especially informative when positive examples are rare. In contrast to the ROC AUC, which averages performance in both classes and can appear deceptively high if the negative class dominates, the AUPRC more accurately reflects a model’s ability to find positive cases while avoiding false alarms in imbalanced settings. \cite[murphy2012machine]
 
+\label[secResults]
 \sec Results
+In the following subsections we look into how well and what models performed on each anomaly type. We provide several tables that serve as a basis to discuss each anomaly type. Some tables are located in the Appendix \ref[app-tables] to at least slightly improve the redibility of this section.
+
+For all anomalies, we have used $200k$ transport orders from the archives. We have split of 10\% to use as testing data. And for anomalous data we have altered these testing data by switching target labels and afterwards merged them with original testing data.
+
 \secc Heating Type
 The performance of various models can be seen in \ref[tableHeatingTypeAnomalyBoW]. The best models reach F1 scores over $0.99$. In this table we have used our preprocessing methods, applied BoW vecotorization and used information about client, reciever, goods and chassis type.
 

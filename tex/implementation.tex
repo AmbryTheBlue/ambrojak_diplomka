@@ -21,9 +21,8 @@ In this project, Git and GitLab are used for version control, branching, and  sa
 
 {\bf GitLab} is a web-based platform built on Git that integrates version control, CI / CD, and project management. It supports collaboration, code reviews, and automation, making it ideal for DevOps and team workflow.\urlnote{https://about.gitlab.com/}
 
-\sec My models and pipelines
-This section provides more precise description of the steps involved in our machine learning pipeline. This includes detailing preprocessing, vectorization and synthetic anomaly generation. With some small illustrative code snippets, the key files are in full located in the Appendix \ref[src-snippets].\fnote{For more curious readers, the source code in full is located in \url{GitHub}}
-\rfc{Addd Github Link}
+\sec Models and pipelines
+This section provides more precise description of the steps involved in our machine learning pipeline. This includes detailing preprocessing, vectorization and synthetic anomaly generation. With some small illustrative code snippets, the key files are in full located in the Appendix \ref[src-snippets].\fnote{For more curious readers, the source code in full is located in \url{https://github.com/AmbryTheBlue/ambrojak_diplomka_code}}
 
 At the end of this section is a description of full workflow.
 
@@ -130,7 +129,7 @@ def create_shuffled_mapping(categories):
 
 Using them only on the testing sets forbids us from introducing any False anomalies into our training data. That is, we are trying to avoid a situation where for given features there may be several valid values of the target column. And our ``anomalous'' version with swapped labels would still be completely normal in reality.
 
-\secc Combined Workflow
+\sec Combined Workflow
 
 \begitems
 * For a chosen anomaly type load appropriate data from Metrans database
@@ -156,3 +155,5 @@ Using them only on the testing sets forbids us from introducing any False anomal
 
  * Select the best performing model and save it using MLflow for future use.
 \enditems
+
+In the next chapter, we describe how we evaluated the results of these pipelines for various models, approaches, and anomalies.

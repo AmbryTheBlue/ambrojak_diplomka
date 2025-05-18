@@ -3,7 +3,7 @@
 \label[approaches]
 \chap Approaches and Model Design for Anomaly Detection in Metrans Orders
 In this chapter, we present three distinct approaches to anomaly detection tailored for structured, tabular data as found in transport order records. Each approach captures a different facet of unexpected behavior: Misclassification Detection identifies inconsistencies between model predictions and recorded labels; Frequency-Based Outlier Detection flags rare combinations of categorical features; and Confidence-Based Anomaly Detection detects uncertain predictions indicative of atypical inputs.
-These approaches were selected based on the most promising methods from the previous chapter. Simple frequency based classifier is an inspiration for \ref[FBOD]. For tree-based we have looked into classifying by anomaly score (sec \ref[CBAD]) but also into simply comparing the class prediction vs class actual (sec \ref[MD]). Working in scikit-learn also allowed us to use other classifiers than tree-based ones. Quick mention of them is in section \ref[]
+These approaches were selected based on the most promising methods from the previous chapter. Simple frequency based classifier is an inspiration for \ref[FBOD]. For tree-based we have looked into classifying by anomaly score (sec \ref[CBAD]) but also into simply comparing the class prediction vs class actual (sec \ref[MD]). Working in scikit-learn also allowed us to use other classifiers than tree-based ones. Quick mention of them is in section \ref[OtherClassifiers].
 
 \label[MD]
 \sec Misclassification Detection
@@ -60,7 +60,7 @@ This approach is closely related to the Maximum Softmax Probability (MSP) techni
 \secc Model Requirements and Relation to Misclassification Detection
 This method can be applied using the same classification models used for Misclassification Detection, see Section \ref[MD].
 
-Provided that the models expose class probabilities via a predic_proba interface or an equivalent mechanism. If the underlying classifier does not produce well-calibrated probabilities, such as decision trees, support vector machines, or gradient boosting models, probability calibration techniques can be applied. The most common options include Platt scaling and isotonic regression, both available in scikit-learn via the CalibratedClassifierCV wrapper \urlnote{https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html}
+We can only use models that expose class probabilities via a predic_proba interface or an equivalent mechanism. If the underlying classifier does not produce well-calibrated probabilities, such as decision trees, support vector machines, or gradient boosting models, probability calibration techniques can be applied. The most common options include Platt scaling and isotonic regression, both available in scikit-learn via the CalibratedClassifierCV wrapper\urlnote{https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html}.
 
 
 \secc Selection of the Threshold Parameter τ
@@ -84,9 +84,7 @@ In the context of this work, confidence-based anomaly detection serves as a ligh
 \sec  Frequency-based outlier detection
 Frequency-based outlier detection (FBOD) is a non-parametric, unsupervised method for identifying anomalies in categorical or mixed-type data. This approach is grounded in the assumption that valid observations—such as transport orders with correct field combinations—occur frequently in the training data, while anomalous or erroneous cases tend to be rare or entirely absent. Consequently, orders that contain uncommon combinations of categorical values (e.g., unusual client–reciever–heating-type configurations) are flagged as potential anomalies.
 
-This method is conceptually related to the Histogram-Based Outlier Score (HBOS) introduced by Goldstein and Dengel (2012)\cite[HBOS], but is applied here to joint categorical statistics rather than independent numerical features. While HBOS decomposes multivariate data into univariate histograms and aggregates their scores under a naïve independence assumption, this work's implementation maintains joint counts for selected feature combinations to better reflect categorical dependencies present in logistics data.
-
-\rfc{Předělat url poznámky pod čarou na korektní BiBteX notace}
+This method is conceptually related to the Histogram-Based Outlier Score (HBOS), but is applied here to joint categorical statistics rather than independent numerical features. While HBOS decomposes multivariate data into univariate histograms and aggregates their scores under a naïve independence assumption, this work's implementation maintains joint counts for selected feature combinations to better reflect categorical dependencies present in logistics data.\cite[HBOS]
 
 \secc Advantages and Limitations
 
