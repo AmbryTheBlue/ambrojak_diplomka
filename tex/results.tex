@@ -258,12 +258,12 @@ CBAD(t=0.9):sgdLogLoss & 0.500 & 0.144 & 0.356 & 0.000 & 0.856 & 1.000 & 0.776 &
 \endinsert
 
 
-\secc Has Heating
+\secc Presence of Heating Request
 We have tried several models, see table \ref[tableHasHeating]. The best models are reaching a point with units of errors per 10,000 orders. This makes sense as there are likely only a few companies in Central Europe that order tank heating. But this proves our decision to split of this anomaly from Heating type anomaly as important. As this anomaly is easier and would artificially improve our performance on the latter.
 We do not try to adjust these models as this is already almost perfect performance.
 
 
-\secc Customs number
+\secc Presence of Customs Number
 We have tried several models to handle this anomaly, as can be seen in Table \ref[tableCustomsNumber]. Further improvements were made by adding more information about port destinations; see Table \ref[tableCustomsNumberPlace].
 
 \midinsert \clabel[tableCustomsNumberPlace]{Model Comparison Customs number with place}
@@ -371,6 +371,6 @@ CBAD(t=0.9):sgdLogLoss & 0.500 & 0.476 & 0.024 & 0.000 & 0.524 & 0.999 & 0.512 &
 
 The evaluation of models across different anomaly types reveals varied performance outcomes. For the Heating Type anomaly, the best models achieved F1 scores exceeding $0.99$. The analysis indicates that preprocessing, while helpful, did not contribute as significantly as the inclusion of additional information about the transport order, such as goods and chassis type. The overall strong performance for this anomaly is attributed to the significant difference in anomaly scores between anomalous and non-anomalous data for most models.
 
-In contrast, the Temperature anomaly, initially considered harder, also showed high performance, with F1 scores reaching $0.995$ in datasets without NULL values. Interestingly, adding more information about the transport order, which proved beneficial for the Heating Type, did not improve performance for the Temperature anomaly and in some cases slightly worsened it. The Has Heating anomaly proved to be quite trivial, with most models achieving near-perfect accuracy. This supports the decision to evaluate it separately from the Heating Type anomaly.
+In contrast, the Temperature anomaly, initially considered harder, also showed high performance, with F1 scores reaching $0.995$ in datasets without NULL values. Interestingly, adding more information about the transport order, which proved beneficial for the Heating Type, did not improve performance for the Temperature anomaly and in some cases slightly worsened it. The Presence of Heating anomaly proved to be quite trivial, with most models achieving near-perfect accuracy. This supports the decision to evaluate it separately from the Heating Type anomaly.
 
 The Customs number anomaly showed good performance, with further improvements observed when incorporating information about port destinations. The Additional Billing Reference anomaly was found to be trivial, with most models achieving very high accuracy, although marginal improvements were still possible by adding information about the receiver. Finally, the Chassis Type anomaly appears to be one of the most challenging, with F1 scores around $0.98$ after filtering out NULL values. The performance on this anomaly also highlighted that unexpected models like SGD and Logistic Regression performed well, alongside the anticipated FBOD models.

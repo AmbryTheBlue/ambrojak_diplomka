@@ -1,7 +1,7 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
 \label[approaches]
-\chap Approaches and Model Design for Anomaly Detection in Metrans Orders
+\chap Selected Approaches and Model Design for Anomaly Detection
 In this chapter, we present three distinct approaches to anomaly detection tailored for structured, tabular data as found in transport order records. Each approach captures a different facet of unexpected behavior: Misclassification Detection identifies inconsistencies between model predictions and recorded labels; Frequency-Based Outlier Detection flags rare combinations of categorical features; and Confidence-Based Anomaly Detection detects uncertain predictions indicative of atypical inputs.
 These approaches were selected based on the most promising methods from the previous chapter. Simple frequency based classifier is an inspiration for \ref[FBOD]. For tree-based we have looked into classifying by anomaly score (sec \ref[CBAD]) but also into simply comparing the class prediction vs class actual (sec \ref[MD]). Working in scikit-learn also allowed us to use other classifiers than tree-based ones. Quick mention of them is in section \ref[OtherClassifiers].
 

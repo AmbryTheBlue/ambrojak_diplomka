@@ -1,7 +1,7 @@
 % !TEX program = optex
 % !TEX root = ambrojak-thesis-masters.tex
 \label[component]
-\chap Real-Time Deployment and Integration
+\chap Deployment and Integration
 
 \sec Technical stack used
 \secc Docker
@@ -35,7 +35,7 @@ Message Queue (MQ) is a fundamental concept in computer science and software eng
 Message queues are integral to the design of scalable and fault-tolerant systems, particularly in microservices architectures and event-driven applications. They facilitate load balancing, ensure message delivery even in the event of component failures, and enable the implementation of complex workflows. Prominent implementations of message queuing systems include not only RabbitMQ but also Apache Kafka, and IBM MQ, each offering various features and protocols to suit different use cases. \cite[MessageQueue]
 
 \secc RabbitMQ
-RabbitMQ (Rabbit Message Queue]) is an open-source message broker that facilitates asynchronous communication between distributed systems. It implements the Advanced Message Queuing Protocol (AMQP) 0-9-1, enabling reliable message delivery and decoupling of application components. The server is written in Erlang and built on the Open Telecom Platform (OTP), which provides features such as clustering and fault tolerance. \cite[RabbitMQ]
+RabbitMQ (Rabbit Message Queue) is an open-source message broker that facilitates asynchronous communication between distributed systems. It implements the Advanced Message Queuing Protocol (AMQP) 0-9-1, enabling reliable message delivery and decoupling of application components. The server is written in Erlang and built on the Open Telecom Platform (OTP), which provides features such as clustering and fault tolerance. \cite[RabbitMQ]
 
 In RabbitMQ, producers send messages to exchanges, which route them to queues based on binding rules. Consumers then retrieve messages from these queues for processing. This architecture supports various exchange types, including direct, topic, fanout, and headers, allowing for flexible routing strategies. \cite[RabbitMQ]
 
