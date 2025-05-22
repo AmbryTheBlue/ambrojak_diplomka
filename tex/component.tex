@@ -65,7 +65,17 @@ This makes it perfect for intermodal transportation companies like Metrans that 
 \medskip
 
 \sec Component model
-TODO more text
+
+The anomaly detection component (for diagram see Figure \ref[ComponentDiagram]) relies on machine learning models that were originally trained on historical data retrieved from the MIS2 database. These models are used to evaluate newly issued transport orders for potential irregularities. The architecture integrates with the internal Metrans infrastructure, listening to events emitted by the newer MIS3 system via a message queue.
+
+A key challenge in deploying this system stems from the structural and semantic differences between MIS2 and MIS3. While MIS2 provided a stable and well-understood schema during model development, the MIS3 database introduces new representations of transport order data. In some cases, this includes additional granularity—such as the stratification of heating types into five categories instead of three—necessitating careful mapping and transformation to maintain compatibility with the existing models. A dedicated mapping layer bridges this gap by translating MIS3 data into the format expected by the models, based on the MIS2 schema.
+
+Once a new order is detected in the event queue, relevant data is fetched from the MIS3 database and transformed accordingly. The pre-trained models then assess the order for known anomaly types. If no anomaly is found, the system takes no further action. If an anomaly is detected, a structured notification—specifying the anomaly type and affected order—is sent to designated personnel for manual verification.
+
+It is important to note that the source code and deployment scripts for this component are not publicly available. They are tightly coupled with the internal infrastructure of Metrans and depend on proprietary schemas, event formats, and authentication mechanisms that the company has elected not to disclose. Consequently, this part of the project cannot be released as open-source.
+
+
+Although the deployment component has been implemented and most of the infrastructure is in place, the system is not yet running in its final form. Some parts, such as message queue integration or MIS3-to-MIS2 mapping, still require additional refinement or debugging. While not yet fully operational, the groundwork is complete, and the current state allows for straightforward completion once remaining issues are resolved.
 
 
 % \begitems

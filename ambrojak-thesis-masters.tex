@@ -18,7 +18,6 @@
 \department {Department of Computer Science}
 \title      {Anomaly Detection in Metrans Transport Orders}
 \subtitle   {Misclassification Detection, Confidence-Based Anomaly Detection and Frequency-Based Outlier Detection with Back-off Smoothing in Textual Tabular Data}
-\subtitleCZ   {Detekce špatné klasifikace, detekce anomálií na základě míry jistoty a detekce anomálií na základě četností v textových tabulkových datech}
             % \subtitle is optional
 \author     {Bc. Jakub Ambroz}
 \authorinfo {ambrojak@fel.cvut.cz}
@@ -32,7 +31,7 @@
 % \workinfo   {\url{https://github.com/AmbryTheBlue/ambrojak_diplomka}} % Does not look good and it is not important
             % Title / Subtitle in minor language:
 \titleCZ    {Detekce anomálií v transportních objednávkách firmy Metrans}
-\subtitleCZ {}
+\subtitleCZ   {Detekce špatné klasifikace, detekce anomálií na základě míry jistoty a detekce anomálií na základě četností v textových tabulkových datech}
             % If minor language is other than English
             % use \titleCZ, \subtitleCZ or \titleSK, \subtitleSK instead it.
 \pagetwo    {}  % The text printed on the page 2 at the bottom.
@@ -40,25 +39,31 @@
 \abstractEN {
 This thesis addresses the problem of detecting anomalies in transport orders processed by Metrans, a major logistics provider in Central Europe. By analyzing historical order data, we develop machine learning models capable of identifying irregularities such as incorrect heating types, missing customs identifiers, or atypical chassis assignments.
 
-Three distinct detection approaches are proposed and evaluated: approach based on classification, out-of-distribution detection, and confidence-based anomaly scoring. The final solution is built as a modular microservice-oriented application deployed via CodeNOW and integrates tools like MLflow and Docker for reproducibility and scalability.
+Three distinct detection approaches are proposed and evaluated: an approach based on classification, out-of-distribution detection, and confidence-based anomaly scoring. 
+
+The system is implemented as a modular microservice application using CodeNOW and Docker. Although parts of the real-time detection pipeline are functional and integrated with the Metrans infrastructure, the full deployment remains incomplete, primarily due to unresolved differences between the MIS2 and MIS3 data formats. Nonetheless, the work provides a solid experimental foundation and a clear path toward operational integration.
+
+
 \rfc{Před odevzdáním ještě upravit abstract, aby byl v tipťop stavu}
    
 }
 \abstractCZ {
 Tato diplomová práce se zabývá detekcí anomálií v přepravních objednávkách zpracovávaných společností Metrans, významným poskytovatelem logistických služeb ve střední Evropě. Na základě analýzy historických dat o objednávkách jsou vyvinuty modely strojového učení schopné identifikovat nepravidelnosti, jako jsou nesprávné typy ohřevu, chybějící celní identifikátory nebo neobvyklé typy podvozků.
 
-Jsou navrženy a vyhodnoceny tři odlišné přístupy k detekci anomálií — klasifikační modely, detekce anomálií na základě četnosti a detekce na základě míry jistoty modelu. Výsledné řešení je implementováno jako modulární aplikace postavená na mikroservisní architektuře a nasazeno prostřednictvím platformy CodeNOW s využitím nástrojů jako MLflow a Docker pro zajištění reprodukovatelnosti a škálovatelnosti.
+Jsou navrženy a vyhodnoceny tři odlišné přístupy k detekci anomálií — klasifikační modely, detekce anomálií na základě četnosti a detekce na základě míry jistoty modelu. 
+
+Systém je implementován jako modulární aplikace založená na mikroservisní architektuře s využitím nástrojů CodeNOW a Docker. Ačkoli některé části pipeline pro detekci v reálném čase již fungují a byly napojeny na infrastrukturu Metrans, plné nasazení zatím nebylo dokončeno - především kvůli nevyřešeným rozdílům mezi datovými strukturami MIS2 a MIS3. I tak práce poskytuje pevný experimentální základ a jasný směr pro budoucí integraci do provozu.
+
 \rfc{Před odevzdáním ještě upravit abstrakt, aby byl v tipťop stavu}
-   
 }
    
 
 \keywordsEN {%
-Anomaly detection in tabular data, Misclassification Detection, Frequency-Based Outlier Detection, Confidence-Based Anomaly Detection
+Anomaly detection in tabular data, Misclassification Detection, Frequency-Based Outlier Detection, Confidence-Based Anomaly Detection, Intermodal transport
 \rfc{Zkontrolovat keywords, doplnit kdyžtak něco}
 }
 \keywordsCZ {%
-Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce anomálií na základě četností, Detekce anomálií na základě míry jistoty
+Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce anomálií na základě četností, Detekce anomálií na základě míry jistoty, Intermodální doprava
 \rfc{Zkontrolovat, že překlad klíčových slov dává smysl}
 }
 \thanks {           % Use main language here
@@ -74,7 +79,7 @@ Detekce anomálií v tabulkových datech, Detekce špatné klasifikace, Detekce 
    \nl
    (CZECH VERSION)
    
-   Prohlašuji, že jsem diplomovou práci vypracoval samostatně a uvedl veškeré použité informační zdroje v souladu s Metodickým pokynem o dodržování etických principů při přípravě vysokoškolských závěrečných prací a Rámocovými pravidly používání umělé inteligence na ČVUT pro studijní a pedagogické účely v Bc a NM studiu.
+   Prohlašuji, že jsem diplomovou práci vypracoval samostatně a uvedl veškeré použité informační zdroje v souladu s Metodickým pokynem o dodržování etických principů při přípravě vysokoškolských závěrečných prací a Rámcovými pravidly používání umělé inteligence na ČVUT pro studijní a pedagogické účely v Bc a NM studiu.
     
     Prohlašuji, že jsem v průběhu příprav a psaní závěrečné práce použil nástroje umělé inteligence. Vygenerovaný obsah jsem ověřil. Stvrzuji, že jsem si vědom, že za obsah závěrečné práce plně zodpovídám. 
 
