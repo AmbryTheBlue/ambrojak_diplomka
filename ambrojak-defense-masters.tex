@@ -4,9 +4,9 @@
 
 \let\s=\relax \let\restore=\relax
 
-\worktype[O/EN]
+\worktype[D/EN]
 \faculty{F3}
-\department{Department of Mathematics}
+\department{Department of Computer Science}
 
 \activettchar`
 
@@ -14,18 +14,205 @@
 
 \slideshow 
 
-\tit CTUslides 
+\tit Anomaly Detection in Metrans Transport Orders
 
-\subtit simple slides in CTUstyle design\nl using \OpTeX/
+\subtit Masters thesis defense
 
 \bigskip
-\subtit\Black Petr Olšák\nl petr@olsak.net
+\subtit\Black Jakub Ambroz\nl ambrojak@fel.cvut.cz
 
-\subtit\rm \url{http://petr.olsak.net/ctustyle.html}
+% \subtit\rm \url{http://petr.olsak.net/ctustyle.html}
 
 \pg; %------------------------------------------------------------------
 
-\sec Basics
+\sec METRANS and Multimodal Transport
+
+* Transport of ISO containers throughout central and eastern europe
+
+* Mainly railway (140 locomotives, 4000 containers) and trucks in the “Last mile”
+
+\pg;
+\sec Anomaly types
+
+* Heating Type (Hot Water, Steam, Electric)
+
+* Heating Temperature (Medium Temperature, Product Temperature From/To)
+
+* Presence of Heating Request
+
+* Presence of Customs Number
+
+* Presence of Additional Billing Reference
+
+* Chassis Type
+
+\pg;
+\sec Data
+* Text preprocessing of both input and “output” columns
+\begitems
+* Sender and recipient names, goods description, destination address
+\enditems
+
+* Bag of Words for vectorization of textual fields
+
+* Label Encoder for “output” variable
+
+* Abundance of “ok” data, almost no anomalous data
+
+\pg;
+\sec Misclassification Detection (MD)
+* Idea: train classifier to predict “output” variable
+
+* On mismatch between reality and prediction flag datum as anomalous
+
+$$\hbox{ Anomaly detected if:  } C(x) \neq y \eqmark[eq-MD]$$
+
+* Issues when multiple classes can be correct. Especially with 2+ classes.
+
+\pg;
+\sec Confidence Based Anomaly Detection
+* Idea: Use “confidence” of the classifier for observed class
+
+$$\hbox{Anomaly detected if } P(y | x) < \tau \eqmark[eq-CBAD]$$
+
+where $P(y∣x)$ is the probability assigned to the true class $y$ for observation $x$ by a trained classifier $C$, and $\tau$  is a predefined threshold.
+
+\pg;
+\sec Frequency Based Outlier Detection
+* Idea: Use probability of occurrence in training data of observed class $y$ given features $F$, flag as anomalous if it is below threshold $\tau$
+
+$$
+\hbox{Anomaly detected if } {{\rm Count}(F, y)\over {\rm Count}(F) + 1} < \tau \eqmark[eq-FBOD]$$ 
+
+
+\secc Back-off Smoothing
+* Idea: When using many features the combination will get increasingly rare. Use smaller subsets.
+
+From features $F=(f_1, f_2, f_3)$ try the following combinations until hit:
+$$
+(f_1, f_2, f_3), (f_1, f_2), (f_1, f_3), (f_2, f_3), (f_1), (f_2), (f_3)
+$$
+
+\pg;
+\sec Evaluation
+* Models compared using F1 score
+$$\rm
+{Precision} = {TP \over TP + FP} \eqmark[eq-precision]
+$$
+$$\rm
+{Recall} = {TP \over TP + FN} \eqmark[eq-recall]
+$$
+$$\rm
+{F1} = 2 \times { Precision \times Recall \over Precision + Recall} \eqmark[eq-f1]
+$$
+* Confidence based models can be further analysed using Anomaly Score Distribution, ROC Curve and Precision Recall curve
+
+\medskip
+\centerline{\picw=6cm \inspic imgs/AnomalyScores.pdf \inspic imgs/ROCcurve.pdf \inspic imgs/Precision-Recall.pdf  } 
+
+\pg;
+\sec Results
+* Excerpt from a table comparing models
+\midinsert \clabel[tableChassisimport]{Model Comparison Chassis import}
+\ctable{l|rr|r}{
+Model & Rec & Prec & F1 \crli \tskip4pt
+CBAD(t=0.1):sgdLogLoss & 0.985 & 0.974 & 0.980 \cr
+FBODBackOff-nopreprocess & 0.981 & 0.946 & 0.963 \cr
+CBAD(t=0.1):KNeighborsClassifier & 0.969 & 0.935 & 0.952 \cr
+... & ...  & ... & ... \cr
+MD:KerasNNClassifier & 0.996 & 0.728 & 0.841 \cr
+MD:rf & 0.996 & 0.728 & 0.841 \cr
+FullFBODBackOff & 0.749 & 0.933 & 0.831 \cr
+... & ...  & ... & ... \cr
+CBAD(t=0.9):ComplementNB & 0.999 & 0.525 & 0.688 \cr
+CBAD(t=0.9):sgdLogLoss & 0.999 & 0.512 & 0.677 \cr
+}
+\caption/t Performance metrics per model in Chassis import (sorted by F1)
+\endinsert
+
+\pg;
+\sec Conclusion
+* Pipeline for training several types of models with different approaches was created
+* Models are compared and best is uploaded for use on new data
+* F1 score upwards 0.99 usually, 0.98 reached always
+* Component for live Anomaly Detection in Metrans IT systems still has a few issues (MIS3-to-MIS2 mapping, message queue integration)
+
+\pg;
+
+\null
+\vskip2cm
+\centerline{\typosize[35/40]\bf Thank you for your attention}\pg+
+
+\vskip2cm
+\centerline{\Blue\typosize[60/70]\bf Questions?}
+
+\pg;
+
+\sec Supervisor's comments
+* Mistakes in labels in graph labels: one-off-numbering (1,2,3 -> 0,1,2), overlapping (unreadable) distribution labels
+\begitems
+* My personal style should not have passed correction and made it to final version.
+\enditems
+
+
+* Awkward, unprofessional phrasing (e.g. “Unexpectedly Python was selected as our programming language of choice.”)
+\begitems
+* My personal style should not have passed correction and made it to final version.
+\enditems
+
+* Reason for Docker
+\begitems
+* Saying that it is restriction imposed by METRANS' architecture would have been sufficient. Instead I spent too much time explaining why it is used etc. Happened for other technologies.
+\enditems
+
+\pg;
+\sec Opponent's comments 1
+
+* “The student employed expertise in the field of his study. He also clearly described how he approached the problem and how the problem was solved. However, the problem could have been stated more clearly with some examples. The introduction could have included some naïve method with rule-based engine filtering the data containing anomalies, how this manual process and its configuration slows down the process. It could also serve as a baseline to compare results with.”
+
+\begitems
+* I did not try to manually code special if statements. While doable for smaller anomalies like "Heating Type" it would still lack in robustness. And it is unviable approach for “bigger” anomalies - too many senders, recipients.
+\enditems
+
+\pg;
+\sec Opponent's comments 2
+* “Given the volume of the data and given the fact that orders are created by humans with their tendency to make errors, does it make sense to notify the users about the anomalies via email?”
+\begitems
+* cca 100-200 thousand orders per year: cca 300-500 orders per day
+* Historical error rate cca 1-2 \%
+* Not all are the types of anomalies we were trying to catch!
+* At most around 10 emails per day for manual recheck
+* {\bf Given the potential losses it is worth the manual check.}
+* It does not have to be email necessarily, the notification for human double check could be made via different channel
+\enditems
+\pg;
+
+\pg;
+
+\sec Other Results
+* Excerpt from a table comparing models
+
+\midinsert \clabel[tableTEMPERATUREwithinfo]{Model Comparison TEMPERATURE with info}
+\ctable{l|rr|r}{
+Model & Rec & Prec & F1 \crli \tskip4pt
+CBAD(t=0.1):LogRegression & 1.000 & 0.989 & 0.994 \cr
+CBAD(t=0.1):sgdModifiedHuber & 1.000 & 0.988 & 0.994 \cr
+FBODBackOff & 0.998 & 0.988 & 0.993 \cr
+CBAD(t=0.1):sgdLogLoss & 0.994 & 0.988 & 0.991 \cr
+FBOD & 0.994 & 0.985 & 0.990 \cr
+... & ...  & ... & ... \cr
+MD:rf & 1.000 & 0.950 & 0.974 \cr
+MD:KerasNNClassifier & 1.000 & 0.948 & 0.973 \cr
+MD:KNeighborsClassifier & 0.999 & 0.948 & 0.973 \cr
+CBAD(t=0.1):VotingClassifier & 0.957 & 0.989 & 0.973 \cr
+... & ...  & ... & ... \cr
+CBAD(t=0.9):LogRegression &  1.000 & 0.794 & 0.885 \cr
+CBAD(t=0.9):sgdLogLoss & 1.000 & 0.776 & 0.874 \cr
+}
+\caption/t Performance metrics per model in TEMPERATURE with info (sorted by F1)
+\endinsert
+
+\sec TODO DELETE ALL BELOW
 
 * The document is included in a file (say `file.tex`)\nl
   and it can be processed by `optex file` command.
@@ -279,11 +466,12 @@ That is great!
 * Example:\pg+
 
 \begtt
-\centerline{\picw=5cm \inspic cmelak1.jpg }
+\centerline{\picw=5cm \inspic imgs/AnomalyScores.pdf }
+
 \endtt
 
 \medskip
-\centerline{\picw=5cm \inspic cmelak1.jpg } 
+\centerline{\picw=5cm \inspic imgs/ROCcurve.pdf } 
 
 \pg+
 
